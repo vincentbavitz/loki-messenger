@@ -1,10 +1,18 @@
 /* global Whisper, i18n */
 
 // eslint-disable-next-line func-names
-(function() {
+
+// still need to get members list for public group chats
+
+// allow when getListofMembers is async
+// (async function() {
+(function(){
   'use strict';
 
   window.Whisper = window.Whisper || {};
+
+  // enable when getListOfMembers is rewritten to be async
+  // const memberList = await window.lokiPublicChatAPI.getListOfMembers();
 
   // TODO: take a title string which could replace the 'members' header
   Whisper.GroupMemberList = Whisper.View.extend({
@@ -34,6 +42,7 @@
 
       return {
         members: i18n('groupMembers'),
+        membersSubtitle: i18n('groupMembers'),
         summary,
       };
     },

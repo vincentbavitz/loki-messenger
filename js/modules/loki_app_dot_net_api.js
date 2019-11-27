@@ -92,7 +92,7 @@ class LokiAppDotNetAPI extends EventEmitter {
   }
 
   // shouldn't this be scoped per conversation?
-  async getListOfMembers() {
+  getListOfMembers() {
     // enable in the next release
     /*
     let members = [];

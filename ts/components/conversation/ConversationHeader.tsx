@@ -30,6 +30,7 @@ interface Props {
   isGroup: boolean;
   isArchived: boolean;
   isPublic: boolean;
+  isRSS: boolean;
 
   members: Array<any>;
 
@@ -42,6 +43,7 @@ interface Props {
   isFriend: boolean;
   isFriendRequestPending: boolean;
   isOnline?: boolean;
+  
 
   onSetDisappearingMessages: (seconds: number) => void;
   onDeleteMessages: () => void;
@@ -314,6 +316,7 @@ export class ConversationHeader extends React.Component<Props> {
       isGroup,
       isArchived,
       isPublic,
+      isRSS,
       onResetSession,
       onSetDisappearingMessages,
       // onShowAllMedia,
@@ -329,9 +332,7 @@ export class ConversationHeader extends React.Component<Props> {
       onChangeNickname,
     } = this.props;
 
-    if (isPublic) {
-      return null;
-    }
+    const hasMembers = (!isRSS && isGroup);
 
     const disappearingTitle = i18n('disappearingMessages') as any;
 
@@ -352,7 +353,8 @@ export class ConversationHeader extends React.Component<Props> {
         ))}
       </SubMenu>
     );
-    const showMembersMenuItem = isGroup && (
+    
+    const showMembersMenuItem = hasMembers && (
       <MenuItem onClick={onShowGroupMembers}>{i18n('showMembers')}</MenuItem>
     );
     const showSafetyNumberMenuItem = !isGroup &&
@@ -383,6 +385,17 @@ export class ConversationHeader extends React.Component<Props> {
       <MenuItem onClick={onArchive}>{i18n('archiveConversation')}</MenuItem>
     );
 
+
+    
+    if (isPublic) {
+      return (
+        <React.Fragment>
+          {showMembersMenuItem}
+        </React.Fragment>
+      );
+    }
+    
+    
     return (
       <React.Fragment>
         {/* <MenuItem onClick={onShowAllMedia}>{i18n('viewAllMedia')}</MenuItem> */}

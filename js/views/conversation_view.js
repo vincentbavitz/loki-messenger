@@ -205,7 +205,7 @@
           : null;
 
         const members = this.model.get('members') || [];
-
+        
         return {
           id: this.model.id,
           name: this.model.getName(),
@@ -222,7 +222,8 @@
           isGroup: !this.model.isPrivate(),
           isOnline: this.model.isOnline(),
           isArchived: this.model.get('isArchived'),
-          isPublic: this.model.isPublic(),
+          isPublic: !!this.model.isPublic(),
+          isRSS: !!this.model.isRss(),
           members,
           expirationSettingName,
           showBackButton: Boolean(this.panels && this.panels.length),
@@ -373,6 +374,7 @@
         updateMemberList();
         setInterval(updateMemberList, 10000);
       }
+
     },
 
     events: {
