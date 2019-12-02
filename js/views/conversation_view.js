@@ -28,6 +28,11 @@
       return { toastMessage: i18n('expiredWarning') };
     },
   });
+  Whisper.ClockOutOfSyncToast = Whisper.ToastView.extend({
+    render_attributes() {
+      return { toastMessage: i18n('clockOutOfSync') };
+    },
+  });
   Whisper.BlockedToast = Whisper.ToastView.extend({
     render_attributes() {
       return { toastMessage: i18n('unblockToSend') };
@@ -75,6 +80,7 @@
     templateName: 'conversation-loading-screen',
     className: 'conversation-loading-screen',
   });
+
 
   Whisper.ConversationView = Whisper.View.extend({
     className() {
@@ -1955,6 +1961,9 @@
       let toast;
       if (extension.expired()) {
         toast = new Whisper.ExpiredToast();
+      }
+      if ( ! window.clientClockSynced ){
+        toast = new Whisper.ClockOutOfSyncToast();
       }
       if (this.model.isPrivate() && storage.isBlocked(this.model.id)) {
         toast = new Whisper.BlockedToast();

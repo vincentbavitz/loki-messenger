@@ -62,6 +62,35 @@ class LokiAppDotNetAPI extends EventEmitter {
     return thisServer;
   }
 
+
+  static async getServerTime(){
+    const url = `${window.getDefaultFileServer()}/loki/v1/time`;
+    let timestamp;
+
+    try {
+      const res = await nodeFetch(url);
+      if (res.ok){
+         timestamp = await res.json();
+      }
+    } catch (e) {
+      timestamp = NaN;
+    }
+
+    this.serverTimestamp = Number(timestamp);
+    return Number(timestamp);
+  }
+
+  static async getTimeDifferential(){
+    // Get time differential between server and client in seconds
+    const serverTime = await this.getServerTime();
+    const clientTime = Math.ceil(Date.now() / 1000);
+
+    if (isNaN(serverTime)){
+      return 0;
+    }
+    return serverTime - clientTime;
+  }
+
   // channel getter/factory
   async findOrCreateChannel(serverUrl, channelId, conversationId) {
     const server = await this.findOrCreateServer(serverUrl);
