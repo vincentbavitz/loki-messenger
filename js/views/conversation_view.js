@@ -81,7 +81,6 @@
     className: 'conversation-loading-screen',
   });
 
-
   Whisper.ConversationView = Whisper.View.extend({
     className() {
       return ['conversation', this.model.get('type')].join(' ');
@@ -1962,7 +1961,7 @@
       if (extension.expired()) {
         toast = new Whisper.ExpiredToast();
       }
-      if ( ! window.clientClockSynced ){
+      if (!window.clientClockSynced) {
         toast = new Whisper.ClockOutOfSyncToast();
       }
       if (this.model.isPrivate() && storage.isBlocked(this.model.id)) {
