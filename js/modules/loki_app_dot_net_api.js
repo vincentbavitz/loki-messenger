@@ -75,8 +75,7 @@ class LokiAppDotNetAPI extends EventEmitter {
       timestamp = NaN;
     }
 
-    this.serverTimestamp = Number(timestamp);
-    return Number(timestamp);
+    return Number.isNaN(timestamp) ? timestamp : Number(timestamp);
   }
 
   static async getTimeDifferential() {
