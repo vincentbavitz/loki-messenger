@@ -364,10 +364,10 @@ setInterval(() => {
 
 // Set server-client time difference
 (async function setClockParams() {
-  window.maxTimeDifferential = 30;
-  window.timeDifferential = await window.LokiPublicChatAPI.getTimeDifferential();
+  let maxTimeDifferential = 30;
+  let timeDifferential = await window.LokiPublicChatAPI.getTimeDifferential();
   window.clientClockSynced =
-    Math.abs(window.timeDifferential) < window.maxTimeDifferential;
+    Math.abs(timeDifferential) < maxTimeDifferential;
 })();
 
 const { autoOrientImage } = require('./js/modules/auto_orient_image');
