@@ -89,6 +89,15 @@ class LokiAppDotNetAPI extends EventEmitter {
     return serverTime - clientTime;
   }
 
+  static async setClockParams() {
+    // Set server-client time difference
+    const maxTimeDifferential = 30;
+    const timeDifferential = await this.getTimeDifferential();
+
+    window.clientClockSynced = Math.abs(timeDifferential) < maxTimeDifferential;
+    return window.clientClockSynced;
+  }
+
   // channel getter/factory
   async findOrCreateChannel(serverUrl, channelId, conversationId) {
     const server = await this.findOrCreateServer(serverUrl);

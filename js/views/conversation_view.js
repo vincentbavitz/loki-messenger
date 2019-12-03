@@ -1962,7 +1962,9 @@
         toast = new Whisper.ExpiredToast();
       }
       if (!window.clientClockSynced) {
-        toast = new Whisper.ClockOutOfSyncToast();
+        // Check to see if user has updated their clock to current time
+        const clockSynced = await window.LokiPublicChatAPI.setClockParams();
+        toast = clockSynced ? toast : new Whisper.ClockOutOfSyncToast();
       }
       if (this.model.isPrivate() && storage.isBlocked(this.model.id)) {
         toast = new Whisper.BlockedToast();

@@ -1431,7 +1431,7 @@
   },
   "clockOutOfSync": {
     "message":
-      "Your clock is out of sync. Please update your clock to the correct time and restart.",
+      "Your clock is out of sync. Please update your clock and try again.",
     "description":
       "Notifcation that user's clock is out of sync with Loki's servers."
   },
