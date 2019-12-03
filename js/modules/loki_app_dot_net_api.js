@@ -64,7 +64,7 @@ class LokiAppDotNetAPI extends EventEmitter {
 
   static async getServerTime() {
     const url = `${window.getDefaultFileServer()}/loki/v1/time`;
-    let timestamp;
+    let timestamp = NaN;
 
     try {
       const res = await nodeFetch(url);
