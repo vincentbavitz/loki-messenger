@@ -72,7 +72,7 @@ class LokiAppDotNetAPI extends EventEmitter {
         timestamp = await res.text();
       }
     } catch (e) {
-      return NaN;
+      return timestamp;
     }
 
     return Number(timestamp);
