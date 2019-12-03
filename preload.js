@@ -364,8 +364,8 @@ setInterval(() => {
 
 // Set server-client time difference
 (async function setClockParams() {
-  let maxTimeDifferential = 30;
-  let timeDifferential = await window.LokiPublicChatAPI.getTimeDifferential();
+  const maxTimeDifferential = 30;
+  const timeDifferential = await window.LokiPublicChatAPI.getTimeDifferential();
   window.clientClockSynced =
     Math.abs(timeDifferential) < maxTimeDifferential;
 })();
