@@ -69,7 +69,7 @@ class LokiAppDotNetAPI extends EventEmitter {
     try {
       const res = await nodeFetch(url);
       if (res.ok) {
-        timestamp = await res.json();
+        timestamp = await res.text();
       }
     } catch (e) {
       return NaN;
