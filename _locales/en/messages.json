@@ -2087,6 +2087,14 @@
     "message": "Account Purging",
     "description": "Button action that the user can click to open account purge nomination dialog"
   },
+  "purgeNomineePubkeyInput": {
+    "message": "Nominee Public key",
+    "description": "Placeholder for nominee public key input in purge nomination dialog"
+  },
+  "purgeAccountPubkeyInput": {
+    "message": "User Public key",
+    "description": "Placeholder for user public key input in purge nomination dialog"
+  },
   "showAddServer": {
     "message": "Add public server",
     "description":

@@ -65,6 +65,50 @@
   }
 }
 
+.purge-nomination-dialog .content{
+  padding: 20px 30px;
+  min-width: 500px;
+  width: 60vw;
+
+  .section:nth-child(n + 2){
+    padding: 20px 0px;
+  }
+
+  .error-message{
+    text-align: center;
+    padding: 8px 16px;
+    border-radius: 4px;
+  
+    line-height: 18px;
+    letter-spacing: 0;
+
+    margin-bottom: 10px;
+  
+    background-color: $color-crimson;
+    background-color: red !important;
+    color: $color-white;
+
+    .error-show{
+      display: block;
+    }
+  }
+
+  div.cancel {
+    clear: both;
+    margin-top: 8px;
+    
+    hr{
+      opacity: 0.3;
+      margin: 10px 0px;
+    }
+  }
+
+  div.clear {
+    clear: both;
+  }
+
+}
+
 .expired {
   .conversation-stack,
   .gutter {
