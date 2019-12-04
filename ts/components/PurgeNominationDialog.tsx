@@ -148,3 +148,4 @@ export class PurgeNominationDialog extends React.Component<Props, State>{
 
 
 }
+
