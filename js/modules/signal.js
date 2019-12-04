@@ -70,6 +70,7 @@ const {
   MessageDetail,
 } = require('../../ts/components/conversation/MessageDetail');
 const { Quote } = require('../../ts/components/conversation/Quote');
+const { PurgeNominationDialog } = require('../../ts/components/PurgeNominationDialog');
 const {
   ResetSessionNotification,
 } = require('../../ts/components/conversation/ResetSessionNotification');
@@ -246,6 +247,7 @@ exports.setup = (options = {}) => {
     BulkEdit,
     MediaGallery,
     Message,
+    PurgeNominationDialog,
     MessageBody,
     MessageDetail,
     Quote,

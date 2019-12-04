@@ -1054,6 +1054,12 @@
       }
     });
 
+    Whisper.events.on('showPurgeNominationDialog', async () => {
+      if (appView) {
+        appView.showPurgeNominationDialog();
+      }
+    });
+
     Whisper.events.on('showDevicePairingDialog', async () => {
       if (appView) {
         appView.showDevicePairingDialog();

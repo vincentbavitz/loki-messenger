@@ -2083,6 +2083,10 @@
     "message": "Show QR code",
     "description": "Button action that the user can click to view their QR code"
   },
+  "nominatePurge": {
+    "message": "Account Purging",
+    "description": "Button action that the user can click to open account purge nomination dialog"
+  },
   "showAddServer": {
     "message": "Add public server",
     "description":

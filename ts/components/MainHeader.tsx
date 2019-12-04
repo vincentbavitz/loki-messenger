@@ -355,6 +355,13 @@ export class MainHeader extends React.Component<Props, any> {
         },
       },
       {
+        id: 'nominatePurge',
+        name: i18n('nominatePurge'),
+        onClick: () => {
+          trigger('showPurgeNominationDialog');
+        },
+      },
+      {
         id: 'showAddServer',
         name: i18n('showAddServer'),
         onClick: () => {

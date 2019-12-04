@@ -208,6 +208,11 @@
       const dialog = new Whisper.QRDialogView({ string });
       this.el.append(dialog.el);
     },
+    showPurgeNominationDialog() {
+      const dialog = new Whisper.PurgeNominationDialogView();
+      this.el.append(dialog.el);
+    },
+
     showDevicePairingDialog() {
       const dialog = new Whisper.DevicePairingDialogView();
 
