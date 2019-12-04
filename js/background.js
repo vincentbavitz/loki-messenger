@@ -126,9 +126,7 @@
   ]);
 
   // Set server-client time difference
-  (async () => {
-    await window.LokiPublicChatAPI.setClockParams();
-  })();
+  window.LokiPublicChatAPI.setClockParams();
 
   // We add this to window here because the default Node context is erased at the end
   //   of preload.js processing
