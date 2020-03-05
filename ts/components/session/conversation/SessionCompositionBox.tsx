@@ -248,13 +248,20 @@ export class SessionCompositionBox extends React.Component<Props, State> {
     this.props.onStoppedRecording();
   }
 
-  private onEmojiClick(emoji: any) {
-    console.log('emoji', emoji, this.textarea);
+  private onEmojiClick({native}: any) {
     const { message } = this.state;
-    const currentSelectionStart = this.textarea.current.selectionStart;
-    const newMessage = message.slice(0, currentSelectionStart) + emoji.native + message.slice(currentSelectionStart + 1);
+    const currentSelectionStart = Number(this.textarea.current.selectionStart);
+    const currentSelectionEnd = Number(this.textarea.current.selectionEnd);
+    const before = message.slice(0, currentSelectionStart);
+    const end = message.slice(currentSelectionEnd);
+    const newMessage = `${before}${native}${end}`;
+
     this.setState({ message: newMessage }, () => {
-      //this.textarea.current.selectionStart = currentSelectionStart + 1;//emoji.native.length;
+      // update our selection because updating text programmatically
+      // will put the selection at the end of the textarea
+      const selectionStart = currentSelectionStart + Number(native.length);
+      this.textarea.current.selectionStart = selectionStart;
+      this.textarea.current.selectionEnd = selectionStart;
     });
   }
 
