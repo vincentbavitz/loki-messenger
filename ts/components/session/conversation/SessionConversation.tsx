@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import { ConversationHeader } from '../../conversation/ConversationHeader';
 import { SessionCompositionBox } from './SessionCompositionBox';
-import { SessionProgress } from '../SessionProgress'
+import { SessionProgress } from '../SessionProgress';
 
 import { Message } from '../../conversation/Message';
 import { FriendRequest } from '../../conversation/FriendRequest';
@@ -109,11 +109,14 @@ export class SessionConversation extends React.Component<any, State> {
     const conversationModel = window.getConversationByKey(conversationKey);
     const isRss = conversation.isRss;
 
+    conversationModel.sendMessage = conversationModel.sendMessage.bind(conversationModel);
+
     return (
       <div
         className={classNames('conversation-item', selectionMode && 'selection-mode')}
         tabIndex={0}
-        onKeyDown={this.onKeyDown}  
+        onKeyDown={this.onKeyDown}
+        role="button"
       >
         <div className="conversation-header">
           {this.renderHeader()}
@@ -127,7 +130,7 @@ export class SessionConversation extends React.Component<any, State> {
 
         <div className="messages-wrapper">
           { loading && (
-            <div className="messages-container__loading"></div>
+            <div className="messages-container__loading"/>
           )}
 
           <div className="messages-container" onScroll={this.handleScroll}>
@@ -137,10 +140,10 @@ export class SessionConversation extends React.Component<any, State> {
 
           <SessionScrollButton display={true} onClick={this.scrollToBottom}/>
           { isRecording && (
-            <div className="messages-wrapper--blocking-overlay"></div>
+            <div className="messages-wrapper--blocking-overlay"/>
           )}
         </div>
-        
+
         { !isRss && (
           <SessionCompositionBox
             sendMessage={conversationModel.sendMessage}

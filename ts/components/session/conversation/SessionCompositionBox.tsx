@@ -219,9 +219,8 @@ export class SessionCompositionBox extends React.Component<Props, State> {
     console.log(`[vince][msg] Attachments:`, attachments);
     console.log(`[vince][msg] Voice message:`, this.state.voiceRecording);
 
-    if (true){
-      this.props.sendMessage();
-    }
+    this.props.sendMessage(messagePlaintext, null, null, null);
+
   }
 
   private onStartedRecording(){
