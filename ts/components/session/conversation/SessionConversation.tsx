@@ -11,7 +11,7 @@ import { TimerNotification } from '../../conversation/TimerNotification';
 
 
 import { SessionScrollButton } from '../SessionScrollButton';
-
+// tslint:disable: no-backbone-get-set-outside-model
 interface State {
   sendingProgess: number;
   prevSendingProgess: number;
@@ -98,7 +98,7 @@ export class SessionConversation extends React.Component<any, State> {
     }
   }
 
-  render() {
+  public render() {
     console.log(`[vince][info] Props`, this.props);
 
     const { messages, conversationKey, doneInitialScroll, isRecording } = this.state;
