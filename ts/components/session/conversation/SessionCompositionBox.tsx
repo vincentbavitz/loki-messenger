@@ -24,7 +24,7 @@ interface State {
 }
 
 export class SessionCompositionBox extends React.Component<Props, State> {
-  private textarea: any;
+  private readonly textarea: any;
   private fileInput: React.RefObject<HTMLInputElement>;
   private emojiPanel: any;
 
@@ -83,7 +83,7 @@ export class SessionCompositionBox extends React.Component<Props, State> {
     );
   }
 
-  private handleClick = (e: any) => {
+  private handleClick(e: any) {
     if (this.emojiPanel && this.emojiPanel.contains(e.target)) {
       return;
     }
@@ -178,13 +178,13 @@ export class SessionCompositionBox extends React.Component<Props, State> {
           />
         </div>
 
-        {showEmojiPanel && <div
+        <div
           ref={ref => (this.emojiPanel = ref)}
           onKeyDown={this.onKeyDown}
           role="button"
         >
-          <SessionEmojiPanel onEmojiClicked={this.onEmojiClick}/>
-        </div>}
+          <SessionEmojiPanel onEmojiClicked={this.onEmojiClick} show={showEmojiPanel}/>
+        </div>
       </>
     );
   }
@@ -220,7 +220,6 @@ export class SessionCompositionBox extends React.Component<Props, State> {
     console.log(`[vince][msg] Voice message:`, this.state.voiceRecording);
 
     this.props.sendMessage(messagePlaintext, null, null, null);
-
   }
 
   private onStartedRecording(){
@@ -230,6 +229,7 @@ export class SessionCompositionBox extends React.Component<Props, State> {
     if (mediaSetting){
       this.setState({ isRecording: true });
       this.props.onStartedRecording();
+
       return;
     }
 
@@ -239,7 +239,7 @@ export class SessionCompositionBox extends React.Component<Props, State> {
       description: window.i18n('audioPermissionNeededDescription'),
       type: 'info',
     });
-    
+
   }
 
   private onStoppedRecording() {
@@ -264,6 +264,4 @@ export class SessionCompositionBox extends React.Component<Props, State> {
       this.textarea.current.selectionEnd = selectionStart;
     });
   }
-
-
 }
