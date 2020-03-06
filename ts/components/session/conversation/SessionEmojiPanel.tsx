@@ -28,6 +28,7 @@ export class SessionEmojiPanel extends React.Component<Props> {
           title={''}
           onSelect={onEmojiClicked}
           autoFocus={true}
+          set="apple"
         />
       </div>
     );

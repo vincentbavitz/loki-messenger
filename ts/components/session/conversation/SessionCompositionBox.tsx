@@ -47,6 +47,7 @@ export class SessionCompositionBox extends React.Component<Props, State> {
 
     this.toggleEmojiPanel = debounce(this.toggleEmojiPanel.bind(this), 100);
     this.hideEmojiPanel = this.hideEmojiPanel.bind(this);
+    this.handleClick = this.handleClick.bind(this);
 
     this.renderRecordingView = this.renderRecordingView.bind(this);
     this.renderCompositionView = this.renderCompositionView.bind(this);
@@ -262,6 +263,11 @@ export class SessionCompositionBox extends React.Component<Props, State> {
       const selectionStart = currentSelectionStart + Number(native.length);
       this.textarea.current.selectionStart = selectionStart;
       this.textarea.current.selectionEnd = selectionStart;
+      // Sometimes, we have to repeat the set of the selection position with a timeout to be effective
+      setTimeout(() => {
+        this.textarea.current.selectionStart = selectionStart;
+        this.textarea.current.selectionEnd = selectionStart;
+      }, 20);
     });
   }
 }
