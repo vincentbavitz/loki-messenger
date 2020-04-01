@@ -1,0 +1,361 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "tsconfig.json",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "@typescript-eslint/tslint"
+    ],
+    "rules": {
+        "@typescript-eslint/array-type": "error",
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "@typescript-eslint/explicit-member-accessibility": [
+            "error",
+            {
+                "accessibility": "explicit"
+            }
+        ],
+        "@typescript-eslint/indent": [
+            "off",
+            2
+        ],
+        "@typescript-eslint/member-delimiter-style": [
+            "error",
+            {
+                "multiline": {
+                    "delimiter": "semi",
+                    "requireLast": true
+                },
+                "singleline": {
+                    "delimiter": "semi",
+                    "requireLast": false
+                }
+            }
+        ],
+        "@typescript-eslint/member-ordering": "error",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-extraneous-class": "error",
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/no-non-null-assertion": "error",
+        "@typescript-eslint/no-param-reassign": "error",
+        "@typescript-eslint/no-parameter-properties": "error",
+        "@typescript-eslint/no-require-imports": "error",
+        "@typescript-eslint/no-unnecessary-qualifier": "error",
+        "@typescript-eslint/no-unnecessary-type-arguments": "error",
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/prefer-for-of": "error",
+        "@typescript-eslint/prefer-function-type": "error",
+        "@typescript-eslint/prefer-namespace-keyword": "off",
+        "@typescript-eslint/prefer-readonly": "error",
+        "@typescript-eslint/promise-function-async": "error",
+        "@typescript-eslint/quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "@typescript-eslint/restrict-plus-operands": "error",
+        "@typescript-eslint/semi": [
+            "error",
+            "always"
+        ],
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/type-annotation-spacing": "off",
+        "@typescript-eslint/unified-signatures": "error",
+        "arrow-parens": [
+            "error",
+            "as-needed"
+        ],
+        "camelcase": "error",
+        "comma-dangle": [
+            "error",
+            {
+                "objects": "always-multiline",
+                "arrays": "always-multiline",
+                "functions": "never"
+            }
+        ],
+        "complexity": "error",
+        "constructor-super": "error",
+        "curly": "error",
+        "default-case": "error",
+        "dot-notation": "error",
+        "eol-last": "error",
+        "eqeqeq": [
+            "error",
+            "smart"
+        ],
+        "guard-for-in": "error",
+        "id-blacklist": "error",
+        "id-match": "error",
+        "import/no-default-export": "error",
+        "import/no-deprecated": "off",
+        "import/no-extraneous-dependencies": "error",
+        "import/no-internal-modules": "error",
+        "import/no-unassigned-import": "error",
+        "import/order": "error",
+        "jsdoc/no-types": "error",
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "max-classes-per-file": [
+            "error",
+            3
+        ],
+        "max-len": "off",
+        "max-lines": "error",
+        "new-parens": "error",
+        "newline-per-chained-call": "off",
+        "no-bitwise": "error",
+        "no-caller": "error",
+        "no-cond-assign": "error",
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "dirxml",
+                    "warn",
+                    "dir",
+                    "timeLog",
+                    "assert",
+                    "clear",
+                    "count",
+                    "countReset",
+                    "group",
+                    "groupCollapsed",
+                    "groupEnd",
+                    "table",
+                    "Console",
+                    "markTimeline",
+                    "profile",
+                    "profileEnd",
+                    "timeline",
+                    "timelineEnd",
+                    "timeStamp",
+                    "context"
+                ]
+            }
+        ],
+        "no-constant-condition": "error",
+        "no-control-regex": "error",
+        "no-debugger": "error",
+        "no-duplicate-case": "error",
+        "no-duplicate-imports": "error",
+        "no-empty": "error",
+        "no-eval": "error",
+        "no-extra-semi": "error",
+        "no-fallthrough": "off",
+        "no-invalid-regexp": "error",
+        "no-invalid-this": "error",
+        "no-irregular-whitespace": "error",
+        "no-magic-numbers": "off",
+        "no-multi-str": "off",
+        "no-multiple-empty-lines": [
+            "error",
+            {
+                "max": 2
+            }
+        ],
+        "no-new-wrappers": "error",
+        "no-null/no-null": "off",
+        "no-octal": "error",
+        "no-octal-escape": "error",
+        "no-redeclare": "error",
+        "no-regex-spaces": "error",
+        "no-restricted-imports": "off",
+        "no-restricted-syntax": [
+            "error",
+            "ForInStatement"
+        ],
+        "no-return-await": "error",
+        "no-sequences": "error",
+        "no-shadow": [
+            "error",
+            {
+                "hoist": "all"
+            }
+        ],
+        "no-sparse-arrays": "error",
+        "no-template-curly-in-string": "error",
+        "no-throw-literal": "error",
+        "no-trailing-spaces": "error",
+        "no-undef-init": "error",
+        "no-underscore-dangle": "error",
+        "no-unsafe-finally": "error",
+        "no-unused-expressions": "error",
+        "no-unused-labels": "error",
+        "no-void": "error",
+        "object-shorthand": "off",
+        "one-var": [
+            "error",
+            "never"
+        ],
+        "padding-line-between-statements": [
+            "error",
+            {
+                "blankLine": "always",
+                "prev": "*",
+                "next": "return"
+            }
+        ],
+        "prefer-arrow/prefer-arrow-functions": "off",
+        "prefer-object-spread": "error",
+        "prefer-template": "error",
+        "quote-props": [
+            "error",
+            "as-needed"
+        ],
+        "radix": "error",
+        "space-before-function-paren": "off",
+        "space-in-parens": [
+            "error",
+            "never"
+        ],
+        "spaced-comment": [
+            "error",
+            "never"
+        ],
+        "unicorn/filename-case": "error",
+        "use-isnan": "error",
+        "valid-typeof": "off",
+        "yoda": "error",
+        "@typescript-eslint/tslint/config": [
+            "error",
+            {
+                "rules": {
+                    "chai-prefer-contains-to-index-of": true,
+                    "chai-vague-errors": true,
+                    "encoding": true,
+                    "function-name": [
+                        true,
+                        {
+                            "function-regex": "^_?[a-z][\\w\\d]+$"
+                        }
+                    ],
+                    "informative-docs": true,
+                    "insecure-random": true,
+                    "jquery-deferred-must-complete": true,
+                    "jsdoc-format": true,
+                    "jsx-alignment": true,
+                    "jsx-boolean-value": true,
+                    "jsx-curly-spacing": [
+                        true,
+                        "never"
+                    ],
+                    "jsx-equals-spacing": [
+                        true,
+                        "never"
+                    ],
+                    "jsx-key": true,
+                    "jsx-no-bind": true,
+                    "jsx-no-string-ref": true,
+                    "jsx-self-close": true,
+                    "jsx-wrap-multiline": true,
+                    "match-default-export-name": true,
+                    "max-func-body-length": [
+                        true,
+                        150
+                    ],
+                    "mocha-avoid-only": true,
+                    "mocha-unneeded-done": true,
+                    "no-backbone-get-set-outside-model": true,
+                    "no-cookies": true,
+                    "no-delete-expression": true,
+                    "no-disable-auto-sanitization": true,
+                    "no-document-domain": true,
+                    "no-document-write": true,
+                    "no-dynamic-delete": true,
+                    "no-exec-script": true,
+                    "no-function-constructor-with-string-args": true,
+                    "no-function-expression": true,
+                    "no-http-string": [
+                        true,
+                        "http://www.example.com/?.*",
+                        "http://localhost:?.*"
+                    ],
+                    "no-inner-html": true,
+                    "no-jquery-raw-elements": true,
+                    "no-reference-import": true,
+                    "no-string-based-set-immediate": true,
+                    "no-string-based-set-interval": true,
+                    "no-string-based-set-timeout": true,
+                    "no-typeof-undefined": true,
+                    "no-unnecessary-bind": true,
+                    "no-unnecessary-callback-wrapper": true,
+                    "no-unnecessary-field-initialization": true,
+                    "no-unnecessary-local-variable": true,
+                    "no-unnecessary-override": true,
+                    "no-unsupported-browser-code": true,
+                    "no-useless-files": true,
+                    "no-with-statement": true,
+                    "non-literal-fs-path": true,
+                    "non-literal-require": true,
+                    "number-literal-format": true,
+                    "one-line": [
+                        true,
+                        "check-open-brace",
+                        "check-catch",
+                        "check-else",
+                        "check-whitespace"
+                    ],
+                    "prefer-while": true,
+                    "promise-must-complete": true,
+                    "react-a11y-anchors": true,
+                    "react-a11y-aria-unsupported-elements": true,
+                    "react-a11y-event-has-role": true,
+                    "react-a11y-image-button-has-alt": true,
+                    "react-a11y-img-has-alt": true,
+                    "react-a11y-input-elements": true,
+                    "react-a11y-lang": true,
+                    "react-a11y-meta": true,
+                    "react-a11y-no-onchange": true,
+                    "react-a11y-props": true,
+                    "react-a11y-proptypes": true,
+                    "react-a11y-required": true,
+                    "react-a11y-role": true,
+                    "react-a11y-role-has-required-aria-props": true,
+                    "react-a11y-role-supports-aria-props": true,
+                    "react-a11y-tabindex-no-positive": true,
+                    "react-a11y-titles": true,
+                    "react-anchor-blank-noopener": true,
+                    "react-iframe-missing-sandbox": true,
+                    "react-no-dangerous-html": [
+                        true,
+                        {
+                            "file": "ts/components/session/SessionHTMLRenderer.tsx",
+                            "method": "<unknown>",
+                            "comment": "Usage has been approved by Maxim on 13 Dec 2019"
+                        }
+                    ],
+                    "react-unused-props-and-state": true,
+                    "switch-final-break": true,
+                    "underscore-consistent-invocation": true,
+                    "use-named-parameter": true,
+                    "use-simple-attributes": true,
+                    "whitespace": [
+                        true,
+                        "check-branch",
+                        "check-decl",
+                        "check-operator",
+                        "check-separator",
+                        "check-type"
+                    ]
+                }
+            }
+        ]
+    }
+}
