@@ -1257,7 +1257,7 @@ label {
   flex-direction: column;
 
   &-list {
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   &-header {
