@@ -53,9 +53,9 @@ window.textsecure.storage.impl = {
   },
 };
 // eslint-disable-next-line no-undef
-onmessage = (e) => {
+onmessage = e => {
   store = e.data;
-  textsecure.protocol_wrapper.generateKeys().then((keys) => {
+  textsecure.protocol_wrapper.generateKeys().then(keys => {
     postMessage({ method: 'done', keys });
     close();
   });

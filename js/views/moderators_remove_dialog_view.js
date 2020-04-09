@@ -22,13 +22,13 @@
       const convos = window.getConversations().models;
       const moderators = modPubKeys
         .map(
-          (pubKey) =>
-            convos.find((c) => c.id === pubKey) || {
+          pubKey =>
+            convos.find(c => c.id === pubKey) || {
               id: pubKey, // memberList need a key
               authorPhoneNumber: pubKey,
             }
         )
-        .filter((c) => !!c);
+        .filter(c => !!c);
 
       this.mods = moderators;
 

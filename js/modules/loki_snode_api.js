@@ -14,7 +14,7 @@ const snodeHttpsAgent = new https.Agent({
 const RANDOM_SNODES_TO_USE_FOR_PUBKEY_SWARM = 3;
 const SEED_NODE_RETRIES = 3;
 
-const timeoutDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const timeoutDelay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class LokiSnodeAPI {
   constructor({ serverUrl, localUrl }) {
@@ -138,12 +138,12 @@ class LokiSnodeAPI {
       // Test all three nodes at once
       // eslint-disable-next-line no-await-in-loop
       const idxOk = await Promise.all(
-        candidateNodes.map((n) => this.testGuardNode(n))
+        candidateNodes.map(n => this.testGuardNode(n))
       );
 
       const goodNodes = _.zip(idxOk, candidateNodes)
-        .filter((x) => x[0])
-        .map((x) => x[1]);
+        .filter(x => x[0])
+        .map(x => x[1]);
 
       guardNodes = _.concat(guardNodes, goodNodes);
     }
@@ -156,7 +156,7 @@ class LokiSnodeAPI {
 
     log.info('new guard nodes: ', guardNodes);
 
-    const edKeys = guardNodes.map((n) => n.pubkey_ed25519);
+    const edKeys = guardNodes.map(n => n.pubkey_ed25519);
 
     await window.libloki.storage.updateGuardNodes(edKeys);
 
@@ -166,7 +166,7 @@ class LokiSnodeAPI {
   async getOnionPath(toExclude = null) {
     const _ = window.Lodash;
 
-    const goodPaths = this.onionPaths.filter((x) => !x.bad);
+    const goodPaths = this.onionPaths.filter(x => !x.bad);
 
     if (goodPaths.length < 2) {
       log.error(
@@ -183,10 +183,10 @@ class LokiSnodeAPI {
 
     // Select a path that doesn't contain `toExclude`
     const otherPaths = paths.filter(
-      (path) =>
+      path =>
         !_.some(
           path,
-          (node) => node.pubkey_ed25519 === toExclude.pubkey_ed25519
+          node => node.pubkey_ed25519 === toExclude.pubkey_ed25519
         )
     );
 
@@ -199,7 +199,7 @@ class LokiSnodeAPI {
   }
 
   async markPathAsBad(path) {
-    this.onionPaths.forEach((p) => {
+    this.onionPaths.forEach(p => {
       if (p.path === path) {
         // eslint-disable-next-line no-param-reassign
         p.bad = true;
@@ -225,9 +225,9 @@ class LokiSnodeAPI {
         log.warn('no guard nodes in DB. Will be selecting new guards nodes...');
       } else {
         // We only store the nodes' keys, need to find full entries:
-        const edKeys = nodes.map((x) => x.ed25519PubKey);
+        const edKeys = nodes.map(x => x.ed25519PubKey);
         this.guardNodes = allNodes.filter(
-          (x) => edKeys.indexOf(x.pubkey_ed25519) !== -1
+          x => edKeys.indexOf(x.pubkey_ed25519) !== -1
         );
 
         if (this.guardNodes.length < edKeys.length) {
@@ -290,8 +290,8 @@ class LokiSnodeAPI {
 
     return _.flatten(
       _.entries(this.versionPools)
-        .filter((v) => semver.gte(v[0], minVersion))
-        .map((v) => v[1])
+        .filter(v => semver.gte(v[0], minVersion))
+        .map(v => v[1])
     );
   }
 
@@ -305,7 +305,7 @@ class LokiSnodeAPI {
     if (this.randomSnodePool.length === 0) {
       throw new window.textsecure.SeedNodeError('Invalid seed node response');
     }
-    const goodVersions = Object.keys(this.versionPools).filter((version) =>
+    const goodVersions = Object.keys(this.versionPools).filter(version =>
       semver.gt(version, '2.0.1')
     );
     if (!goodVersions.length) {
@@ -405,7 +405,7 @@ class LokiSnodeAPI {
             );
             // Filter 0.0.0.0 nodes which haven't submitted uptime proofs
             snodes = response.result.service_node_states.filter(
-              (snode) => snode.public_ip !== '0.0.0.0'
+              snode => snode.public_ip !== '0.0.0.0'
             );
             // make sure order of the list is random, so we get version in a non-deterministic way
             snodes = _.shuffle(snodes);
@@ -413,7 +413,7 @@ class LokiSnodeAPI {
             // we'll update the version (in case they upgrade) every cycle
             this.versionPools = {};
             this.versionsRetrieved = false;
-            this.randomSnodePool = snodes.map((snode) => ({
+            this.randomSnodePool = snodes.map(snode => ({
               ip: snode.public_ip,
               port: snode.storage_port,
               pubkey_x25519: snode.pubkey_x25519,
@@ -449,7 +449,7 @@ class LokiSnodeAPI {
                 log.info(
                   `${c}/${t} pool version status update, has taken ${diff.toLocaleString()}ms`
                 );
-                Object.keys(this.versionPools).forEach((version) => {
+                Object.keys(this.versionPools).forEach(version => {
                   const nodes = this.versionPools[version].length;
                   log.info(
                     `version ${version} has ${nodes.toLocaleString()} snodes`
@@ -527,7 +527,7 @@ class LokiSnodeAPI {
       return swarmNodes;
     }
     let found = false;
-    const filteredNodes = swarmNodes.filter((node) => {
+    const filteredNodes = swarmNodes.filter(node => {
       // keep all but thisNode
       const thisNode
         = node.address === unreachableNode.address
@@ -606,7 +606,7 @@ class LokiSnodeAPI {
 
   async updateSwarmNodes(pubKey, newNodes) {
     try {
-      const filteredNodes = newNodes.filter((snode) => snode.ip !== '0.0.0.0');
+      const filteredNodes = newNodes.filter(snode => snode.ip !== '0.0.0.0');
       const conversation = ConversationController.get(pubKey);
       await conversation.updateSwarmNodes(filteredNodes);
       return filteredNodes;
@@ -625,7 +625,7 @@ class LokiSnodeAPI {
 
   async getFreshSwarmNodes(pubKey) {
     if (!(pubKey in this.swarmsPendingReplenish)) {
-      this.swarmsPendingReplenish[pubKey] = new Promise(async (resolve) => {
+      this.swarmsPendingReplenish[pubKey] = new Promise(async resolve => {
         let newSwarmNodes;
         try {
           newSwarmNodes = await this.getSwarmNodes(pubKey);
@@ -701,10 +701,10 @@ class LokiSnodeAPI {
 
       // eslint-disable-next-line no-await-in-loop
       const results = await Promise.all(
-        nodes.map((node) => this._requestLnsMapping(node, nameHash))
+        nodes.map(node => this._requestLnsMapping(node, nameHash))
       );
 
-      results.forEach((res) => {
+      results.forEach(res => {
         if (
           res
           && res.result
@@ -718,7 +718,7 @@ class LokiSnodeAPI {
 
       const [winner, count] = _.maxBy(
         _.entries(_.countBy(allResults)),
-        (x) => x[1]
+        x => x[1]
       );
 
       if (count >= 3) {
@@ -766,7 +766,7 @@ class LokiSnodeAPI {
         );
         return [];
       }
-      const snodes = result.snodes.filter((tSnode) => tSnode.ip !== '0.0.0.0');
+      const snodes = result.snodes.filter(tSnode => tSnode.ip !== '0.0.0.0');
       return snodes;
     } catch (e) {
       this.markRandomNodeUnreachable(snode);
@@ -790,9 +790,9 @@ class LokiSnodeAPI {
         const rSnode = await this.getRandomSnodeAddress();
         const resList = await this.getSnodesForPubkey(rSnode, pubKey);
         // should we only activate entries that are in all results?
-        resList.map((item) => {
+        resList.map(item => {
           const hasItem = snodes.some(
-            (hItem) => item.ip === hItem.ip && item.port === hItem.port
+            hItem => item.ip === hItem.ip && item.port === hItem.port
           );
           if (!hasItem) {
             snodes.push(item);

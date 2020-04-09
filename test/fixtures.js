@@ -152,7 +152,7 @@ Whisper.Fixtures = () => {
         body: "I can't wait to try it!",
         unread: 1,
       },
-    ].map((m) => {
+    ].map(m => {
       return {
         conversationId: MASHA_ID,
         type: m.type,
@@ -212,7 +212,7 @@ Whisper.Fixtures = () => {
         delivered_to: [MICHEL_ID, FRED_ID],
         sent_to: [NESTOR_ID],
       },
-    ].map((m) => {
+    ].map(m => {
       return { ...m, conversationId: group.id,
         sent_at: m.date,
         received_at: m.date,
@@ -231,13 +231,13 @@ Whisper.Fixtures = () => {
 
   conversationCollection.saveAll = function thisNeeded() {
     Promise.all(
-      this.map(async (convo) => {
+      this.map(async convo => {
         await window.Signal.Data.saveConversation(convo.attributes, {
           Conversation: Whisper.Conversation,
         });
 
         await Promise.all(
-          convo.messageCollection.map(async (message) => {
+          convo.messageCollection.map(async message => {
             const id = await window.Signal.Data.saveMessage(message.attributes, {
               Message: Whisper.Message,
             });

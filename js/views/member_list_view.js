@@ -49,9 +49,9 @@
 
       // Sort keys from long to short, so we don't have to
       // worry about one key being a substring of another
-      const keys = _.sortBy(_.keys(this.memberMapping), (d) => -d.length);
+      const keys = _.sortBy(_.keys(this.memberMapping), d => -d.length);
 
-      keys.forEach((key) => {
+      keys.forEach(key => {
         const pubkey = this.memberMapping[key];
         result = result.split(key).join(`@${pubkey}`);
       });

@@ -23,10 +23,10 @@ describe('ReliableTrigger', () => {
       let a = 0;
       let b = 0;
 
-      model.on('a', (arg) => {
+      model.on('a', arg => {
         a = arg;
       });
-      model.on('b', (arg) => {
+      model.on('b', arg => {
         b = arg;
       });
 

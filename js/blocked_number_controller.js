@@ -28,7 +28,7 @@
 
       // Add the numbers to the collection
       const numbers = storage.getBlockedNumbers();
-      blockedNumbers.reset(numbers.map((number) => ({ number })));
+      blockedNumbers.reset(numbers.map(number => ({ number })));
     },
     block(number) {
       const ourNumber = textsecure.storage.user.getNumber();
@@ -58,8 +58,8 @@
       }
     },
     unblockAll() {
-      const numbers = blockedNumbers.map((m) => m.get('number'));
-      numbers.forEach((n) => this.unblock(n));
+      const numbers = blockedNumbers.map(m => m.get('number'));
+      numbers.forEach(n => this.unblock(n));
     },
     isBlocked(number) {
       return storage.isBlocked(number);

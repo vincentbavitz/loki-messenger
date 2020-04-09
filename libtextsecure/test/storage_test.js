@@ -78,12 +78,12 @@ describe('SignalProtocolStore', () => {
   });
   it('stores sessions', async () => {
     const testRecord = 'an opaque string';
-    const devices = [1, 2, 3].map((deviceId) =>
+    const devices = [1, 2, 3].map(deviceId =>
       [identifier, deviceId].join('.')
     );
 
     await Promise.all(
-      devices.map(async (encodedNumber) => {
+      devices.map(async encodedNumber => {
         await store.storeSession(encodedNumber, testRecord + encodedNumber);
       })
     );
@@ -98,12 +98,12 @@ describe('SignalProtocolStore', () => {
   });
   it('removes all sessions for a number', async () => {
     const testRecord = 'an opaque string';
-    const devices = [1, 2, 3].map((deviceId) =>
+    const devices = [1, 2, 3].map(deviceId =>
       [identifier, deviceId].join('.')
     );
 
     await Promise.all(
-      devices.map(async (encodedNumber) => {
+      devices.map(async encodedNumber => {
         await store.storeSession(encodedNumber, testRecord + encodedNumber);
       })
     );
@@ -120,12 +120,12 @@ describe('SignalProtocolStore', () => {
   });
   it('returns deviceIds for a number', async () => {
     const testRecord = 'an opaque string';
-    const devices = [1, 2, 3].map((deviceId) =>
+    const devices = [1, 2, 3].map(deviceId =>
       [identifier, deviceId].join('.')
     );
 
     await Promise.all(
-      devices.map(async (encodedNumber) => {
+      devices.map(async encodedNumber => {
         await store.storeSession(encodedNumber, testRecord + encodedNumber);
       })
     );

@@ -21,7 +21,7 @@
       });
 
       await Promise.all(
-        messages.map(async (fromDB) => {
+        messages.map(async fromDB => {
           const message = MessageController.register(fromDB.id, fromDB);
 
           window.log.info('Message expired', {
@@ -147,7 +147,7 @@
       [12, 'hours'],
       [1, 'day'],
       [1, 'week'],
-    ].map((o) => {
+    ].map(o => {
       const duration = moment.duration(o[0], o[1]); // 5, 'seconds'
       return {
         time: o[0],

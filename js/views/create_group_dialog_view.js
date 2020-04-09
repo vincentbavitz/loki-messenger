@@ -17,9 +17,9 @@
       const convos = window.getConversations().models;
 
       let allMembers = convos.filter(
-        (d) => !!d && d.isFriend() && d.isPrivate() && !d.isMe()
+        d => !!d && d.isFriend() && d.isPrivate() && !d.isMe()
       );
-      allMembers = _.uniq(allMembers, true, (d) => d.id);
+      allMembers = _.uniq(allMembers, true, d => d.id);
 
       this.membersToShow = allMembers;
 
@@ -136,18 +136,18 @@
       } else {
         this.titleText = i18n('updateGroupDialogTitle');
         this.isAdmin = groupConvo.get('groupAdmins').includes(ourPK);
-        const convos = window.getConversations().models.filter((d) => !!d);
+        const convos = window.getConversations().models.filter(d => !!d);
 
         this.existingMembers = groupConvo.get('members') || [];
         // Show a contact if they are our friend or if they are a member
         this.friendsAndMembers = convos.filter(
-          (d) =>
+          d =>
             this.existingMembers.includes(d.id) && d.isPrivate() && !d.isMe()
         );
         this.friendsAndMembers = _.uniq(
           this.friendsAndMembers,
           true,
-          (d) => d.id
+          d => d.id
         );
 
         // at least make sure it's an array

@@ -8,15 +8,15 @@ describe('SchemaVersion', () => {
     check.it(
       'should return true for positive integers',
       gen.posInt,
-      (input) => {
+      input => {
         assert.isTrue(SchemaVersion.isValid(input));
       }
     );
 
     check.it(
       'should return false for any other value',
-      gen.primitive.suchThat((value) => typeof value !== 'number' || value < 0),
-      (input) => {
+      gen.primitive.suchThat(value => typeof value !== 'number' || value < 0),
+      input => {
         assert.isFalse(SchemaVersion.isValid(input));
       }
     );

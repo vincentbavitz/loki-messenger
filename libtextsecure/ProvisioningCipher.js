@@ -21,19 +21,19 @@
 
       return libsignal.Curve.async
         .calculateAgreement(masterEphemeral, this.keyPair.privKey)
-        .then((ecRes) =>
+        .then(ecRes =>
           libsignal.HKDF.deriveSecrets(
             ecRes,
             new ArrayBuffer(32),
             'TextSecure Provisioning Message'
           )
         )
-        .then((keys) =>
+        .then(keys =>
           libsignal.crypto
             .verifyMAC(ivAndCiphertext, keys[1], mac, 32)
             .then(() => libsignal.crypto.decrypt(keys[0], ciphertext, iv))
         )
-        .then((plaintext) => {
+        .then(plaintext => {
           const provisionMessage = textsecure.protobuf.ProvisionMessage.decode(
             plaintext
           );
@@ -41,7 +41,7 @@
 
           return libsignal.Curve.async
             .createKeyPair(privKey)
-            .then((keyPair) => {
+            .then(keyPair => {
               const ret = {
                 identityKeyPair: keyPair,
                 number: provisionMessage.number,
@@ -60,7 +60,7 @@
       return Promise.resolve()
         .then(() => {
           if (!this.keyPair) {
-            return libsignal.Curve.async.generateKeyPair().then((keyPair) => {
+            return libsignal.Curve.async.generateKeyPair().then(keyPair => {
               this.keyPair = keyPair;
             });
           }

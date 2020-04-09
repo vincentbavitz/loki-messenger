@@ -13,7 +13,7 @@ const endpointBase = '/storage_rpc/v1';
 // Request index for debugging
 let onionReqIdx = 0;
 
-const timeoutDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const timeoutDelay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const encryptForNode = async (node, payload) => {
   const textEncoder = new TextEncoder();

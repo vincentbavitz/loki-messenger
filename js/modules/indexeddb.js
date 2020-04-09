@@ -131,7 +131,7 @@ async function migrateAllToSQLCipher({ writeNewAttachmentData, Views } = {}) {
     clearStores: Whisper.Database.clearStores,
     handleDOMException: Whisper.Database.handleDOMException,
     arrayBufferToString: textsecure.MessageReceiver.arrayBufferToStringBase64,
-    countCallback: (count) => {
+    countCallback: count => {
       window.log.info(`Migration: ${count} messages complete`);
       showMigrationStatus(count);
     },

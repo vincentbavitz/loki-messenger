@@ -6,10 +6,10 @@ describe('Protocol Wrapper', function thisNeeded() {
 
   this.timeout(5000);
 
-  before((done) => {
+  before(done => {
     localStorage.clear();
     libsignal.KeyHelper.generateIdentityKeyPair()
-      .then((key) => textsecure.storage.protocol.saveIdentity(identifier, key))
+      .then(key => textsecure.storage.protocol.saveIdentity(identifier, key))
       .then(() => {
         done();
       });
@@ -27,7 +27,7 @@ describe('Protocol Wrapper', function thisNeeded() {
         .then(() => {
           throw new Error('Allowed to overwrite identity key');
         })
-        .catch((e) => {
+        .catch(e => {
           assert.strictEqual(e.message, 'Identity key changed');
         });
     });

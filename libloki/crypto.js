@@ -302,7 +302,7 @@
     return tokenString;
   }
 
-  const sha512 = (data) => crypto.subtle.digest('SHA-512', data);
+  const sha512 = data => crypto.subtle.digest('SHA-512', data);
 
   const PairingType = Object.freeze({
     REQUEST: 1,

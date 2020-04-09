@@ -5,7 +5,7 @@ describe('createTaskWithTimeout', () => {
     const task = () => Promise.resolve('hi!');
     const taskWithTimeout = textsecure.createTaskWithTimeout(task);
 
-    return taskWithTimeout().then((result) => {
+    return taskWithTimeout().then(result => {
       assert.strictEqual(result, 'hi!');
     });
   });
@@ -14,14 +14,14 @@ describe('createTaskWithTimeout', () => {
     const task = () => Promise.reject(error);
     const taskWithTimeout = textsecure.createTaskWithTimeout(task);
 
-    return taskWithTimeout().catch((flowedError) => {
+    return taskWithTimeout().catch(flowedError => {
       assert.strictEqual(error, flowedError);
     });
   });
   it('rejects if promise takes too long (this one logs error to console)', () => {
     let complete = false;
     const task = () =>
-      new Promise((resolve) => {
+      new Promise(resolve => {
         setTimeout(() => {
           complete = true;
           resolve();
@@ -48,7 +48,7 @@ describe('createTaskWithTimeout', () => {
   it('resolves if task returns a non-promise', () => {
     const task = () => 'hi!';
     const taskWithTimeout = textsecure.createTaskWithTimeout(task);
-    return taskWithTimeout().then((result) => {
+    return taskWithTimeout().then(result => {
       assert.strictEqual(result, 'hi!');
     });
   });
@@ -64,7 +64,7 @@ describe('createTaskWithTimeout', () => {
       () => {
         throw new Error('Overall task should reject!');
       },
-      (flowedError) => {
+      flowedError => {
         assert.strictEqual(flowedError, error);
       }
     );

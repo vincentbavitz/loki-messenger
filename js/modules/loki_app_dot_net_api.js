@@ -32,7 +32,7 @@ const snodeHttpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-const timeoutDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const timeoutDelay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const sendToProxy = async (
   srvPubKey,
@@ -339,11 +339,11 @@ class LokiAppDotNetServerAPI {
     // check token, we're not sure how long we were asleep, token may have expired
     await this.getOrRefreshServerToken();
     // now that we have a working token, start up pollers
-    this.channels.forEach((channel) => channel.open());
+    this.channels.forEach(channel => channel.open());
   }
 
   async close() {
-    this.channels.forEach((channel) => channel.stop());
+    this.channels.forEach(channel => channel.stop());
     // match sure our pending requests are finished
     // in case it's still starting up
     if (this.tokenPromise) {
@@ -354,7 +354,7 @@ class LokiAppDotNetServerAPI {
   // channel getter/factory
   async findOrCreateChannel(chatAPI, channelId, conversationId) {
     let thisChannel = this.channels.find(
-      (channel) => channel.channelId === channelId
+      channel => channel.channelId === channelId
     );
     if (!thisChannel) {
       // make sure we're subscribed
@@ -567,7 +567,7 @@ class LokiAppDotNetServerAPI {
       // FIXME: add timeout
       // a broken/stuck token endpoint can prevent you from removing channels
       // set lock
-      this.tokenPromise = new Promise(async (res) => {
+      this.tokenPromise = new Promise(async res => {
         // request the token
         const token = await this.requestToken();
         if (!token) {
@@ -751,11 +751,11 @@ class LokiAppDotNetServerAPI {
     if (!Array.isArray(pubKeys)) {
       pubKeys = [pubKeys];
     }
-    pubKeys = pubKeys.map((key) => `@${key}`);
+    pubKeys = pubKeys.map(key => `@${key}`);
     const users = await this.getUsers(pubKeys);
-    const validUsers = users.filter((user) => !!user.id);
+    const validUsers = users.filter(user => !!user.id);
     const results = await Promise.all(
-      validUsers.map(async (user) => {
+      validUsers.map(async user => {
         log.info(`POSTing loki/v1/moderators/${user.id}`);
         const res = await this.serverRequest(`loki/v1/moderators/${user.id}`, {
           method: 'POST',
@@ -763,7 +763,7 @@ class LokiAppDotNetServerAPI {
         return !!(!res.err && res.response && res.response.data);
       })
     );
-    const anyFailures = results.some((test) => !test);
+    const anyFailures = results.some(test => !test);
     return anyFailures ? results : true; // return failures or total success
   }
 
@@ -772,19 +772,19 @@ class LokiAppDotNetServerAPI {
     if (!Array.isArray(pubKeys)) {
       pubKeys = [pubKeys];
     }
-    pubKeys = pubKeys.map((key) => `@${key}`);
+    pubKeys = pubKeys.map(key => `@${key}`);
     const users = await this.getUsers(pubKeys);
-    const validUsers = users.filter((user) => !!user.id);
+    const validUsers = users.filter(user => !!user.id);
 
     const results = await Promise.all(
-      validUsers.map(async (user) => {
+      validUsers.map(async user => {
         const res = await this.serverRequest(`loki/v1/moderators/${user.id}`, {
           method: 'DELETE',
         });
         return !!(!res.err && res.response && res.response.data);
       })
     );
-    const anyFailures = results.some((test) => !test);
+    const anyFailures = results.some(test => !test);
     return anyFailures ? results : true; // return failures or total success
   }
 
@@ -1162,7 +1162,7 @@ class LokiPublicChannelAPI {
       notes = [];
     }
     let settingNotes = notes.filter(
-      (note) => note.type === SETTINGS_CHANNEL_ANNOTATION_TYPE
+      note => note.type === SETTINGS_CHANNEL_ANNOTATION_TYPE
     );
     if (!settingNotes) {
       // default name, description, avatar
@@ -1214,16 +1214,16 @@ class LokiPublicChannelAPI {
     );
     if (!res.err) {
       const deletedIds = res.response.data
-        .filter((d) => d.is_deleted)
-        .map((d) => d.id);
+        .filter(d => d.is_deleted)
+        .map(d => d.id);
 
       if (deletedIds.length > 0) {
         log.info(`deleted ${serverIds} on ${this.baseChannelUrl}`);
       }
 
       const failedIds = res.response.data
-        .filter((d) => !d.is_deleted)
-        .map((d) => d.id);
+        .filter(d => !d.is_deleted)
+        .map(d => d.id);
 
       if (failedIds.length > 0) {
         log.warn(`failed to delete ${failedIds} on ${this.baseChannelUrl}`);
@@ -1291,7 +1291,7 @@ class LokiPublicChannelAPI {
     if (data.annotations && data.annotations.length) {
       // get our setting note
       const settingNotes = data.annotations.filter(
-        (note) => note.type === SETTINGS_CHANNEL_ANNOTATION_TYPE
+        note => note.type === SETTINGS_CHANNEL_ANNOTATION_TYPE
       );
       const note = settingNotes && settingNotes.length ? settingNotes[0] : {};
       // setting_note.value.description only needed for directory
@@ -1408,7 +1408,7 @@ class LokiPublicChannelAPI {
       }
 
       // Process results
-      res.response.data.reverse().forEach((deleteEntry) => {
+      res.response.data.reverse().forEach(deleteEntry => {
         // Escalate it up to the subsystem that can check to see if this has
         // been processed
         Whisper.events.trigger('deleteLocalPublicMessage', {
@@ -1442,7 +1442,7 @@ class LokiPublicChannelAPI {
       }
     }
     sigString += [...attachmentAnnotations, ...previewAnnotations]
-      .map((data) => data.id || data.image.id)
+      .map(data => data.id || data.image.id)
       .sort()
       .join();
     sigString += sigVer;
@@ -1469,7 +1469,7 @@ class LokiPublicChannelAPI {
     let profileKey = null;
     let avatar = null;
     const avatarNote = adnMessage.user.annotations.find(
-      (note) => note.type === AVATAR_USER_ANNOTATION_TYPE
+      note => note.type === AVATAR_USER_ANNOTATION_TYPE
     );
     if (avatarNote) {
       ({ profileKey, url: avatar } = avatarNote.value);
@@ -1484,10 +1484,10 @@ class LokiPublicChannelAPI {
     const { sig, sigver } = noteValue;
     const annoCopy = [...adnMessage.annotations];
     const attachments = annoCopy
-      .filter((anno) => anno.value.lokiType === LOKI_ATTACHMENT_TYPE)
-      .map((attachment) => ({ isRaw: true, ...attachment.value }));
+      .filter(anno => anno.value.lokiType === LOKI_ATTACHMENT_TYPE)
+      .map(attachment => ({ isRaw: true, ...attachment.value }));
     const preview = annoCopy
-      .filter((anno) => anno.value.lokiType === LOKI_PREVIEW_TYPE)
+      .filter(anno => anno.value.lokiType === LOKI_PREVIEW_TYPE)
       .map(LokiPublicChannelAPI.getPreviewFromAnnotation);
     // strip out sig and sigver
     annoCopy[0] = _.omit(annoCopy[0], ['value.sig', 'value.sigver']);
@@ -1620,7 +1620,7 @@ class LokiPublicChannelAPI {
     // the signature forces this to be async
     pendingMessages = await Promise.all(
       // process these in chronological order
-      res.response.data.reverse().map(async (adnMessage) => {
+      res.response.data.reverse().map(async adnMessage => {
         // still update our last received if deleted, not signed or not valid
         this.lastGot = !this.lastGot
           ? adnMessage.id
@@ -1656,7 +1656,7 @@ class LokiPublicChannelAPI {
         }
 
         // Duplicate check
-        const isDuplicate = (message) => {
+        const isDuplicate = message => {
           // The username in this case is the users pubKey
           const sameUsername = message.username === pubKey;
           const sameText = message.text === adnMessage.text;
@@ -1697,7 +1697,7 @@ class LokiPublicChannelAPI {
         let homeServer = window.getDefaultFileServer();
         if (adnMessage.user && adnMessage.user.annotations.length) {
           const homeNotes = adnMessage.user.annotations.filter(
-            (note) => note.type === HOMESERVER_USER_ANNOTATION_TYPE
+            note => note.type === HOMESERVER_USER_ANNOTATION_TYPE
           );
           // FIXME: this annotation should probably be signed and verified...
           homeServer = homeNotes.reduce(
@@ -1789,24 +1789,24 @@ class LokiPublicChannelAPI {
     );
 
     // filter out invalid messages
-    pendingMessages = pendingMessages.filter((messageData) => !!messageData);
+    pendingMessages = pendingMessages.filter(messageData => !!messageData);
     // separate messages coming from primary and secondary devices
     let [primaryMessages, slaveMessages] = _.partition(
       pendingMessages,
-      (message) => !(message.source in slavePrimaryMap)
+      message => !(message.source in slavePrimaryMap)
     );
     // get minimum ID for primaryMessages and slaveMessages
-    const firstPrimaryId = _.min(primaryMessages.map((msg) => msg.serverId));
-    const firstSlaveId = _.min(slaveMessages.map((msg) => msg.serverId));
+    const firstPrimaryId = _.min(primaryMessages.map(msg => msg.serverId));
+    const firstSlaveId = _.min(slaveMessages.map(msg => msg.serverId));
     if (firstPrimaryId < firstSlaveId) {
       // early send
       // split off count from pendingMessages
       let sendNow = [];
       [sendNow, pendingMessages] = _.partition(
         pendingMessages,
-        (message) => message.serverId < firstSlaveId
+        message => message.serverId < firstSlaveId
       );
-      sendNow.forEach((message) => {
+      sendNow.forEach(message => {
         // send them out now
         log.info(
           'emitting primary message',
@@ -1836,7 +1836,7 @@ class LokiPublicChannelAPI {
         let avatar = null;
         let profileKey = null;
         const avatarNote = user.annotations.find(
-          (note) => note.type === AVATAR_USER_ANNOTATION_TYPE
+          note => note.type === AVATAR_USER_ANNOTATION_TYPE
         );
         if (avatarNote) {
           ({ profileKey, url: avatar } = avatarNote.value);
@@ -1854,7 +1854,7 @@ class LokiPublicChannelAPI {
 
     // process remaining messages
     /* eslint-disable no-param-reassign */
-    slaveMessages.forEach((messageData) => {
+    slaveMessages.forEach(messageData => {
       const slaveKey = messageData.source;
 
       // prevent our own device sent messages from coming back in
@@ -1883,7 +1883,7 @@ class LokiPublicChannelAPI {
     slaveMessages = false; // free memory
 
     // process all messages in the order received
-    pendingMessages.forEach((message) => {
+    pendingMessages.forEach(message => {
       // if slave device
       if (message.source in slavePrimaryMap) {
         // prevent our own device sent messages from coming back in
@@ -2033,7 +2033,7 @@ class LokiPublicChannelAPI {
       const collection = await Signal.Data.getMessagesBySentAt(quote.id, {
         MessageCollection: Whisper.MessageCollection,
       });
-      const found = collection.find((item) => {
+      const found = collection.find(item => {
         const messageAuthor = item.getContact();
 
         return messageAuthor && quote.author === messageAuthor.id;
@@ -2056,8 +2056,8 @@ class LokiPublicChannelAPI {
     const sigData = LokiPublicChannelAPI.getSigData(
       sigVer,
       payload.annotations[0].value,
-      attachmentAnnotations.map((anno) => anno.value),
-      previewAnnotations.map((anno) => anno.value),
+      attachmentAnnotations.map(anno => anno.value),
+      previewAnnotations.map(anno => anno.value),
       mockAdnMessage
     );
     const sig = await libsignal.Curve.async.calculateSignature(

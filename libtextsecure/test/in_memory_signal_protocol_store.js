@@ -54,7 +54,7 @@ SignalProtocolStore.prototype = {
     if (identifier === null || identifier === undefined) {
       throw new Error('Tried to get identity key for undefined/null key');
     }
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.get(`identityKey${identifier}`));
     });
   },
@@ -62,7 +62,7 @@ SignalProtocolStore.prototype = {
     if (identifier === null || identifier === undefined) {
       throw new Error('Tried to put identity key for undefined/null key');
     }
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const existing = this.get(`identityKey${identifier}`);
       this.put(`identityKey${identifier}`, identityKey);
       if (existing && existing !== identityKey) {
@@ -75,7 +75,7 @@ SignalProtocolStore.prototype = {
 
   /* Returns a prekeypair object or undefined */
   loadPreKey(keyId) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const res = this.get(`25519KeypreKey${keyId}`);
       resolve(res);
     });
@@ -88,29 +88,29 @@ SignalProtocolStore.prototype = {
         privateKey: keyPair.privKey,
         recipient: contactPubKey,
       };
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve(this.put(`25519KeypreKey${contactPubKey}`, data));
       });
     }
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.put(`25519KeypreKey${keyId}`, keyPair));
     });
   },
   removePreKey(keyId) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.remove(`25519KeypreKey${keyId}`));
     });
   },
 
   /* Returns a signed keypair object or undefined */
   loadSignedPreKey(keyId) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const res = this.get(`25519KeysignedKey${keyId}`);
       resolve(res);
     });
   },
   loadSignedPreKeys() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const res = [];
       const keys = Object.keys(this.store);
       for (let i = 0, max = keys.length; i < max; i += 1) {
@@ -123,28 +123,28 @@ SignalProtocolStore.prototype = {
     });
   },
   storeSignedPreKey(keyId, keyPair) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.put(`25519KeysignedKey${keyId}`, keyPair));
     });
   },
   removeSignedPreKey(keyId) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.remove(`25519KeysignedKey${keyId}`));
     });
   },
 
   loadSession(identifier) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.get(`session${identifier}`));
     });
   },
   storeSession(identifier, record) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(this.put(`session${identifier}`, record));
     });
   },
   removeAllSessions(identifier) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const keys = Object.keys(this.store);
       for (let i = 0, max = keys.length; i < max; i += 1) {
         const key = keys[i];
@@ -156,7 +156,7 @@ SignalProtocolStore.prototype = {
     });
   },
   getDeviceIds(identifier) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const deviceIds = [];
       const keys = Object.keys(this.store);
       for (let i = 0, max = keys.length; i < max; i += 1) {
@@ -169,7 +169,7 @@ SignalProtocolStore.prototype = {
     });
   },
   async loadPreKeyForContact(contactPubKey) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const key = this.get(`25519KeypreKey${contactPubKey}`);
       if (!key) {
         resolve(undefined);

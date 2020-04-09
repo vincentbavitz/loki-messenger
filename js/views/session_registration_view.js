@@ -55,7 +55,7 @@
       const oldText = this.el.value;
       const length = Math.max(oldText.length, newText.length);
       // eslint-disable-next-line no-return-assign
-      const promise = new Promise((resolve) => (this.resolve = resolve));
+      const promise = new Promise(resolve => (this.resolve = resolve));
       this.queue = [];
 
       for (let i = 0; i < length; i++) {
@@ -115,7 +115,7 @@
   }
   window.Session = window.Session || {};
 
-  window.Session.setNewSessionID = (sessionID) => {
+  window.Session.setNewSessionID = sessionID => {
     const el = document.querySelector('.session-id-editable-textarea');
     const fx = new TextScramble(el);
     el.value = sessionID;

@@ -14,7 +14,7 @@
 /* eslint-disable no-unreachable */
 const NUM_SEND_CONNECTIONS = 3;
 
-const getTTLForType = (type) => {
+const getTTLForType = type => {
   switch (type) {
     case 'friend-request':
       return 4 * 24 * 60 * 60 * 1000; // 4 days for friend request message
@@ -121,10 +121,10 @@ OutgoingMessage.prototype = {
       libloki.storage
         .getAllDevicePubKeysForPrimaryPubKey(number)
         // Don't send to ourselves
-        .then((devicesPubKeys) =>
-          devicesPubKeys.filter((pubKey) => pubKey !== ourNumber)
+        .then(devicesPubKeys =>
+          devicesPubKeys.filter(pubKey => pubKey !== ourNumber)
         )
-        .then((devicesPubKeys) => {
+        .then(devicesPubKeys => {
           if (devicesPubKeys.length === 0) {
             // eslint-disable-next-line no-param-reassign
             devicesPubKeys = [number];
@@ -134,9 +134,9 @@ OutgoingMessage.prototype = {
   },
 
   getKeysForNumber(number, updateDevices) {
-    const handleResult = (response) =>
+    const handleResult = response =>
       Promise.all(
-        response.devices.map((device) => {
+        response.devices.map(device => {
           // eslint-disable-next-line no-param-reassign
           device.identityKey = response.identityKey;
           if (
@@ -161,7 +161,7 @@ OutgoingMessage.prototype = {
                 await libloki.storage.removeContactPreKeyBundle(number);
                 return true;
               })
-              .catch((error) => {
+              .catch(error => {
                 if (error.message === 'Identity key changed') {
                   // eslint-disable-next-line no-param-reassign
                   error.timestamp = this.timestamp;
@@ -178,13 +178,13 @@ OutgoingMessage.prototype = {
         })
       );
     let promise = Promise.resolve(true);
-    updateDevices.forEach((device) => {
+    updateDevices.forEach(device => {
       promise = promise.then(() =>
         Promise.all([
           textsecure.storage.protocol.loadContactPreKey(number),
           textsecure.storage.protocol.loadContactSignedPreKey(number),
         ])
-          .then((keys) => {
+          .then(keys => {
             const [preKey, signedPreKey] = keys;
             if (preKey === undefined || signedPreKey === undefined) {
               return false;
@@ -195,9 +195,9 @@ OutgoingMessage.prototype = {
               devices: [
                 { deviceId: device, preKey, signedPreKey, registrationId: 0 },
               ],
-            }).then((results) => results.every((value) => value === true));
+            }).then(results => results.every(value => value === true));
           })
-          .catch((e) => {
+          .catch(e => {
             if (e.name === 'HTTPError' && e.code === 404) {
               if (device !== 1) {
                 return this.removeDeviceIdsForNumber(number, [device]);
@@ -305,7 +305,7 @@ OutgoingMessage.prototype = {
           this.successfulNumbers[this.successfulNumbers.length] = number;
           this.numberCompleted();
         })
-        .catch((error) => {
+        .catch(error => {
           throw error;
         });
     }
@@ -313,7 +313,7 @@ OutgoingMessage.prototype = {
     this.numbers = devicesPubKeys;
 
     return Promise.all(
-      devicesPubKeys.map(async (devicePubKey) => {
+      devicesPubKeys.map(async devicePubKey => {
         // Session doesn't use the deviceId scheme, it's always 1.
         // Instead, there are multiple device public keys.
         const deviceId = 1;
@@ -486,9 +486,9 @@ OutgoingMessage.prototype = {
         };
       })
     )
-      .then(async (outgoingObjects) => {
+      .then(async outgoingObjects => {
         // TODO: handle multiple devices/messages per transmit
-        const promises = outgoingObjects.map(async (outgoingObject) => {
+        const promises = outgoingObjects.map(async outgoingObject => {
           if (!outgoingObject) {
             return;
           }
@@ -534,7 +534,7 @@ OutgoingMessage.prototype = {
         }
         this.numberCompleted();
       })
-      .catch((error) => {
+      .catch(error => {
         // TODO(loki): handle http errors properly
         // - retry later if 400
         // - ignore if 409 (conflict) means the hash already exists
@@ -560,7 +560,7 @@ OutgoingMessage.prototype = {
             );
           } else {
             p = Promise.all(
-              error.response.staleDevices.map((deviceId) =>
+              error.response.staleDevices.map(deviceId =>
                 ciphers[deviceId].closeOpenSessionForDevice(
                   new libsignal.SignalProtocolAddress(number, deviceId)
                 )
@@ -602,13 +602,13 @@ OutgoingMessage.prototype = {
   getStaleDeviceIdsForNumber(number) {
     return textsecure.storage.protocol
       .getDeviceIds(number)
-      .then((deviceIds) => {
+      .then(deviceIds => {
         if (deviceIds.length === 0) {
           return [1];
         }
         const updateDevices = [];
         return Promise.all(
-          deviceIds.map((deviceId) => {
+          deviceIds.map(deviceId => {
             const address = new libsignal.SignalProtocolAddress(
               number,
               deviceId
@@ -617,7 +617,7 @@ OutgoingMessage.prototype = {
               textsecure.storage.protocol,
               address
             );
-            return sessionCipher.hasOpenSession().then((hasSession) => {
+            return sessionCipher.hasOpenSession().then(hasSession => {
               if (!hasSession) {
                 updateDevices.push(deviceId);
               }
@@ -646,7 +646,7 @@ OutgoingMessage.prototype = {
     } catch (e) {
       // do nothing
     }
-    return this.reloadDevicesAndSend(number, true)().catch((error) => {
+    return this.reloadDevicesAndSend(number, true)().catch(error => {
       conversation.resetPendingSend();
       if (error.message === 'Identity key changed') {
         // eslint-disable-next-line no-param-reassign

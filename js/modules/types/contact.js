@@ -9,7 +9,7 @@ const DEFAULT_EMAIL_TYPE = SignalService.DataMessage.Contact.Email.Type.HOME;
 const DEFAULT_ADDRESS_TYPE
   = SignalService.DataMessage.Contact.PostalAddress.Type.HOME;
 
-exports.parseAndWriteAvatar = (upgradeAttachment) => async (
+exports.parseAndWriteAvatar = upgradeAttachment => async (
   contact,
   context = {}
 ) => {
@@ -49,7 +49,7 @@ exports.parseAndWriteAvatar = (upgradeAttachment) => async (
 function parseContact(contact, options = {}) {
   const { regionCode } = options;
 
-  const boundParsePhone = (phoneNumber) =>
+  const boundParsePhone = phoneNumber =>
     parsePhoneItem(phoneNumber, { regionCode });
 
   return {

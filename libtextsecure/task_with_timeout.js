@@ -43,12 +43,12 @@
           }
         };
 
-        const success = (result) => {
+        const success = result => {
           clearTimer();
           complete = true;
           return resolve(result);
         };
-        const failure = (error) => {
+        const failure = error => {
           clearTimer();
           complete = true;
           return reject(error);

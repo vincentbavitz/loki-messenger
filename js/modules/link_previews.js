@@ -111,7 +111,7 @@ function findLinks(text, caretLocation) {
 
   const matches = linkify.match(text || '') || [];
   return compact(
-    matches.map((match) => {
+    matches.map(match => {
       if (!haveCaretLocation) {
         return match.text;
       }

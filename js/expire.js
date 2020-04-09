@@ -80,7 +80,7 @@
   window.extension.expiredStatus = () => expiredVersion;
   // actually wait until we know for sure
   window.extension.expiredPromise = () => new Promise(resolveWhenReady);
-  window.extension.expired = (cb) => {
+  window.extension.expired = cb => {
     if (expiredVersion === null) {
       // just give it another second
       log.info(`Delaying expire banner determination for ${nextWaitSeconds}s`);

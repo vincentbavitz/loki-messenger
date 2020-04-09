@@ -43,7 +43,7 @@ function initialize() {
     }
   });
 
-  ipcMain.on(ERASE_SQL_KEY, async (event) => {
+  ipcMain.on(ERASE_SQL_KEY, async event => {
     try {
       removeUserConfig();
       removeEphemeralConfig();

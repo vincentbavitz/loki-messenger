@@ -223,7 +223,7 @@ function initializeMigrations({
     loadQuoteData,
     readAttachmentData,
     run,
-    processNewAttachment: (attachment) =>
+    processNewAttachment: attachment =>
       MessageType.processNewAttachment(attachment, {
         writeNewAttachmentData,
         getAbsoluteAttachmentPath,

@@ -8,11 +8,11 @@ module.exports = {
   sendFriendRequestTextarea: commonPage.textAreaWithPlaceholder(
     'Send your first message'
   ),
-  existingSendMessageText: (textMessage) =>
+  existingSendMessageText: textMessage =>
     `//*[contains(@class, "module-message__text--outgoing")and .//span[contains(@class, "text-selectable")][contains(string(), '${textMessage}')]]`,
-  existingFriendRequestText: (textMessage) =>
+  existingFriendRequestText: textMessage =>
     `//*[contains(@class, "module-message-friend-request__container")and .//span[contains(@class, "text-selectable")][contains(string(), '${textMessage}')]]`,
-  existingReceivedMessageText: (textMessage) =>
+  existingReceivedMessageText: textMessage =>
     `//*[contains(@class, "module-message__text--incoming")and .//span[contains(@class, "text-selectable")][contains(string(), '${textMessage}')]]`,
 
   // conversations
@@ -22,7 +22,7 @@ module.exports = {
     'module-friend-request__buttonContainer--outgoing',
     'Retry Send'
   ),
-  headerTitleMembers: (number) =>
+  headerTitleMembers: number =>
     commonPage.spanWithClassAndText(
       'module-conversation-header__title-text',
       `${number} members`
@@ -39,7 +39,7 @@ module.exports = {
   sessionToastJoinOpenGroupAlreadyExist: commonPage.toastWithText(
     'You are already connected to this public channel'
   ),
-  rowOpenGroupConversationName: (groupName) =>
+  rowOpenGroupConversationName: groupName =>
     commonPage.spanWithClassAndText(
       'module-conversation__user__profile-number',
       groupName
@@ -62,7 +62,7 @@ module.exports = {
   sessionToastGroupCreatedSuccess: commonPage.toastWithText(
     'Group created successfully'
   ),
-  headerTitleGroupName: (groupname) =>
+  headerTitleGroupName: groupname =>
     commonPage.spanWithClassAndText(
       'module-contact-name__profile-name',
       groupname
@@ -110,7 +110,7 @@ module.exports = {
   qrImageDiv: commonPage.divWithClass('qr-image'),
   allowPairingButton: commonPage.divRoleButtonWithText('Allow Linking'),
   okButton: commonPage.divRoleButtonWithText('OK'),
-  devicePairedDescription: (secretWords) =>
+  devicePairedDescription: secretWords =>
     commonPage.divWithClassAndText(
       'session-settings-item__description',
       secretWords

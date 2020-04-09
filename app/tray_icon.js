@@ -18,7 +18,7 @@ function createTrayIcon(getMainWindow, messages) {
 
   tray = new Tray(iconNoNewMessages);
 
-  tray.forceOnTop = (mainWindow) => {
+  tray.forceOnTop = mainWindow => {
     if (mainWindow) {
       // On some versions of GNOME the window may not be on top when restored.
       // This trick should fix it.
@@ -78,7 +78,7 @@ function createTrayIcon(getMainWindow, messages) {
     tray.setContextMenu(trayContextMenu);
   };
 
-  tray.updateIcon = (unreadCount) => {
+  tray.updateIcon = unreadCount => {
     let image;
 
     if (unreadCount > 0) {

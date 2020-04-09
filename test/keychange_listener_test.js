@@ -38,7 +38,7 @@ describe('KeyChangeListener', () => {
       await window.Signal.Data.saveConversation(convo.id);
     });
 
-    it('generates a key change notice in the private conversation with this contact', (done) => {
+    it('generates a key change notice in the private conversation with this contact', done => {
       convo.once('newmessage', async () => {
         await convo.fetchMessages();
         const message = convo.messageCollection.at(0);
@@ -66,7 +66,7 @@ describe('KeyChangeListener', () => {
       await window.Signal.Data.saveConversation(convo.id);
     });
 
-    it('generates a key change notice in the group conversation with this contact', (done) => {
+    it('generates a key change notice in the group conversation with this contact', done => {
       convo.once('newmessage', async () => {
         await convo.fetchMessages();
         const message = convo.messageCollection.at(0);

@@ -43,8 +43,8 @@ function getStringable(thing) {
 // Number formatting utils
 window.textsecure.utils = (() => {
   const self = {};
-  self.unencodeNumber = (number) => number.split('.');
-  self.isNumberSane = (number) =>
+  self.unencodeNumber = number => number.split('.');
+  self.isNumberSane = number =>
     number[0] === '+' && /^[0-9]+$/.test(number.substring(1));
 
   /** ************************
@@ -74,7 +74,7 @@ window.textsecure.utils = (() => {
     throw new Error(`unsure of how to jsonify object of type ${typeof thing}`);
   }
 
-  self.jsonThing = (thing) => JSON.stringify(ensureStringed(thing));
+  self.jsonThing = thing => JSON.stringify(ensureStringed(thing));
 
   return self;
 })();

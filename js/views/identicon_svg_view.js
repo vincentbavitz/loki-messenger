@@ -22,7 +22,7 @@
     },
     getDataUrl() {
       const svgurl = this.getSVGUrl();
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         const img = document.createElement('img');
         img.onload = () => {
           const canvas = loadImage.scale(img, {

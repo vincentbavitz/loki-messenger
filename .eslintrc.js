@@ -66,7 +66,7 @@ module.exports = {
     ],
 
     // Rules for TS Upgrade @ April 2020
-    'arrow-parens': 'off',
+    'arrow-parens': ['error', 'as-needed'],
     strict: ['error', 'function'],
 
     // Prettier overrides:

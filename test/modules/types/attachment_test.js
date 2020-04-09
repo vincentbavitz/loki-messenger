@@ -57,13 +57,13 @@ describe('Attachment', () => {
       assert.deepEqual(actual, expected);
     });
 
-    const hasNoUnicodeOrderOverrides = (value) =>
+    const hasNoUnicodeOrderOverrides = value =>
       !value.includes('\u202D') && !value.includes('\u202E');
 
     check.it(
       'should ignore non-order-override characters',
       gen.string.suchThat(hasNoUnicodeOrderOverrides),
-      (fileName) => {
+      fileName => {
         const input = {
           contentType: 'image/jpeg',
           fileName,
@@ -162,7 +162,7 @@ describe('Attachment', () => {
       };
 
       const expectedAttachmentData = stringToArrayBuffer('Above us only sky');
-      const writeNewAttachmentData = async (attachmentData) => {
+      const writeNewAttachmentData = async attachmentData => {
         assert.deepEqual(attachmentData, expectedAttachmentData);
         return 'abc/abcdefgh123456789';
       };

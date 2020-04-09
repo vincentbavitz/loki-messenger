@@ -24,7 +24,7 @@ describe('ServiceNodes', () => {
     });
 
     it('should throw when provided a non-function selector', () => {
-      [1, 'a', 0xffffffff, { really: 'not a function' }].forEach((x) => {
+      [1, 'a', 0xffffffff, { really: 'not a function' }].forEach(x => {
         assert.throws(
           () => libloki.serviceNodes.consolidateLists([], 1, x),
           'Provided selector is not a function'
@@ -78,7 +78,7 @@ describe('ServiceNodes', () => {
           ],
         ],
         0,
-        (x) => x.id
+        x => x.id
       );
       const expected = [
         { id: 1, val: 'a' },

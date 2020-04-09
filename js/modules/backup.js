@@ -82,7 +82,7 @@ function createOutputStream(writer) {
       // eslint-disable-next-line more/no-then
       wait = wait.then(
         () =>
-          new Promise((resolve) => {
+          new Promise(resolve => {
             if (writer.write(string)) {
               resolve();
               return;
@@ -134,7 +134,7 @@ function writeArray(stream, array) {
 }
 
 function getPlainJS(collection) {
-  return collection.map((model) => model.attributes);
+  return collection.map(model => model.attributes);
 }
 
 async function exportConversationList(fileWriter) {
@@ -267,7 +267,7 @@ async function importFromJsonString(jsonString, targetPath, options) {
   };
 
   await Promise.all(
-    _.map(remainingStoreNames, async (storeName) => {
+    _.map(remainingStoreNames, async storeName => {
       const save = SAVE_FUNCTIONS[storeName];
       if (!_.isFunction(save)) {
         throw new Error(
@@ -311,7 +311,7 @@ function createDirectory(parent, name) {
       return;
     }
 
-    fs.mkdir(targetDir, (error) => {
+    fs.mkdir(targetDir, error => {
       if (error) {
         reject(error);
         return;
@@ -323,7 +323,7 @@ function createDirectory(parent, name) {
 }
 
 function createFileAndWriter(parent, name) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     const sanitized = _sanitizeFileName(name);
     const targetPath = path.join(parent, sanitized);
     const options = {
@@ -348,7 +348,7 @@ function readFileAsText(parent, name) {
 
 // Buffer instances are also Uint8Array instances, but they might be a view
 //   https://nodejs.org/docs/latest/api/buffer.html#buffer_buffers_and_typedarray
-const toArrayBuffer = (nodeBuffer) =>
+const toArrayBuffer = nodeBuffer =>
   nodeBuffer.buffer.slice(
     nodeBuffer.byteOffset,
     nodeBuffer.byteOffset + nodeBuffer.byteLength
@@ -701,12 +701,12 @@ async function exportConversation(conversation, options = {}) {
       const { attachments } = message;
       // eliminate attachment data from the JSON, since it will go to disk
       // Note: this is for legacy messages only, which stored attachment data in the db
-      message.attachments = _.map(attachments, (attachment) =>
+      message.attachments = _.map(attachments, attachment =>
         _.omit(attachment, ['data'])
       );
       // completely drop any attachments in messages cached in error objects
       // TODO: move to lodash. Sadly, a number of the method signatures have changed!
-      message.errors = _.map(message.errors, (error) => {
+      message.errors = _.map(message.errors, error => {
         if (error && error.args) {
           error.args = [];
         }
@@ -853,7 +853,7 @@ function getDirectory(options = {}) {
       buttonLabel: options.buttonLabel,
     };
 
-    dialog.showOpenDialog(browserWindow, dialogOptions, (directory) => {
+    dialog.showOpenDialog(browserWindow, dialogOptions, directory => {
       if (!directory || !directory[0]) {
         const error = new Error('Error choosing directory');
         error.name = 'ChooseError';
@@ -873,7 +873,7 @@ function getDirContents(dir) {
         return;
       }
 
-      files = _.map(files, (file) => path.join(dir, file));
+      files = _.map(files, file => path.join(dir, file));
 
       resolve(files);
     });
@@ -963,7 +963,7 @@ async function saveAllMessages(rawMessages) {
 
   try {
     const { writeMessageAttachments, upgradeMessageSchema } = Signal.Migrations;
-    const importAndUpgrade = async (message) =>
+    const importAndUpgrade = async message =>
       upgradeMessageSchema(await writeMessageAttachments(message));
 
     const messages = await Promise.all(rawMessages.map(importAndUpgrade));
@@ -1023,7 +1023,7 @@ async function importConversation(dir, options) {
   }
   total = json.messages.length;
 
-  const messages = _.filter(json.messages, (message) => {
+  const messages = _.filter(json.messages, message => {
     message = unstringify(message);
 
     if (messageLookup[getMessageKey(message)]) {
@@ -1080,7 +1080,7 @@ async function importConversations(dir, options) {
   const contents = await getDirContents(dir);
   let promiseChain = Promise.resolve();
 
-  _.forEach(contents, (conversationDir) => {
+  _.forEach(contents, conversationDir => {
     if (!fs.statSync(conversationDir).isDirectory()) {
       return;
     }
@@ -1106,7 +1106,7 @@ function getMessageKey(message) {
 }
 async function loadMessagesLookup() {
   const array = await window.Signal.Data.getAllMessageIds();
-  return fromPairs(map(array, (item) => [getMessageKey(item), true]));
+  return fromPairs(map(array, item => [getMessageKey(item), true]));
 }
 
 function getConversationKey(conversation) {
@@ -1114,7 +1114,7 @@ function getConversationKey(conversation) {
 }
 async function loadConversationLookup() {
   const array = await window.Signal.Data.getAllConversationIds();
-  return fromPairs(map(array, (item) => [getConversationKey(item), true]));
+  return fromPairs(map(array, item => [getConversationKey(item), true]));
 }
 
 function getDirectoryForExport() {

@@ -16,7 +16,7 @@ const clear = () => {
   }
 };
 
-const setMessage = (loadingText) => {
+const setMessage = loadingText => {
   const message = document.querySelector(SELECTOR);
   if (!message) {
     return clear;

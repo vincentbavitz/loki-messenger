@@ -19,7 +19,7 @@ describe('Helpers', () => {
     });
     it('throws an error when passed a non string', () => {
       const notStringable = [{}, undefined, null, new ArrayBuffer()];
-      notStringable.forEach((notString) => {
+      notStringable.forEach(notString => {
         assert.throw(() => {
           stringToArrayBuffer(notString);
         }, Error);

@@ -139,7 +139,7 @@
 
       // ConversationCollection
       const conversations = getConversations();
-      this.listenTo(conversations, 'remove', (conversation) => {
+      this.listenTo(conversations, 'remove', conversation => {
         if (this.conversation_stack) {
           this.conversation_stack.close(conversation);
         }
@@ -156,7 +156,7 @@
         .find('.network-status-container')
         .append(this.networkStatusView.render().el);
 
-      extension.expired((expired) => {
+      extension.expired(expired => {
         if (expired) {
           const banner = new Whisper.ExpiredAlertBanner().render();
           banner.$el.prependTo(this.$el);
@@ -180,7 +180,7 @@
       // Here we set up a full redux store with initial state for our LeftPane Root
       const convoCollection = getConversations();
       const conversations = convoCollection.map(
-        (conversation) => conversation.cachedProps
+        conversation => conversation.cachedProps
       );
 
       const initialState = {
@@ -244,15 +244,15 @@
       //   }
       // });
 
-      this.listenTo(convoCollection, 'remove', (conversation) => {
+      this.listenTo(convoCollection, 'remove', conversation => {
         const { id } = conversation || {};
         conversationRemoved(id);
       });
-      this.listenTo(convoCollection, 'add', (conversation) => {
+      this.listenTo(convoCollection, 'add', conversation => {
         const { id, cachedProps } = conversation || {};
         conversationAdded(id, cachedProps);
       });
-      this.listenTo(convoCollection, 'change', (conversation) => {
+      this.listenTo(convoCollection, 'change', conversation => {
         const { id, cachedProps } = conversation || {};
         conversationChanged(id, cachedProps);
       });

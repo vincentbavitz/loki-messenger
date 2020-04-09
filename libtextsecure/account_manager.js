@@ -124,7 +124,7 @@
         generateKeypair = libsignal.KeyHelper.generateIdentityKeyPair;
       }
       return this.queueTask(() =>
-        generateKeypair().then(async (identityKeyPair) =>
+        generateKeypair().then(async identityKeyPair =>
           createAccount(identityKeyPair)
             .then(() => this.saveMnemonic(mnemonic))
             .then(clearSessionsAndPreKeys)
@@ -211,7 +211,7 @@
         return store
           .getIdentityKeyPair()
           .then(
-            (identityKey) =>
+            identityKey =>
               libsignal.KeyHelper.generateSignedPreKey(
                 identityKey,
                 signedKeyId
@@ -224,7 +224,7 @@
               );
             }
           )
-          .then((res) => {
+          .then(res => {
             if (!res) {
               return null;
             }
@@ -253,7 +253,7 @@
               })
               .then(() => cleanSignedPreKeys());
           })
-          .catch((e) => {
+          .catch(e => {
             window.log.error(
               'rotateSignedPrekey error:',
               e && e.stack ? e.stack : e
@@ -287,11 +287,11 @@
     cleanSignedPreKeys() {
       const MINIMUM_KEYS = 3;
       const store = textsecure.storage.protocol;
-      return store.loadSignedPreKeys().then((allKeys) => {
+      return store.loadSignedPreKeys().then(allKeys => {
         allKeys.sort((a, b) => (a.created_at || 0) - (b.created_at || 0));
         allKeys.reverse(); // we want the most recent first
-        let confirmed = allKeys.filter((key) => key.confirmed);
-        const unconfirmed = allKeys.filter((key) => !key.confirmed);
+        let confirmed = allKeys.filter(key => key.confirmed);
+        const unconfirmed = allKeys.filter(key => !key.confirmed);
 
         const recent = allKeys[0] ? allKeys[0].keyId : 'none';
         const recentConfirmed = confirmed[0] ? confirmed[0].keyId : 'none';
@@ -451,13 +451,13 @@
       }
 
       const store = textsecure.storage.protocol;
-      return store.getIdentityKeyPair().then((identityKey) => {
+      return store.getIdentityKeyPair().then(identityKey => {
         const result = { preKeys: [], identityKey: identityKey.pubKey };
         const promises = [];
 
         for (let keyId = startId; keyId < startId + count; keyId += 1) {
           promises.push(
-            libsignal.KeyHelper.generatePreKey(keyId).then((res) => {
+            libsignal.KeyHelper.generatePreKey(keyId).then(res => {
               store.storePreKey(res.keyId, res.keyPair);
               result.preKeys.push({
                 keyId: res.keyId,
@@ -474,7 +474,7 @@
           libsignal.KeyHelper.generateSignedPreKey(
             identityKey,
             signedKeyId
-          ).then((res) => {
+          ).then(res => {
             store.storeSignedPreKey(
               res.keyId,
               res.keyPair,

@@ -27,7 +27,7 @@
       this.$('textarea').val(i18n('loading'));
 
       // eslint-disable-next-line more/no-then
-      window.log.fetch().then((text) => {
+      window.log.fetch().then(text => {
         this.$('textarea').val(text);
       });
     },

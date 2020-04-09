@@ -58,7 +58,7 @@
 
   function callListeners() {
     if (ready) {
-      callbacks.forEach((callback) => callback());
+      callbacks.forEach(callback => callback());
       callbacks = [];
     }
   }
@@ -98,7 +98,7 @@
   window.textsecure = window.textsecure || {};
   window.textsecure.storage = window.textsecure.storage || {};
 
-  window.installStorage = (newStorage) => {
+  window.installStorage = newStorage => {
     window.storage = newStorage;
     window.textsecure.storage.impl = newStorage;
   };

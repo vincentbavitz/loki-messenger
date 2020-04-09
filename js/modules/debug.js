@@ -57,7 +57,7 @@ exports.createConversation = async ({
   );
 
   await Promise.all(
-    range(0, numMessages).map(async (index) => {
+    range(0, numMessages).map(async index => {
       await sleep(index * 100);
       log.info(`Create message ${index + 1}`);
       const message = await createRandomMessage({ conversationId });
@@ -151,11 +151,11 @@ const createRandomInMemoryAttachment = async () => {
   };
 };
 
-const createFileEntry = (fileName) => ({
+const createFileEntry = fileName => ({
   fileName,
   contentType: fileNameToContentType(fileName),
 });
-const fileNameToContentType = (fileName) => {
+const fileNameToContentType = fileName => {
   const fileExtension = path.extname(fileName).toLowerCase();
   switch (fileExtension) {
     case '.gif':

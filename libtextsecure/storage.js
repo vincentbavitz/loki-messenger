@@ -37,6 +37,6 @@
     textsecure.storage.impl.put(key, value);
   window.textsecure.storage.get = (key, defaultValue) =>
     textsecure.storage.impl.get(key, defaultValue);
-  window.textsecure.storage.remove = (key) =>
+  window.textsecure.storage.remove = key =>
     textsecure.storage.impl.remove(key);
 })();

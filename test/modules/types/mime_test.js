@@ -19,7 +19,7 @@ describe('MIME', () => {
       false,
       null,
       undefined,
-    ].forEach((value) => {
+    ].forEach(value => {
       it(`should return false for \`${value}\``, () => {
         assert.isFalse(MIME.isJPEG(value));
       });

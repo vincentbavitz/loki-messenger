@@ -4,7 +4,7 @@
 (function () {
   window.libloki = window.libloki || {};
 
-  function consolidateLists(lists, threshold, selector = (x) => x) {
+  function consolidateLists(lists, threshold, selector = x => x) {
     if (typeof threshold !== 'number') {
       throw Error('Provided threshold is not a number');
     }
@@ -17,9 +17,9 @@
     let numLists = 0;
     const occurences = {};
     const values = {};
-    lists.forEach((list) => {
+    lists.forEach(list => {
       numLists += 1;
-      list.forEach((item) => {
+      list.forEach(item => {
         const key = selector(item);
         if (!(key in occurences)) {
           occurences[key] = 1;
@@ -32,8 +32,8 @@
 
     const scaledThreshold = numLists * threshold;
     return Object.keys(occurences)
-      .filter((key) => occurences[key] >= scaledThreshold)
-      .map((key) => values[key]);
+      .filter(key => occurences[key] >= scaledThreshold)
+      .map(key => values[key]);
   }
 
   window.libloki.serviceNodes = {

@@ -84,7 +84,7 @@ class LokiFileServerInstance {
   async getUserDeviceMapping(pubKey) {
     const annotations = await this._server.getUserAnnotations(pubKey);
     const deviceMapping = annotations.find(
-      (annotation) => annotation.type === DEVICE_MAPPING_USER_ANNOTATION_TYPE
+      annotation => annotation.type === DEVICE_MAPPING_USER_ANNOTATION_TYPE
     );
     return deviceMapping ? deviceMapping.value : null;
   }
@@ -95,7 +95,7 @@ class LokiFileServerInstance {
     // go through each user and find deviceMap annotations
     const notFoundUsers = [];
     await Promise.all(
-      users.map(async (user) => {
+      users.map(async user => {
         let found = false;
         if (!user.annotations || !user.annotations.length) {
           log.info(
@@ -104,17 +104,17 @@ class LokiFileServerInstance {
           return;
         }
         const mappingNote = user.annotations.find(
-          (note) => note.type === DEVICE_MAPPING_USER_ANNOTATION_TYPE
+          note => note.type === DEVICE_MAPPING_USER_ANNOTATION_TYPE
         );
         const { authorisations } = mappingNote.value;
         if (!Array.isArray(authorisations)) {
           return;
         }
         const validAuthorisations = authorisations.filter(
-          (a) => a && typeof auth === 'object'
+          a => a && typeof auth === 'object'
         );
         await Promise.all(
-          validAuthorisations.map(async (auth) => {
+          validAuthorisations.map(async auth => {
             // only skip, if in secondary search mode
             if (isRequest && auth.secondaryDevicePubKey !== user.username) {
               // this is not the authorization we're looking for
@@ -197,7 +197,7 @@ class LokiFileServerInstance {
     const notFoundUsers = await this.verifyUserObjectDeviceMap(
       primaryPubKeys,
       false,
-      (primaryKey) => {
+      primaryKey => {
         // add to verified list if we don't already have it
         if (verifiedPrimaryPKs.indexOf(`@${primaryKey}`) === -1) {
           verifiedPrimaryPKs.push(`@${primaryKey}`);
@@ -226,8 +226,8 @@ class LokiFileServerInstance {
     ); // end verifyUserObjectDeviceMap
 
     // remove from newSlavePrimaryMap if no valid mapping is found
-    notFoundUsers.forEach((primaryPubKey) => {
-      Object.keys(newSlavePrimaryMap).forEach((slaveKey) => {
+    notFoundUsers.forEach(primaryPubKey => {
+      Object.keys(newSlavePrimaryMap).forEach(slaveKey => {
         if (newSlavePrimaryMap[slaveKey] === primaryPubKey) {
           log.warn(
             `removing unverifible ${slaveKey} to ${primaryPubKey} mapping`
@@ -307,7 +307,7 @@ class LokiFileServerFactoryAPI {
 
   establishHomeConnection(serverUrl) {
     let thisServer = this.servers.find(
-      (server) => server._server.baseServerUrl === serverUrl
+      server => server._server.baseServerUrl === serverUrl
     );
     if (!thisServer) {
       thisServer = new LokiHomeServerInstance(this.ourKey);
@@ -321,7 +321,7 @@ class LokiFileServerFactoryAPI {
 
   async establishConnection(serverUrl) {
     let thisServer = this.servers.find(
-      (server) => server._server.baseServerUrl === serverUrl
+      server => server._server.baseServerUrl === serverUrl
     );
     if (!thisServer) {
       thisServer = new LokiFileServerInstance(this.ourKey);

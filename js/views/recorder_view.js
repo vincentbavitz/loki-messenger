@@ -92,7 +92,7 @@
       this.recorder.onError = this.onError.bind(this);
       navigator.webkitGetUserMedia(
         { audio: true },
-        (stream) => {
+        stream => {
           this.source = this.context.createMediaStreamSource(stream);
           this.source.connect(this.input);
         },

@@ -91,15 +91,15 @@
   window.WebSocketResource = function WebSocketResource(socket, opts = {}) {
     let { handleRequest } = opts;
     if (typeof handleRequest !== 'function') {
-      handleRequest = (request) => request.respond(404, 'Not found');
+      handleRequest = request => request.respond(404, 'Not found');
     }
-    this.sendRequest = (options) =>
+    this.sendRequest = options =>
       new OutgoingWebSocketRequest(options, socket);
 
     // eslint-disable-next-line no-param-reassign
-    socket.onmessage = (socketMessage) => {
+    socket.onmessage = socketMessage => {
       const blob = socketMessage.data;
-      const handleArrayBuffer = (buffer) => {
+      const handleArrayBuffer = buffer => {
         const message = textsecure.protobuf.WebSocketMessage.decode(buffer);
         if (
           message.type === textsecure.protobuf.WebSocketMessage.Type.REQUEST

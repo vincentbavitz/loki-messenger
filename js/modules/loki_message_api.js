@@ -9,19 +9,19 @@ const DEFAULT_CONNECTIONS = 3;
 const MAX_ACCEPTABLE_FAILURES = 1;
 
 function sleepFor(time) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => resolve(), time);
   });
 }
 
-const filterIncomingMessages = async (messages) => {
-  const incomingHashes = messages.map((m) => m.hash);
+const filterIncomingMessages = async messages => {
+  const incomingHashes = messages.map(m => m.hash);
   const dupHashes = await window.Signal.Data.getSeenMessagesByHashList(
     incomingHashes
   );
-  const newMessages = messages.filter((m) => !dupHashes.includes(m.hash));
+  const newMessages = messages.filter(m => !dupHashes.includes(m.hash));
   if (newMessages.length) {
-    const newHashes = newMessages.map((m) => ({
+    const newHashes = newMessages.map(m => ({
       expiresAt: m.expiration,
       hash: m.hash,
     }));
@@ -116,12 +116,12 @@ class LokiMessageAPI {
     // Taken from https://stackoverflow.com/questions/51160260/clean-way-to-wait-for-first-true-returned-by-promise
     // The promise returned by this function will resolve true when the first promise
     // in ps resolves true *or* it will resolve false when all of ps resolve false
-    const firstTrue = (ps) => {
+    const firstTrue = ps => {
       const newPs = ps.map(
-        (p) =>
+        p =>
           new Promise(
             // eslint-disable-next-line more/no-then
-            (resolve, reject) => p.then((v) => v && resolve(true), reject)
+            (resolve, reject) => p.then(v => v && resolve(true), reject)
           )
       );
       // eslint-disable-next-line more/no-then
@@ -278,7 +278,7 @@ class LokiMessageAPI {
     // want to cancel these polling connections because new ones will be created
 
     // eslint-disable-next-line more/no-then
-    stopPollingPromise.then((result) => {
+    stopPollingPromise.then(result => {
       stopPollingResult = result;
     });
 
@@ -431,7 +431,7 @@ class LokiMessageAPI {
       'for',
       this.ourKey
     );
-    Object.keys(nodes).forEach((j) => {
+    Object.keys(nodes).forEach(j => {
       const node = nodes[j];
       log.info(`loki_message: ${j} ${node.ip}:${node.port}`);
     });

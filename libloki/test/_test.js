@@ -15,7 +15,7 @@ const SauceReporter = function Constructor(runner) {
   });
 
   runner.on('fail', (test, err) => {
-    const flattenTitles = (item) => {
+    const flattenTitles = item => {
       const titles = [];
       while (item.parent.title) {
         titles.push(item.parent.title);

@@ -8,7 +8,7 @@ describe('SignalProtocolStore', () => {
   let identityKey;
   let testKey;
 
-  before((done) => {
+  before(done => {
     store = textsecure.storage.protocol;
     store.hydrateCaches();
     identityKey = {
@@ -936,12 +936,12 @@ describe('SignalProtocolStore', () => {
   describe('removeAllSessions', () => {
     it('removes all sessions for a number', async () => {
       const testRecord = 'an opaque string';
-      const devices = [1, 2, 3].map((deviceId) => {
+      const devices = [1, 2, 3].map(deviceId => {
         return [number, deviceId].join('.');
       });
 
       await Promise.all(
-        devices.map(async (encodedNumber) => {
+        devices.map(async encodedNumber => {
           await store.storeSession(encodedNumber, testRecord + encodedNumber);
         })
       );
@@ -970,12 +970,12 @@ describe('SignalProtocolStore', () => {
   describe('getDeviceIds', () => {
     it('returns deviceIds for a number', async () => {
       const testRecord = 'an opaque string';
-      const devices = [1, 2, 3, 10].map((deviceId) => {
+      const devices = [1, 2, 3, 10].map(deviceId => {
         return [number, deviceId].join('.');
       });
 
       await Promise.all(
-        devices.map(async (encodedNumber) => {
+        devices.map(async encodedNumber => {
           await store.storeSession(encodedNumber, testRecord + encodedNumber);
         })
       );

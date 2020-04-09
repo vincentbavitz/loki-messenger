@@ -29,7 +29,7 @@ describe('MessageReceiver', () => {
       request: { verb: 'PUT', path: '/messages' },
     });
 
-    before((done) => {
+    before(done => {
       const signal = new textsecure.protobuf.Envelope(attrs).toArrayBuffer();
 
       const aesKey = signalingKey.slice(0, 32);
@@ -37,11 +37,11 @@ describe('MessageReceiver', () => {
 
       window.crypto.subtle
         .importKey('raw', aesKey, { name: 'AES-CBC' }, false, ['encrypt'])
-        .then((key) => {
+        .then(key => {
           const iv = libsignal.crypto.getRandomBytes(16);
           window.crypto.subtle
             .encrypt({ name: 'AES-CBC', iv: new Uint8Array(iv) }, key, signal)
-            .then((ciphertext) => {
+            .then(ciphertext => {
               window.crypto.subtle
                 .importKey(
                   'raw',
@@ -50,10 +50,10 @@ describe('MessageReceiver', () => {
                   false,
                   ['sign']
                 )
-                .then((innerKey) => {
+                .then(innerKey => {
                   window.crypto.subtle
                     .sign({ name: 'HMAC', hash: 'SHA-256' }, innerKey, signal)
-                    .then((mac) => {
+                    .then(mac => {
                       const version = new Uint8Array([1]);
                       const message = dcodeIO.ByteBuffer.concat([
                         version,
@@ -69,18 +69,18 @@ describe('MessageReceiver', () => {
         });
     });
 
-    it('connects', (done) => {
+    it('connects', done => {
       const mockServer = new MockServer(
         `ws://localhost:8080/v1/websocket/?login=${encodeURIComponent(
           number
         )}.1&password=password`
       );
 
-      mockServer.on('connection', (server) => {
+      mockServer.on('connection', server => {
         server.send(new Blob([websocketmessage.toArrayBuffer()]));
       });
 
-      window.addEventListener('textsecure:message', (ev) => {
+      window.addEventListener('textsecure:message', ev => {
         const signal = ev.proto;
         const keys = Object.keys(attrs);
 

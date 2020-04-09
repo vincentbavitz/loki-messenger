@@ -35,7 +35,7 @@ http
       .normalize(parsedUrl.pathname)
       .replace(/^(\.\.[/\\])+/, '');
     let pathname = path.join(__dirname, sanitizePath);
-    fs.exists(pathname, (exist) => {
+    fs.exists(pathname, exist => {
       if (!exist) {
         // if the file is not found, return 404
         res.statusCode = 404;

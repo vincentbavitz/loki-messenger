@@ -102,7 +102,7 @@
 
     arrayBufferToHex(aArrayBuffer) {
       return Array.prototype.map
-        .call(new Uint8Array(aArrayBuffer), (x) =>
+        .call(new Uint8Array(aArrayBuffer), x =>
           `00${x.toString(16)}`.slice(-2)
         )
         .join('');
@@ -110,7 +110,7 @@
 
     hexToArrayBuffer(aString) {
       return new Uint8Array(
-        aString.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16))
+        aString.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))
       ).buffer;
     },
   };

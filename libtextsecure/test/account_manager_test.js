@@ -100,7 +100,7 @@ describe('AccountManager', () => {
       ];
 
       let count = 0;
-      window.textsecure.storage.protocol.removeSignedPreKey = (keyId) => {
+      window.textsecure.storage.protocol.removeSignedPreKey = keyId => {
         if (keyId !== 1 && keyId !== 4) {
           throw new Error(`Wrong keys were eliminated! ${keyId}`);
         }
@@ -134,7 +134,7 @@ describe('AccountManager', () => {
       ];
 
       let count = 0;
-      window.textsecure.storage.protocol.removeSignedPreKey = (keyId) => {
+      window.textsecure.storage.protocol.removeSignedPreKey = keyId => {
         if (keyId !== 2) {
           throw new Error(`Wrong keys were eliminated! ${keyId}`);
         }
@@ -170,7 +170,7 @@ describe('AccountManager', () => {
       ];
 
       let count = 0;
-      window.textsecure.storage.protocol.removeSignedPreKey = (keyId) => {
+      window.textsecure.storage.protocol.removeSignedPreKey = keyId => {
         if (keyId !== 3) {
           throw new Error(`Wrong keys were eliminated! ${keyId}`);
         }

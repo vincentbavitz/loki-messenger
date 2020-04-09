@@ -35,7 +35,7 @@
         );
 
         const found = messages.find(
-          (item) =>
+          item =>
             item.isIncoming() && item.get('source') === receipt.get('sender')
         );
         const notificationForMessage = found

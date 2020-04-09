@@ -26,7 +26,7 @@
         ids = conversation.get('members');
       }
       const receipts = this.filter(
-        (receipt) =>
+        receipt =>
           receipt.get('timestamp') === message.get('sent_at')
           && _.contains(ids, receipt.get('reader'))
       );
@@ -41,7 +41,7 @@
         return null;
       }
       const message = messages.find(
-        (item) => item.isOutgoing() && reader === item.get('conversationId')
+        item => item.isOutgoing() && reader === item.get('conversationId')
       );
       if (message) {
         return message;
@@ -54,7 +54,7 @@
       ids.push(reader);
 
       const target = messages.find(
-        (item) =>
+        item =>
           item.isOutgoing() && _.contains(ids, item.get('conversationId'))
       );
       if (!target) {

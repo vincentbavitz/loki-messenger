@@ -46,12 +46,12 @@
     server = _server;
     let { handleRequest } = opts;
     if (typeof handleRequest !== 'function') {
-      handleRequest = (request) => request.respond(404, 'Not found');
+      handleRequest = request => request.respond(404, 'Not found');
     }
     let connected = true;
     this.calledStop = false;
     let resolveStopPolling;
-    const stopPolling = new Promise((res) => {
+    const stopPolling = new Promise(res => {
       resolveStopPolling = res;
     });
 
@@ -92,9 +92,9 @@
         await server.startLongPolling(
           NUM_CONCURRENT_CONNECTIONS,
           stopPolling,
-          (messages) => {
+          messages => {
             connected = true;
-            messages.forEach((message) => {
+            messages.forEach(message => {
               this.handleMessage(message.data);
             });
           }

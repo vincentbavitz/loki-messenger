@@ -38,7 +38,7 @@
         window.log.info('SyncRequest now sending group sync messsage...');
         return wrap(sender.sendRequestGroupSyncMessage(sendOptions));
       })
-      .catch((error) => {
+      .catch(error => {
         window.log.error(
           'SyncRequest error:',
           error && error.stack ? error.stack : error

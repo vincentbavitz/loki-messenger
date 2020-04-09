@@ -92,7 +92,7 @@
 
       // The number of notifications excluding friend request
       const messagesNotificationCount = this.models.filter(
-        (n) => !n.get('isFriendRequest')
+        n => !n.get('isFriendRequest')
       ).length;
 
       // NOTE: i18n has more complex rules for pluralization than just

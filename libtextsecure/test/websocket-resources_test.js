@@ -2,7 +2,7 @@
 
 describe('WebSocket-Resource', () => {
   describe('requests and responses', () => {
-    it('receives requests and sends responses', (done) => {
+    it('receives requests and sends responses', done => {
       // mock socket
       const requestId = '1';
       const socket = {
@@ -51,7 +51,7 @@ describe('WebSocket-Resource', () => {
       });
     });
 
-    it('sends requests and receives responses', (done) => {
+    it('sends requests and receives responses', done => {
       // mock socket and request handler
       let requestId;
       const socket = {
@@ -107,9 +107,9 @@ describe('WebSocket-Resource', () => {
     after(() => {
       window.WebSocket = WebSocket;
     });
-    it('closes the connection', (done) => {
+    it('closes the connection', done => {
       const mockServer = new MockServer('ws://localhost:8081');
-      mockServer.on('connection', (server) => {
+      mockServer.on('connection', server => {
         server.on('close', done);
       });
       const resource = new WebSocketResource(
@@ -127,10 +127,10 @@ describe('WebSocket-Resource', () => {
       window.WebSocket = WebSocket;
     });
     this.timeout(60000);
-    it('sends keepalives once a minute', (done) => {
+    it('sends keepalives once a minute', done => {
       const mockServer = new MockServer('ws://localhost:8081');
-      mockServer.on('connection', (server) => {
-        server.on('message', (data) => {
+      mockServer.on('connection', server => {
+        server.on('message', data => {
           const message = textsecure.protobuf.WebSocketMessage.decode(data);
           assert.strictEqual(
             message.type,
@@ -150,10 +150,10 @@ describe('WebSocket-Resource', () => {
       );
     });
 
-    it('uses / as a default path', (done) => {
+    it('uses / as a default path', done => {
       const mockServer = new MockServer('ws://localhost:8081');
-      mockServer.on('connection', (server) => {
-        server.on('message', (data) => {
+      mockServer.on('connection', server => {
+        server.on('message', data => {
           const message = textsecure.protobuf.WebSocketMessage.decode(data);
           assert.strictEqual(
             message.type,
@@ -177,7 +177,7 @@ describe('WebSocket-Resource', () => {
       this.timeout(65000);
       const mockServer = new MockServer('ws://localhost:8081');
       const socket = new WebSocket('ws://localhost:8081');
-      mockServer.on('connection', (server) => {
+      mockServer.on('connection', server => {
         server.on('close', done);
       });
       this.resource = new WebSocketResource(socket, { keepalive: true });
@@ -188,8 +188,8 @@ describe('WebSocket-Resource', () => {
       const mockServer = new MockServer('ws://localhost:8081');
       const socket = new WebSocket('ws://localhost:8081');
       const startTime = Date.now();
-      mockServer.on('connection', (server) => {
-        server.on('message', (data) => {
+      mockServer.on('connection', server => {
+        server.on('message', data => {
           const message = textsecure.protobuf.WebSocketMessage.decode(data);
           assert.strictEqual(
             message.type,

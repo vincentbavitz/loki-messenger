@@ -31,7 +31,7 @@ describe('Blocked Number Controller', () => {
       storage.addBlockedNumber('2');
       BlockedNumberController.refresh();
 
-      const blocked = window.getBlockedNumbers().map((m) => m.get('number'));
+      const blocked = window.getBlockedNumbers().map(m => m.get('number'));
       assert.lengthOf(blocked, 2);
       assert.deepEqual(['1', '2'], blocked.sort());
     });
@@ -43,14 +43,14 @@ describe('Blocked Number Controller', () => {
       storage.addBlockedNumber('1');
       BlockedNumberController.refresh();
       assert.isNotEmpty(
-        window.getBlockedNumbers().find((m) => m.get('number') === '1')
+        window.getBlockedNumbers().find(m => m.get('number') === '1')
       );
 
       storage.removeBlockedNumber('1');
       storage.addBlockedNumber('2');
       BlockedNumberController.refresh();
       assert.isNotEmpty(
-        window.getBlockedNumbers().find((m) => m.get('number') === '2')
+        window.getBlockedNumbers().find(m => m.get('number') === '2')
       );
     });
 
@@ -113,7 +113,7 @@ describe('Blocked Number Controller', () => {
 
       const numbers = window.getBlockedNumbers().models;
       assert.lengthOf(numbers, 1);
-      assert.isEmpty(numbers.filter((n) => n.get('number') === '1'));
+      assert.isEmpty(numbers.filter(n => n.get('number') === '1'));
       assert.deepEqual(['2'], storage.getBlockedNumbers());
     });
 

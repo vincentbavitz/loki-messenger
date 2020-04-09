@@ -8,26 +8,26 @@ const userDataPath = app.getPath('userData');
 const PATH = path.join(userDataPath, 'profileImages');
 mkdirp.sync(PATH);
 
-const hasImage = (pubKey) => fs.existsSync(getImagePath(pubKey));
+const hasImage = pubKey => fs.existsSync(getImagePath(pubKey));
 
-const getImagePath = (pubKey) => `${PATH}/${pubKey}.png`;
+const getImagePath = pubKey => `${PATH}/${pubKey}.png`;
 
-const removeImage = (pubKey) => {
+const removeImage = pubKey => {
   if (hasImage(pubKey)) {
     fs.unlinkSync(getImagePath(pubKey));
   }
 };
 
-const removeImagesNotInArray = (pubKeyArray) => {
+const removeImagesNotInArray = pubKeyArray => {
   fs.readdirSync(PATH)
     // Get all files that end with png
-    .filter((file) => file.includes('.png'))
+    .filter(file => file.includes('.png'))
     // Strip the extension
-    .map((i) => path.basename(i, '.png'))
+    .map(i => path.basename(i, '.png'))
     // Get any file that is not in the pubKeyArray
-    .filter((i) => !pubKeyArray.includes(i))
+    .filter(i => !pubKeyArray.includes(i))
     // Remove them
-    .forEach((i) => removeImage(i));
+    .forEach(i => removeImage(i));
 };
 
 const writePNGImage = (base64String, pubKey) => {

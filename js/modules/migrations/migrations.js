@@ -86,7 +86,7 @@ const migrations = [
       const identityKeys = transaction.objectStore('identityKeys');
       const request = identityKeys.openCursor();
       const promises = [];
-      request.onsuccess = (event) => {
+      request.onsuccess = event => {
         const cursor = event.target.result;
         if (cursor) {
           const attributes = cursor.value;
@@ -98,7 +98,7 @@ const migrations = [
             new Promise((resolve, reject) => {
               const putRequest = identityKeys.put(attributes, attributes.id);
               putRequest.onsuccess = resolve;
-              putRequest.onerror = (error) => {
+              putRequest.onerror = error => {
                 window.log.error(error && error.stack ? error.stack : error);
                 reject(error);
               };
@@ -113,7 +113,7 @@ const migrations = [
           });
         }
       };
-      request.onerror = (event) => {
+      request.onerror = event => {
         window.log.error(event);
       };
     },

@@ -62,7 +62,7 @@ describe('NetworkStatusView', () => {
           WebSocket.OPEN,
           WebSocket.CLOSING,
           WebSocket.CLOSED,
-        ]).forEach((socketStatusVal) => {
+        ]).forEach(socketStatusVal => {
           socketStatus = socketStatusVal;
           networkStatusView.update();
           assert.match(networkStatusView.$el.text(), /Offline/);
@@ -88,7 +88,7 @@ describe('NetworkStatusView', () => {
           WebSocket.OPEN,
           WebSocket.CLOSING,
           WebSocket.CLOSED,
-        ]).forEach((socketStatusVal) => {
+        ]).forEach(socketStatusVal => {
           socketStatus = socketStatusVal;
           networkStatusView.update();
           assert.match(networkStatusView.$el.text(), /Relink/);
@@ -146,7 +146,7 @@ describe('NetworkStatusView', () => {
       });
     });
     describe('network status when socket is closed or closing', () => {
-      _([WebSocket.CLOSED, WebSocket.CLOSING]).forEach((socketStatusVal) => {
+      _([WebSocket.CLOSED, WebSocket.CLOSING]).forEach(socketStatusVal => {
         it('should be interrupted', () => {
           socketStatus = socketStatusVal;
           networkStatusView.update();

@@ -33,8 +33,8 @@ async function run(messageLength, numWorkers = 1, difficulty = 100, ttl = 72) {
       increment,
       index,
     ]);
-    const p = new Promise((resolve) => {
-      worker.onmessage = (nonce) => {
+    const p = new Promise(resolve => {
+      worker.onmessage = nonce => {
         resolve(nonce);
       };
     });
@@ -45,7 +45,7 @@ async function run(messageLength, numWorkers = 1, difficulty = 100, ttl = 72) {
   const duration = (t1 - t0) / 1000;
   addPoint(duration);
   // clean up
-  workers.forEach((worker) => worker.terminate());
+  workers.forEach(worker => worker.terminate());
 }
 
 async function runPoW({
@@ -201,7 +201,7 @@ async function start(index) {
   plotlyDiv = `plotly${index}`;
   currentTrace = 0;
   window.chart = Plotly.newPlot(plotlyDiv, data, layout, options);
-  workers.forEach((worker) => worker.terminate());
+  workers.forEach(worker => worker.terminate());
 
   switch (index) {
     case 0:

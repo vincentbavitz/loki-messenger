@@ -1,6 +1,6 @@
 /* global $, i18n */
 
-$(document).on('keyup', (e) => {
+$(document).on('keyup', e => {
   'use strict';
 
   if (e.keyCode === 27) {
