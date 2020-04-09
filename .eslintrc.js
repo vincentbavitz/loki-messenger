@@ -3,9 +3,18 @@
 module.exports = {
   settings: {
     'import/core-modules': ['electron'],
+    'parserOptions': {
+      'ecmaFeatures': {
+        'jsx': true
+      }
+    },
+    'react': {
+      'pragma': 'React',
+      'version': 'detect',
+    },
   },
 
-  extends: ['airbnb-base', 'prettier:/recommended', 'plugin:react/recommended'],
+  extends: ['airbnb-base', 'prettier', 'plugin:react/recommended'],
 
   plugins: ['mocha', 'more'],
 
@@ -53,11 +62,10 @@ module.exports = {
     ],
 
     // Rules for TS Upgrade @ April 2020
-    'arrow-parens': 'as-needed',
-
+    'arrow-parens': 'off',
+    'strict': ['error', 'function'],
 
     // Prettier overrides:
-    'arrow-parens': 'off',
     'function-paren-newline': 'off',
     'max-len': [
       'error',
