@@ -2,10 +2,10 @@
 /* global window, textsecure, ConversationController, _, log, clearTimeout, process, Buffer, StringView, dcodeIO */
 
 const is = require('@sindresorhus/is');
-const { lokiRpc } = require('./loki_rpc');
 const https = require('https');
 const nodeFetch = require('node-fetch');
 const semver = require('semver');
+const { lokiRpc } = require('./loki_rpc');
 
 const snodeHttpsAgent = new https.Agent({
   rejectUnauthorized: false,
@@ -315,8 +315,7 @@ class LokiSnodeAPI {
       return false;
     }
     // FIXME: _.sample?
-    const goodVersion =
-      goodVersions[Math.floor(Math.random() * goodVersions.length)];
+    const goodVersion =      goodVersions[Math.floor(Math.random() * goodVersions.length)];
     const pool = this.versionPools[goodVersion];
     // FIXME: _.sample?
     return pool[Math.floor(Math.random() * pool.length)];
@@ -534,10 +533,9 @@ class LokiSnodeAPI {
     let found = false;
     const filteredNodes = swarmNodes.filter(node => {
       // keep all but thisNode
-      const thisNode =
-        node.address === unreachableNode.address &&
-        node.ip === unreachableNode.ip &&
-        node.port === unreachableNode.port;
+      const thisNode =        node.address === unreachableNode.address
+        && node.ip === unreachableNode.ip
+        && node.port === unreachableNode.port;
       if (thisNode) {
         found = true;
       }
@@ -713,11 +711,11 @@ class LokiSnodeAPI {
 
       results.forEach(res => {
         if (
-          res &&
-          res.result &&
-          res.result.status === 'OK' &&
-          res.result.entries &&
-          res.result.entries.length > 0
+          res
+          && res.result
+          && res.result.status === 'OK'
+          && res.result.entries
+          && res.result.entries.length > 0
         ) {
           allResults.push(results[0].result.entries[0].encrypted_value);
         }

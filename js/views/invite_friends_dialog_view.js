@@ -71,8 +71,8 @@
         if (newMembers.length > 0) {
           // Do not trigger an update if there is too many members
           if (
-            newMembers.length + existingMembers.length >
-            window.CONSTANTS.SMALL_GROUP_SIZE_LIMIT
+            newMembers.length + existingMembers.length
+            > window.CONSTANTS.SMALL_GROUP_SIZE_LIMIT
           ) {
             const msg = window.i18n(
               'maxGroupMembersError',

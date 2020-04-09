@@ -24,7 +24,7 @@ exports.setup = (locale, messages) => {
         (result, substitution) => result.replace(/\$.+?\$/, substitution),
         message
       );
-    } else if (substitutions) {
+    } if (substitutions) {
       return message.replace(/\$.+?\$/, substitutions);
     }
 

@@ -86,8 +86,7 @@ function _promiseAjax(providedUrl, options) {
       );
     }
 
-    const timeout =
-      typeof options.timeout !== 'undefined' ? options.timeout : 10000;
+    const timeout =      typeof options.timeout !== 'undefined' ? options.timeout : 10000;
 
     const { proxyUrl } = options;
     const agentType = options.unauthenticated ? 'unauth' : 'auth';
@@ -152,13 +151,13 @@ function _promiseAjax(providedUrl, options) {
       .then(response => {
         let resultPromise;
         if (
-          options.responseType === 'json' &&
-          response.headers.get('Content-Type') === 'application/json'
+          options.responseType === 'json'
+          && response.headers.get('Content-Type') === 'application/json'
         ) {
           resultPromise = response.json();
         } else if (
-          options.responseType === 'arraybuffer' ||
-          options.responseType === 'arraybufferwithdetails'
+          options.responseType === 'arraybuffer'
+          || options.responseType === 'arraybufferwithdetails'
         ) {
           resultPromise = response.buffer();
         } else {
@@ -167,8 +166,8 @@ function _promiseAjax(providedUrl, options) {
 
         return resultPromise.then(result => {
           if (
-            options.responseType === 'arraybuffer' ||
-            options.responseType === 'arraybufferwithdetails'
+            options.responseType === 'arraybuffer'
+            || options.responseType === 'arraybufferwithdetails'
           ) {
             // eslint-disable-next-line no-param-reassign
             result = result.buffer.slice(

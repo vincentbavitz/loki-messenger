@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then, no-bitwise */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   const { encrypt, decrypt, calculateMAC, verifyMAC } = libsignal.crypto;
 
   const PROFILE_IV_LENGTH = 12; // bytes
@@ -12,7 +12,7 @@
   const PROFILE_NAME_PADDED_LENGTH = 26; // bytes
 
   function verifyDigest(data, theirDigest) {
-    return crypto.subtle.digest({ name: 'SHA-256' }, data).then(ourDigest => {
+    return crypto.subtle.digest({ name: 'SHA-256' }, data).then((ourDigest) => {
       const a = new Uint8Array(ourDigest);
       const b = new Uint8Array(theirDigest);
       let result = 0;
@@ -117,16 +117,16 @@
       const aesKey = keys.slice(0, 32);
       const macKey = keys.slice(32, 64);
 
-      return encrypt(aesKey, plaintext, iv).then(ciphertext => {
+      return encrypt(aesKey, plaintext, iv).then((ciphertext) => {
         const ivAndCiphertext = new Uint8Array(16 + ciphertext.byteLength);
         ivAndCiphertext.set(new Uint8Array(iv));
         ivAndCiphertext.set(new Uint8Array(ciphertext), 16);
 
-        return calculateMAC(macKey, ivAndCiphertext.buffer).then(mac => {
+        return calculateMAC(macKey, ivAndCiphertext.buffer).then((mac) => {
           const encryptedBin = new Uint8Array(16 + ciphertext.byteLength + 32);
           encryptedBin.set(ivAndCiphertext);
           encryptedBin.set(new Uint8Array(mac), 16 + ciphertext.byteLength);
-          return calculateDigest(encryptedBin.buffer).then(digest => ({
+          return calculateDigest(encryptedBin.buffer).then((digest) => ({
             ciphertext: encryptedBin.buffer,
             digest,
           }));
@@ -143,14 +143,14 @@
       }
       return crypto.subtle
         .importKey('raw', key, { name: 'AES-GCM' }, false, ['encrypt'])
-        .then(keyForEncryption =>
+        .then((keyForEncryption) =>
           crypto.subtle
             .encrypt(
               { name: 'AES-GCM', iv, tagLength: PROFILE_TAG_LENGTH },
               keyForEncryption,
               data
             )
-            .then(ciphertext => {
+            .then((ciphertext) => {
               const ivAndCiphertext = new Uint8Array(
                 PROFILE_IV_LENGTH + ciphertext.byteLength
               );
@@ -178,14 +178,14 @@
       const error = new Error(); // save stack
       return crypto.subtle
         .importKey('raw', key, { name: 'AES-GCM' }, false, ['decrypt'])
-        .then(keyForEncryption =>
+        .then((keyForEncryption) =>
           crypto.subtle
             .decrypt(
               { name: 'AES-GCM', iv, tagLength: PROFILE_TAG_LENGTH },
               keyForEncryption,
               ciphertext
             )
-            .catch(e => {
+            .catch((e) => {
               if (e.name === 'OperationError') {
                 // bad mac, basically.
                 error.message =
@@ -206,7 +206,7 @@
         encryptedProfileName,
         'base64'
       ).toArrayBuffer();
-      return textsecure.crypto.decryptProfile(data, key).then(decrypted => {
+      return textsecure.crypto.decryptProfile(data, key).then((decrypted) => {
         // unpad
         const padded = new Uint8Array(decrypted);
         let i;
@@ -216,9 +216,7 @@
           }
         }
 
-        return dcodeIO.ByteBuffer.wrap(padded)
-          .slice(0, i)
-          .toArrayBuffer();
+        return dcodeIO.ByteBuffer.wrap(padded).slice(0, i).toArrayBuffer();
       });
     },
 

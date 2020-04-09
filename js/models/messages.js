@@ -115,8 +115,7 @@
       };
       this.on('change', generateProps);
 
-      const applicableConversationChanges =
-        'change:color change:name change:number change:profileName change:profileAvatar';
+      const applicableConversationChanges =        'change:color change:name change:number change:profileName change:profileAvatar';
 
       const conversation = this.getConversation();
       const fromContact = this.getIncomingContact();
@@ -163,14 +162,13 @@
       const sessionType = this.get('endSessionType');
       if (sessionType === 'ongoing') {
         return 'sessionResetOngoing';
-      } else if (sessionType === 'failed') {
+      } if (sessionType === 'failed') {
         return 'sessionResetFailed';
       }
       return 'sessionEnded';
     },
     isExpirationTimerUpdate() {
-      const flag =
-        textsecure.protobuf.DataMessage.Flags.EXPIRATION_TIMER_UPDATE;
+      const flag =        textsecure.protobuf.DataMessage.Flags.EXPIRATION_TIMER_UPDATE;
       // eslint-disable-next-line no-bitwise
       return !!(this.get('flags') & flag);
     },
@@ -215,7 +213,7 @@
         const groupUpdate = this.get('group_update');
         if (groupUpdate.left === 'You') {
           return i18n('youLeftTheGroup');
-        } else if (groupUpdate.left) {
+        } if (groupUpdate.left) {
           return i18n('leftTheGroup', this.getNameForNumber(groupUpdate.left));
         }
 
@@ -361,7 +359,7 @@
           ...basicProps,
           type: 'fromSync',
         };
-      } else if (source === this.OUR_NUMBER) {
+      } if (source === this.OUR_NUMBER) {
         return {
           ...basicProps,
           type: 'fromMe',
@@ -587,8 +585,7 @@
 
       // Handle friend request statuses
       const isFriendRequest = this.isFriendRequest();
-      const isOutgoingFriendRequest =
-        isFriendRequest && this.get('direction') === 'outgoing';
+      const isOutgoingFriendRequest =        isFriendRequest && this.get('direction') === 'outgoing';
       const isOutgoing = this.isOutgoing() || isOutgoingFriendRequest;
 
       // Only return the status on outgoing messages
@@ -658,8 +655,7 @@
 
       const expirationLength = this.get('expireTimer') * 1000;
       const expireTimerStart = this.get('expirationStartTimestamp');
-      const expirationTimestamp =
-        expirationLength && expireTimerStart
+      const expirationTimestamp =        expirationLength && expireTimerStart
           ? expireTimerStart + expirationLength
           : null;
 
@@ -667,8 +663,7 @@
       // for the public group chat
       const conversation = this.getConversation();
 
-      const isModerator =
-        conversation && !!conversation.isModerator(this.OUR_NUMBER);
+      const isModerator =        conversation && !!conversation.isModerator(this.OUR_NUMBER);
 
       const convoId = conversation ? conversation.id : undefined;
       const isGroup = !!conversation && !conversation.isPrivate();
@@ -704,13 +699,13 @@
         isPublic: !!this.get('isPublic'),
         isRss: !!this.get('isRss'),
         senderIsModerator:
-          !!this.get('isPublic') &&
-          conversation &&
-          conversation.isModerator(phoneNumber),
+          !!this.get('isPublic')
+          && conversation
+          && conversation.isModerator(phoneNumber),
         isDeletable:
-          !this.get('isPublic') ||
-          isModerator ||
-          phoneNumber === this.OUR_NUMBER,
+          !this.get('isPublic')
+          || isModerator
+          || phoneNumber === this.OUR_NUMBER,
         isModerator,
 
         onCopyText: () => this.copyText(),
@@ -749,8 +744,7 @@
       const nbsp = '\xa0';
       const regex = /(\S)( +)(\S+\s*)$/;
       return text.replace(regex, (match, start, spaces, end) => {
-        const newSpaces =
-          end.length < 12
+        const newSpaces =          end.length < 12
             ? _.reduce(spaces, accumulator => accumulator + nbsp, '')
             : spaces;
         return `${start}${newSpaces}${end}`;
@@ -766,8 +760,7 @@
       }
 
       const contact = contacts[0];
-      const firstNumber =
-        contact.number && contact.number[0] && contact.number[0].value;
+      const firstNumber =        contact.number && contact.number[0] && contact.number[0].value;
       const onSendMessage = firstNumber
         ? () => {
             this.trigger('open-conversation', firstNumber);
@@ -800,23 +793,17 @@
     },
     processQuoteAttachment(attachment) {
       const { thumbnail } = attachment;
-      const path =
-        thumbnail &&
-        thumbnail.path &&
-        getAbsoluteAttachmentPath(thumbnail.path);
+      const path =        thumbnail
+        && thumbnail.path
+        && getAbsoluteAttachmentPath(thumbnail.path);
       const objectUrl = thumbnail && thumbnail.objectUrl;
 
-      const thumbnailWithObjectUrl =
-        !path && !objectUrl
+      const thumbnailWithObjectUrl =        !path && !objectUrl
           ? null
-          : Object.assign({}, attachment.thumbnail || {}, {
-              objectUrl: path || objectUrl,
-            });
+          : ({ ...attachment.thumbnail || {}, objectUrl: path || objectUrl});
 
-      return Object.assign({}, attachment, {
-        isVoiceMessage: Signal.Types.Attachment.isVoiceMessage(attachment),
-        thumbnail: thumbnailWithObjectUrl,
-      });
+      return { ...attachment, isVoiceMessage: Signal.Types.Attachment.isVoiceMessage(attachment),
+        thumbnail: thumbnailWithObjectUrl};
     },
     getPropsForPreview() {
       // Don't generate link previews if user has turned them off
@@ -901,9 +888,9 @@
         ...attachment,
         fileSize: size ? filesize(size) : null,
         isVoiceMessage:
-          flags &&
+          flags
           // eslint-disable-next-line no-bitwise
-          flags & textsecure.protobuf.AttachmentPointer.Flags.VOICE_MESSAGE,
+          && flags & textsecure.protobuf.AttachmentPointer.Flags.VOICE_MESSAGE,
         pending,
         url: path ? getAbsoluteAttachmentPath(path) : null,
         screenshot: screenshot
@@ -969,9 +956,8 @@
         const isOutgoingKeyError = Boolean(
           _.find(errorsForContact, error => error.name === OUTGOING_KEY_ERROR)
         );
-        const isUnidentifiedDelivery =
-          storage.get('unidentifiedDeliveryIndicators') &&
-          this.isUnidentifiedDelivery(id, unidentifiedLookup);
+        const isUnidentifiedDelivery =          storage.get('unidentifiedDeliveryIndicators')
+          && this.isUnidentifiedDelivery(id, unidentifiedLookup);
 
         const isPrimaryDevice = id === primaryDevicePubKey;
 
@@ -1196,14 +1182,14 @@
     },
     isReplayableError(e) {
       return (
-        e.name === 'MessageError' ||
-        e.name === 'OutgoingMessageError' ||
-        e.name === 'SendMessageNetworkError' ||
-        e.name === 'SignedPreKeyRotationError' ||
-        e.name === 'OutgoingIdentityKeyError' ||
-        e.name === 'DNSResolutionError' ||
-        e.name === 'EmptySwarmError' ||
-        e.name === 'PoWError'
+        e.name === 'MessageError'
+        || e.name === 'OutgoingMessageError'
+        || e.name === 'SendMessageNetworkError'
+        || e.name === 'SignedPreKeyRotationError'
+        || e.name === 'OutgoingIdentityKeyError'
+        || e.name === 'DNSResolutionError'
+        || e.name === 'EmptySwarmError'
+        || e.name === 'PoWError'
       );
     },
 
@@ -1265,12 +1251,12 @@
       const errors = _.partition(
         this.get('errors'),
         e =>
-          e.number === number &&
-          (e.name === 'MessageError' ||
-            e.name === 'OutgoingMessageError' ||
-            e.name === 'SendMessageNetworkError' ||
-            e.name === 'SignedPreKeyRotationError' ||
-            e.name === 'OutgoingIdentityKeyError')
+          e.number === number
+          && (e.name === 'MessageError'
+            || e.name === 'OutgoingMessageError'
+            || e.name === 'SendMessageNetworkError'
+            || e.name === 'SignedPreKeyRotationError'
+            || e.name === 'OutgoingIdentityKeyError')
       );
       this.set({ errors: errors[1] });
       return errors[0][0];
@@ -1602,9 +1588,9 @@
       });
       errors = errors.map(e => {
         if (
-          e.constructor === Error ||
-          e.constructor === TypeError ||
-          e.constructor === ReferenceError
+          e.constructor === Error
+          || e.constructor === TypeError
+          || e.constructor === ReferenceError
         ) {
           return _.pick(e, 'name', 'message', 'code', 'number', 'reason');
         }
@@ -1625,10 +1611,10 @@
       const error = _.find(
         this.get('errors'),
         e =>
-          e.name === 'MessageError' ||
-          e.name === 'OutgoingMessageError' ||
-          e.name === 'SendMessageNetworkError' ||
-          e.name === 'SignedPreKeyRotationError'
+          e.name === 'MessageError'
+          || e.name === 'OutgoingMessageError'
+          || e.name === 'SendMessageNetworkError'
+          || e.name === 'SignedPreKeyRotationError'
       );
       return !!error;
     },
@@ -1822,11 +1808,11 @@
       }
 
       if (
-        !firstAttachment ||
-        (!window.Signal.Util.GoogleChrome.isImageTypeSupported(
+        !firstAttachment
+        || (!window.Signal.Util.GoogleChrome.isImageTypeSupported(
           firstAttachment.contentType
-        ) &&
-          !window.Signal.Util.GoogleChrome.isVideoTypeSupported(
+        )
+          && !window.Signal.Util.GoogleChrome.isVideoTypeSupported(
             firstAttachment.contentType
           ))
       ) {
@@ -1835,8 +1821,8 @@
 
       try {
         if (
-          queryMessage.get('schemaVersion') <
-          TypedMessage.VERSION_NEEDED_FOR_DISPLAY
+          queryMessage.get('schemaVersion')
+          < TypedMessage.VERSION_NEEDED_FOR_DISPLAY
         ) {
           const upgradedMessage = await upgradeMessageSchema(
             queryMessage.attributes
@@ -1898,8 +1884,7 @@
       const authorisation = await libloki.storage.getGrantAuthorisationForSecondaryPubKey(
         source
       );
-      const primarySource =
-        (authorisation && authorisation.primaryDevicePubKey) || source;
+      const primarySource =        (authorisation && authorisation.primaryDevicePubKey) || source;
       const isGroupMessage = !!initialMessage.group;
       if (isGroupMessage) {
         conversationId = initialMessage.group.id;
@@ -1931,14 +1916,14 @@
 
       if (initialMessage.group) {
         if (
-          initialMessage.group.type === GROUP_TYPES.REQUEST_INFO &&
-          !newGroup
+          initialMessage.group.type === GROUP_TYPES.REQUEST_INFO
+          && !newGroup
         ) {
           conversation.sendGroupInfo([source]);
           return null;
-        } else if (
-          initialMessage.group.members &&
-          initialMessage.group.type === GROUP_TYPES.UPDATE
+        } if (
+          initialMessage.group.members
+          && initialMessage.group.type === GROUP_TYPES.UPDATE
         ) {
           if (newGroup) {
             conversation.updateGroupAdmins(initialMessage.group.admins);
@@ -1953,8 +1938,7 @@
 
             if (!fromAdmin) {
               // Make sure the message is not removing members / renaming the group
-              const nameChanged =
-                conversation.get('name') !== initialMessage.group.name;
+              const nameChanged =                conversation.get('name') !== initialMessage.group.name;
 
               if (nameChanged) {
                 window.log.warn(
@@ -1962,8 +1946,7 @@
                 );
               }
 
-              const membersMissing =
-                _.difference(
+              const membersMissing =                _.difference(
                   conversation.get('members'),
                   initialMessage.group.members
                 ).length > 0;
@@ -2015,14 +1998,13 @@
         }
       }
 
-      const isSessionRequest =
-        initialMessage.flags ===
-        textsecure.protobuf.DataMessage.Flags.SESSION_REQUEST;
+      const isSessionRequest =        initialMessage.flags
+        === textsecure.protobuf.DataMessage.Flags.SESSION_REQUEST;
 
       if (
         // eslint-disable-next-line no-bitwise
-        initialMessage.flags &
-        textsecure.protobuf.DataMessage.Flags.SESSION_RESTORE
+        initialMessage.flags
+        & textsecure.protobuf.DataMessage.Flags.SESSION_RESTORE
       ) {
         // Show that the session reset is "in progress" even though we had a valid session
         this.set({ endSessionType: 'ongoing' });
@@ -2080,8 +2062,7 @@
                 members: dataMessage.group.members,
               };
 
-              groupUpdate =
-                conversation.changedAttributes(
+              groupUpdate =                conversation.changedAttributes(
                   _.pick(dataMessage.group, 'name', 'avatar')
                 ) || {};
 
@@ -2146,14 +2127,14 @@
           const incomingPreview = dataMessage.preview || [];
           const preview = incomingPreview.filter(
             item =>
-              (item.image || item.title) &&
-              urls.includes(item.url) &&
-              window.Signal.LinkPreviews.isLinkInWhitelist(item.url)
+              (item.image || item.title)
+              && urls.includes(item.url)
+              && window.Signal.LinkPreviews.isLinkInWhitelist(item.url)
           );
           if (preview.length < incomingPreview.length) {
             window.log.info(
-              `${message.idForLogging()}: Eliminated ${preview.length -
-                incomingPreview.length} previews with invalid urls'`
+              `${message.idForLogging()}: Eliminated ${preview.length
+                - incomingPreview.length} previews with invalid urls'`
             );
           }
 
@@ -2208,8 +2189,7 @@
           // NOTE: Remove once the above uses
           // `Conversation::updateExpirationTimer`:
           const { expireTimer } = dataMessage;
-          const shouldLogExpireTimerChange =
-            message.isExpirationTimerUpdate() || expireTimer;
+          const shouldLogExpireTimerChange =            message.isExpirationTimerUpdate() || expireTimer;
           if (shouldLogExpireTimerChange) {
             window.log.info("Update conversation 'expireTimer'", {
               id: conversation.idForLogging(),
@@ -2231,9 +2211,9 @@
                 );
               }
             } else if (
-              conversation.get('expireTimer') &&
+              conversation.get('expireTimer')
               // We only turn off timers if it's not a group update
-              !message.isGroupUpdate()
+              && !message.isGroupUpdate()
             ) {
               conversation.updateExpirationTimer(
                 null,
@@ -2251,8 +2231,8 @@
             const readSync = Whisper.ReadSyncs.forMessage(message);
             if (readSync) {
               if (
-                message.get('expireTimer') &&
-                !message.get('expirationStartTimestamp')
+                message.get('expireTimer')
+                && !message.get('expirationStartTimestamp')
               ) {
                 message.set(
                   'expirationStartTimestamp',
@@ -2271,8 +2251,8 @@
               }
             } else {
               if (
-                message.attributes.body &&
-                message.attributes.body.indexOf(`@${ourNumber}`) !== -1
+                message.attributes.body
+                && message.attributes.body.indexOf(`@${ourNumber}`) !== -1
               ) {
                 conversation.set({ mentionedUs: true });
               }
@@ -2309,8 +2289,8 @@
 
           const conversationTimestamp = conversation.get('timestamp');
           if (
-            !conversationTimestamp ||
-            message.get('sent_at') > conversationTimestamp
+            !conversationTimestamp
+            || message.get('sent_at') > conversationTimestamp
           ) {
             conversation.lastMessage = message.getNotificationText();
             conversation.set({
@@ -2415,8 +2395,8 @@
 
             if (previousUnread !== message.get('unread')) {
               window.log.warn(
-                'Caught race condition on new message read state! ' +
-                  'Manually starting timers.'
+                'Caught race condition on new message read state! '
+                  + 'Manually starting timers.'
               );
               // We call markRead() even though the message is already
               // marked read because we need to start expiration
@@ -2576,12 +2556,10 @@
     },
 
     async fetchConversation(conversationId, limit = 100, unreadCount = 0) {
-      const startingLoadedUnread =
-        unreadCount > 0 ? this.getLoadedUnreadCount() : 0;
+      const startingLoadedUnread =        unreadCount > 0 ? this.getLoadedUnreadCount() : 0;
 
       // We look for older messages if we've fetched once already
-      const receivedAt =
-        this.length === 0 ? Number.MAX_VALUE : this.at(0).get('received_at');
+      const receivedAt =        this.length === 0 ? Number.MAX_VALUE : this.at(0).get('received_at');
 
       const messages = await window.Signal.Data.getMessagesByConversation(
         conversationId,

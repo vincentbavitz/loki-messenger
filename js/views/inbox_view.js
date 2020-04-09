@@ -190,8 +190,8 @@
         user: {
           regionCode: window.storage.get('regionCode'),
           ourNumber:
-            window.storage.get('primaryDevicePubKey') ||
-            textsecure.storage.user.getNumber(),
+            window.storage.get('primaryDevicePubKey')
+            || textsecure.storage.user.getNumber(),
           isSecondaryDevice: !!window.storage.get('isSecondaryDevice'),
           i18n: window.i18n,
         },

@@ -10,9 +10,9 @@ exports.getPlaceholderMigrations = () => {
       version,
       migrate() {
         throw new Error(
-          'Unexpected invocation of placeholder migration!' +
-            '\n\nMigrations must explicitly be run upon application startup instead' +
-            ' of implicitly via Backbone IndexedDB adapter at any time.'
+          'Unexpected invocation of placeholder migration!'
+            + '\n\nMigrations must explicitly be run upon application startup instead'
+            + ' of implicitly via Backbone IndexedDB adapter at any time.'
         );
       },
     },

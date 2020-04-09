@@ -63,9 +63,9 @@ const sendToProxy = async (
   // from https://github.com/sindresorhus/is-stream/blob/master/index.js
   let fileUpload = false;
   if (
-    payloadObj.body &&
-    typeof payloadObj.body === 'object' &&
-    typeof payloadObj.body.pipe === 'function'
+    payloadObj.body
+    && typeof payloadObj.body === 'object'
+    && typeof payloadObj.body.pipe === 'function'
   ) {
     const fData = payloadObj.body.getBuffer();
     const fHeaders = payloadObj.body.getHeaders();
@@ -253,8 +253,8 @@ const serverRequest = async (endpoint, options = {}) => {
     const host = url.host.toLowerCase();
     // log.info('host', host, FILESERVER_HOSTS);
     if (
-      window.lokiFeatureFlags.useSnodeProxy &&
-      FILESERVER_HOSTS.includes(host)
+      window.lokiFeatureFlags.useSnodeProxy
+      && FILESERVER_HOSTS.includes(host)
     ) {
       mode = 'sendToProxy';
       const search = url.search ? `?${url.search}` : '';
@@ -522,17 +522,16 @@ class LokiAppDotNetServerAPI {
     const tokenRes = await this.serverRequest('token');
     // if no problems and we have data
     if (
-      !tokenRes.err &&
-      tokenRes.response &&
-      tokenRes.response.data &&
-      tokenRes.response.data.user
+      !tokenRes.err
+      && tokenRes.response
+      && tokenRes.response.data
+      && tokenRes.response.data.user
     ) {
       // get our profile name
       // this should be primaryDevicePubKey
       // because the rest of the profile system uses that...
-      const ourNumber =
-        window.storage.get('primaryDevicePubKey') ||
-        textsecure.storage.user.getNumber();
+      const ourNumber =        window.storage.get('primaryDevicePubKey')
+        || textsecure.storage.user.getNumber();
       const profileConvo = ConversationController.get(ourNumber);
       const profile = profileConvo && profileConvo.getLokiProfile();
       const profileName = profile && profile.displayName;
@@ -546,10 +545,10 @@ class LokiAppDotNetServerAPI {
       log.error(`token err`, tokenRes);
       // didn't already try && this specific error
       if (
-        !forceRefresh &&
-        tokenRes.response &&
-        tokenRes.response.meta &&
-        tokenRes.response.meta.code === 401
+        !forceRefresh
+        && tokenRes.response
+        && tokenRes.response.meta
+        && tokenRes.response.meta.code === 401
       ) {
         // this token is not good
         this.token = ''; // remove from object
@@ -671,11 +670,11 @@ class LokiAppDotNetServerAPI {
 
   async proxyFetch(urlObj, fetchOptions = { method: 'GET' }, options = {}) {
     if (
-      window.lokiFeatureFlags.useSnodeProxy &&
-      (this.baseServerUrl === 'https://file-dev.lokinet.org' ||
-        this.baseServerUrl === 'https://file.lokinet.org' ||
-        this.baseServerUrl === 'https://file-dev.getsession.org' ||
-        this.baseServerUrl === 'https://file.getsession.org')
+      window.lokiFeatureFlags.useSnodeProxy
+      && (this.baseServerUrl === 'https://file-dev.lokinet.org'
+        || this.baseServerUrl === 'https://file.lokinet.org'
+        || this.baseServerUrl === 'https://file-dev.getsession.org'
+        || this.baseServerUrl === 'https://file.getsession.org')
     ) {
       const finalOptions = { ...fetchOptions };
       if (!fetchOptions.method) {
@@ -928,10 +927,9 @@ class LokiAppDotNetServerAPI {
       return null;
     }
 
-    const url =
-      response.data &&
-      response.data.avatar_image &&
-      response.data.avatar_image.url;
+    const url =      response.data
+      && response.data.avatar_image
+      && response.data.avatar_image.url;
 
     // We don't use the server id for avatars
     return {
@@ -1146,9 +1144,8 @@ class LokiPublicChannelAPI {
 
     // if we encountered problems then we'll keep the old mod status
     if (moderators) {
-      this.modStatus =
-        (ourNumberProfile && moderators.includes(ourNumberProfile)) ||
-        moderators.includes(ourNumberDevice);
+      this.modStatus =        (ourNumberProfile && moderators.includes(ourNumberProfile))
+        || moderators.includes(ourNumberDevice);
     }
 
     await this.conversation.setModerators(moderators || []);
@@ -1169,8 +1166,7 @@ class LokiPublicChannelAPI {
       log.warn(`public chat channel state unknown, skipping set: ${res.err}`);
       return false;
     }
-    let notes =
-      res.response && res.response.data && res.response.data.annotations;
+    let notes =      res.response && res.response.data && res.response.data.annotations;
     if (!notes) {
       // ok if nothing is set yet
       notes = [];
@@ -1211,9 +1207,11 @@ class LokiPublicChannelAPI {
   setChannelName(name) {
     return this.setChannelSettings({ name });
   }
+
   setChannelDescription(description) {
     return this.setChannelSettings({ description });
   }
+
   setChannelAvatar(avatar) {
     return this.setChannelSettings({ avatar });
   }
@@ -1465,8 +1463,8 @@ class LokiPublicChannelAPI {
 
   async getMessengerData(adnMessage) {
     if (
-      !Array.isArray(adnMessage.annotations) ||
-      adnMessage.annotations.length === 0
+      !Array.isArray(adnMessage.annotations)
+      || adnMessage.annotations.length === 0
     ) {
       return false;
     }
@@ -1627,8 +1625,7 @@ class LokiPublicChannelAPI {
     // get our profile name
     const ourNumberDevice = textsecure.storage.user.getNumber();
     // if no primaryDevicePubKey fall back to ourNumberDevice
-    const ourNumberProfile =
-      window.storage.get('primaryDevicePubKey') || ourNumberDevice;
+    const ourNumberProfile =      window.storage.get('primaryDevicePubKey') || ourNumberDevice;
     let lastProfileName = false;
 
     // the signature forces this to be async
@@ -1641,11 +1638,11 @@ class LokiPublicChannelAPI {
           : Math.max(this.lastGot, adnMessage.id);
 
         if (
-          !adnMessage.id ||
-          !adnMessage.user ||
-          !adnMessage.user.username || // pubKey lives in the username field
-          !adnMessage.text ||
-          adnMessage.is_deleted
+          !adnMessage.id
+          || !adnMessage.user
+          || !adnMessage.user.username // pubKey lives in the username field
+          || !adnMessage.text
+          || adnMessage.is_deleted
         ) {
           return false; // Invalid or delete message
         }
@@ -1675,9 +1672,8 @@ class LokiPublicChannelAPI {
           const sameUsername = message.username === pubKey;
           const sameText = message.text === adnMessage.text;
           // Don't filter out messages that are too far apart from each other
-          const timestampsSimilar =
-            Math.abs(message.timestamp - timestamp) <=
-            PUBLICCHAT_MIN_TIME_BETWEEN_DUPLICATE_MESSAGES;
+          const timestampsSimilar =            Math.abs(message.timestamp - timestamp)
+            <= PUBLICCHAT_MIN_TIME_BETWEEN_DUPLICATE_MESSAGES;
 
           return sameUsername && sameText && timestampsSimilar;
         };

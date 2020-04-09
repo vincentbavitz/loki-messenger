@@ -5,13 +5,11 @@
 
 const LokiAppDotNetAPI = require('./loki_app_dot_net_api');
 
-const DEVICE_MAPPING_USER_ANNOTATION_TYPE =
-  'network.loki.messenger.devicemapping';
+const DEVICE_MAPPING_USER_ANNOTATION_TYPE =  'network.loki.messenger.devicemapping';
 
 // const LOKIFOUNDATION_DEVFILESERVER_PUBKEY =
 //  'BSZiMVxOco/b3sYfaeyiMWv/JnqokxGXkHoclEx8TmZ6';
-const LOKIFOUNDATION_FILESERVER_PUBKEY =
-  'BWJQnVm97sQE3Q1InB4Vuo+U/T1hmwHBv0ipkiv8tzEc';
+const LOKIFOUNDATION_FILESERVER_PUBKEY =  'BWJQnVm97sQE3Q1InB4Vuo+U/T1hmwHBv0ipkiv8tzEc';
 
 // can have multiple of these instances as each user can have a
 // different home server
@@ -80,6 +78,7 @@ class LokiFileServerInstance {
       log.error('You are blacklisted form this home server');
     }
   }
+
   async getUserDeviceMapping(pubKey) {
     const annotations = await this._server.getUserAnnotations(pubKey);
     const deviceMapping = annotations.find(
@@ -154,8 +153,8 @@ class LokiFileServerInstance {
     await this.verifyUserObjectDeviceMap(pubKeys, true, (slaveKey, auth) => {
       // if we already have this key for a different device
       if (
-        newSlavePrimaryMap[slaveKey] &&
-        newSlavePrimaryMap[slaveKey] !== auth.primaryDevicePubKey
+        newSlavePrimaryMap[slaveKey]
+        && newSlavePrimaryMap[slaveKey] !== auth.primaryDevicePubKey
       ) {
         log.warn(
           `file server user annotation primaryKey mismatch, had ${

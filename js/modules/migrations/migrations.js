@@ -223,11 +223,11 @@ exports.run = ({ Backbone, databaseName, logger } = {}) =>
   runMigrations({
     Backbone,
     logger,
-    database: Object.assign(
-      {},
-      database,
-      isString(databaseName) ? { id: databaseName } : {}
-    ),
+    database: {
+      
+      ...database,
+      ...(isString(databaseName) ? { id: databaseName } : {}),
+    },
   });
 
 exports.getDatabase = () => ({

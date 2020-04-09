@@ -10,17 +10,17 @@ const closeDatabaseConnection = ({ Backbone } = {}) =>
 
 exports.runMigrations = async ({ Backbone, database, logger } = {}) => {
   if (
-    !isObject(Backbone) ||
-    !isObject(Backbone.Collection) ||
-    !isFunction(Backbone.Collection.extend)
+    !isObject(Backbone)
+    || !isObject(Backbone.Collection)
+    || !isFunction(Backbone.Collection.extend)
   ) {
     throw new TypeError('runMigrations: Backbone is required');
   }
 
   if (
-    !isObject(database) ||
-    !isString(database.id) ||
-    !Array.isArray(database.migrations)
+    !isObject(database)
+    || !isString(database.id)
+    || !Array.isArray(database.migrations)
   ) {
     throw new TypeError('runMigrations: database is required');
   }

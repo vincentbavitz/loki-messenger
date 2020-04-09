@@ -1,4 +1,5 @@
 /* global $: false */
+/* eslint-disable strict */
 
 // Add version
 const version = window.getVersion();
@@ -20,8 +21,8 @@ if (window.getAppInstance()) {
 
 $('.environment').text(states.join(' - '));
 
-// Install the 'dismiss with escape key' handler
-$(document).on('keyup', e => {
+// Install the 'dismiss with escape key' handler/
+$(document).on('keyup', (e) => {
   'use strict';
 
   if (e.keyCode === 27) {

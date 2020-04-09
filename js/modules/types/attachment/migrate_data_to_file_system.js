@@ -25,14 +25,14 @@ exports.migrateDataToFileSystem = async (
   const isValidData = isArrayBuffer(data);
   if (!isValidData) {
     throw new TypeError(
-      'Expected `attachment.data` to be an array buffer;' +
-        ` got: ${typeof attachment.data}`
+      'Expected `attachment.data` to be an array buffer;'
+        + ` got: ${typeof attachment.data}`
     );
   }
 
   const path = await writeNewAttachmentData(data);
 
-  const attachmentWithoutData = omit(Object.assign({}, attachment, { path }), [
+  const attachmentWithoutData = omit({ ...attachment, path}, [
     'data',
   ]);
   return attachmentWithoutData;

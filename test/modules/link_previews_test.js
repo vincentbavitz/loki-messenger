@@ -288,8 +288,7 @@ describe('Link previews', () => {
 
   describe('#findLinks', () => {
     it('returns all links if no caretLocation is provided', () => {
-      const text =
-        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
+      const text =        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
 
       const expected = [
         'https://github.com/signalapp/Signal-Desktop',
@@ -301,8 +300,7 @@ describe('Link previews', () => {
     });
 
     it('includes all links if cursor is not in a link', () => {
-      const text =
-        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
+      const text =        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
       const caretLocation = 10;
 
       const expected = [
@@ -315,8 +313,7 @@ describe('Link previews', () => {
     });
 
     it('excludes a link not at the end if the caret is inside of it', () => {
-      const text =
-        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
+      const text =        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
       const caretLocation = 30;
 
       const expected = ['https://github.com/signalapp/Signal-Android'];
@@ -326,8 +323,7 @@ describe('Link previews', () => {
     });
 
     it('excludes a link not at the end if the caret is at its end', () => {
-      const text =
-        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
+      const text =        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
       const caretLocation = 64;
 
       const expected = ['https://github.com/signalapp/Signal-Android'];
@@ -337,8 +333,7 @@ describe('Link previews', () => {
     });
 
     it('excludes a link at the end of the caret is inside of it', () => {
-      const text =
-        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
+      const text =        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
       const caretLocation = 100;
 
       const expected = ['https://github.com/signalapp/Signal-Desktop'];
@@ -348,8 +343,7 @@ describe('Link previews', () => {
     });
 
     it('includes link at the end if cursor is at its end', () => {
-      const text =
-        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
+      const text =        'Check out this link: https://github.com/signalapp/Signal-Desktop\nAnd this one too: https://github.com/signalapp/Signal-Android';
       const caretLocation = text.length;
 
       const expected = [

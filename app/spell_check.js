@@ -1,5 +1,6 @@
 /* global exports, require */
 /* eslint-disable strict */
+/* eslint-disable no-redeclare */
 
 const { Menu } = require('electron');
 const osLocale = require('os-locale');
@@ -10,7 +11,7 @@ exports.setup = (browserWindow, messages) => {
   const userLocales = [userLocale, userLocale.split('-')[0]];
 
   const available = session.availableSpellCheckerLanguages;
-  const languages = userLocales.filter(l => available.includes(l));
+  const languages = userLocales.filter((l) => available.includes(l));
   console.log(`spellcheck: user locale: ${userLocale}`);
   console.log('spellcheck: available spellchecker languages: ', available);
   console.log('spellcheck: setting languages to: ', languages);
@@ -28,7 +29,7 @@ exports.setup = (browserWindow, messages) => {
       if (isMisspelled) {
         if (params.dictionarySuggestions.length > 0) {
           template.push(
-            ...params.dictionarySuggestions.map(label => ({
+            ...params.dictionarySuggestions.map((label) => ({
               label,
               click: () => {
                 browserWindow.webContents.replaceMisspelling(label);

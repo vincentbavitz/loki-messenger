@@ -1,9 +1,9 @@
 /* global clearTimeout, Buffer, TextDecoder, process */
+/* eslint-disable no-redeclare */
 
 const OriginalAppDotNetApi = require('../../js/modules/loki_app_dot_net_api.js');
 
-const sampleFeed =
-  '<?xml version="1.0" encoding="windows-1252"?><rss version="2.0"><channel>    <title>FeedForAll Sample Feed</title></channel></rss>';
+const sampleFeed =  '<?xml version="1.0" encoding="windows-1252"?><rss version="2.0"><channel>    <title>FeedForAll Sample Feed</title></channel></rss>';
 
 const samplesGetMessages = {
   meta: { code: 200 },
@@ -76,8 +76,8 @@ class StubAppDotNetAPI extends OriginalAppDotNetApi {
     // console.warn('STUBBED ', method, ':', endpoint);
 
     if (
-      endpoint === 'loki/v1/rss/messenger' ||
-      endpoint === 'loki/v1/rss/loki'
+      endpoint === 'loki/v1/rss/messenger'
+      || endpoint === 'loki/v1/rss/loki'
     ) {
       return {
         statusCode: 200,
@@ -106,8 +106,8 @@ class StubAppDotNetAPI extends OriginalAppDotNetApi {
     }
 
     if (
-      endpoint === 'loki/v1/channel/1/deletes' ||
-      endpoint === 'loki/v1/channel/1/moderators'
+      endpoint === 'loki/v1/channel/1/deletes'
+      || endpoint === 'loki/v1/channel/1/moderators'
     ) {
       return {
         statusCode: 200,

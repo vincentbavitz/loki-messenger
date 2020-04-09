@@ -2,7 +2,7 @@
    lokiFileServerAPI, ConversationController */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.libloki = window.libloki || {};
 
   const timers = {};
@@ -17,7 +17,7 @@
 
     const [signedKey, preKey] = await Promise.all([
       textsecure.storage.protocol.loadSignedPreKey(signedKeyId),
-      new Promise(async resolve => {
+      new Promise(async (resolve) => {
         // retrieve existing prekey if we already generated one for that recipient
         const storedPreKey = await textsecure.storage.protocol.loadPreKeyForContact(
           pubKey
@@ -131,7 +131,7 @@
     if (deviceMapping.isPrimary === '0') {
       const { primaryDevicePubKey } =
         authorisations.find(
-          authorisation =>
+          (authorisation) =>
             authorisation && authorisation.secondaryDevicePubKey === pubKey
         ) || {};
       if (primaryDevicePubKey) {
@@ -149,7 +149,7 @@
     }
 
     // filter out any invalid authorisations
-    return authorisations.filter(a => a && typeof a === 'object') || [];
+    return authorisations.filter((a) => a && typeof a === 'object') || [];
   }
 
   // if the device is a secondary device,
@@ -163,7 +163,7 @@
     timers[pubKey] = Date.now() + REFRESH_DELAY;
     const authorisations = await getPrimaryDeviceMapping(pubKey);
     await Promise.all(
-      authorisations.map(authorisation =>
+      authorisations.map((authorisation) =>
         savePairingAuthorisation(authorisation)
       )
     );
@@ -292,7 +292,7 @@
     await window.Signal.Data.createOrUpdateContactPreKey(key);
   };
 
-  store.loadContactPreKey = async pubKey => {
+  store.loadContactPreKey = async (pubKey) => {
     const preKey = await window.Signal.Data.getContactPreKeyByIdentityKey(
       pubKey
     );
@@ -309,14 +309,14 @@
     return undefined;
   };
 
-  store.loadContactPreKeys = async filters => {
+  store.loadContactPreKeys = async (filters) => {
     const { keyId, identityKeyString } = filters;
     const keys = await window.Signal.Data.getContactPreKeys(
       keyId,
       identityKeyString
     );
     if (keys) {
-      return keys.map(preKey => ({
+      return keys.map((preKey) => ({
         id: preKey.id,
         keyId: preKey.keyId,
         publicKey: preKey.publicKey,
@@ -328,7 +328,7 @@
     return undefined;
   };
 
-  store.removeContactPreKey = async pubKey => {
+  store.removeContactPreKey = async (pubKey) => {
     await window.Signal.Data.removeContactPreKeyByIdentityKey(pubKey);
   };
 
@@ -349,7 +349,7 @@
     await window.Signal.Data.createOrUpdateContactSignedPreKey(key);
   };
 
-  store.loadContactSignedPreKey = async pubKey => {
+  store.loadContactSignedPreKey = async (pubKey) => {
     const preKey = await window.Signal.Data.getContactSignedPreKeyByIdentityKey(
       pubKey
     );
@@ -368,14 +368,14 @@
     return undefined;
   };
 
-  store.loadContactSignedPreKeys = async filters => {
+  store.loadContactSignedPreKeys = async (filters) => {
     const { keyId, identityKeyString } = filters;
     const keys = await window.Signal.Data.getContactSignedPreKeys(
       keyId,
       identityKeyString
     );
     if (keys) {
-      return keys.map(preKey => ({
+      return keys.map((preKey) => ({
         id: preKey.id,
         identityKeyString: preKey.identityKeyString,
         publicKey: preKey.publicKey,
@@ -393,7 +393,7 @@
     return undefined;
   };
 
-  store.removeContactSignedPreKey = async pubKey => {
+  store.removeContactSignedPreKey = async (pubKey) => {
     await window.Signal.Data.removeContactSignedPreKeyByIdentityKey(pubKey);
   };
 

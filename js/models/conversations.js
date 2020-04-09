@@ -698,8 +698,8 @@
 
       if (!this.isPrivate()) {
         throw new Error(
-          'You cannot verify a group conversation. ' +
-            'You must verify individual contacts.'
+          'You cannot verify a group conversation. '
+            + 'You must verify individual contacts.'
         );
       }
 
@@ -734,9 +734,9 @@
       //      but the key did change (Key1/VERIFIED to Key2/VERIFIED - but we don't
       //      want to show DEFAULT->DEFAULT or UNVERIFIED->UNVERIFIED)
       if (
-        !options.viaContactSync ||
-        (beginningVerified !== verified && verified !== UNVERIFIED) ||
-        (keyChange && verified === VERIFIED)
+        !options.viaContactSync
+        || (beginningVerified !== verified && verified !== UNVERIFIED)
+        || (keyChange && verified === VERIFIED)
       ) {
         await this.addVerifiedChange(this.id, verified === VERIFIED, {
           local: !options.viaSyncMessage,
@@ -755,7 +755,7 @@
         { syncMessage: true }
       );
       const contactSendOptions = this.getSendOptions();
-      const options = Object.assign({}, sendOptions, contactSendOptions);
+      const options = { ...sendOptions, ...contactSendOptions};
 
       const promise = textsecure.storage.protocol.loadIdentityKey(number);
       return promise.then(key =>
@@ -785,23 +785,23 @@
     isPendingFriendRequest() {
       const status = this.get('friendRequestStatus');
       return (
-        status === FriendRequestStatusEnum.requestSent ||
-        status === FriendRequestStatusEnum.requestReceived ||
-        status === FriendRequestStatusEnum.pendingSend
+        status === FriendRequestStatusEnum.requestSent
+        || status === FriendRequestStatusEnum.requestReceived
+        || status === FriendRequestStatusEnum.pendingSend
       );
     },
     hasSentFriendRequest() {
       const status = this.get('friendRequestStatus');
       return (
-        status === FriendRequestStatusEnum.pendingSend ||
-        status === FriendRequestStatusEnum.requestSent ||
-        status === FriendRequestStatusEnum.requestExpired
+        status === FriendRequestStatusEnum.pendingSend
+        || status === FriendRequestStatusEnum.requestSent
+        || status === FriendRequestStatusEnum.requestExpired
       );
     },
     hasReceivedFriendRequest() {
       return (
-        this.get('friendRequestStatus') ===
-        FriendRequestStatusEnum.requestReceived
+        this.get('friendRequestStatus')
+        === FriendRequestStatusEnum.requestReceived
       );
     },
     isFriend() {
@@ -826,8 +826,8 @@
         .concat(this.get('friendRequestStatus'))
         .reduce((acc, cur) => {
           if (
-            acc === FriendRequestStatusEnum.friends ||
-            cur === FriendRequestStatusEnum.friends
+            acc === FriendRequestStatusEnum.friends
+            || cur === FriendRequestStatusEnum.friends
           ) {
             return FriendRequestStatusEnum.friends;
           }
@@ -936,8 +936,8 @@
         return;
       }
       if (
-        this.ourNumber === this.id &&
-        newStatus !== FriendRequestStatusEnum.friends
+        this.ourNumber === this.id
+        && newStatus !== FriendRequestStatusEnum.friends
       ) {
         return;
       }
@@ -1141,8 +1141,8 @@
       if (this.isPrivate()) {
         const verified = this.get('verified');
         return (
-          verified !== this.verifiedEnum.VERIFIED &&
-          verified !== this.verifiedEnum.DEFAULT
+          verified !== this.verifiedEnum.VERIFIED
+          && verified !== this.verifiedEnum.DEFAULT
         );
       }
       if (!this.contactCollection.length) {
@@ -1174,8 +1174,8 @@
     setApproved() {
       if (!this.isPrivate()) {
         throw new Error(
-          'You cannot set a group conversation as trusted. ' +
-            'You must set individual contacts as trusted.'
+          'You cannot set a group conversation as trusted. '
+            + 'You must set individual contacts as trusted.'
         );
       }
 
@@ -1452,10 +1452,10 @@
           attachments
             .filter(
               attachment =>
-                attachment &&
-                attachment.contentType &&
-                !attachment.pending &&
-                !attachment.error
+                attachment
+                && attachment.contentType
+                && !attachment.pending
+                && !attachment.error
             )
             .slice(0, 1)
             .map(async attachment => {
@@ -1513,8 +1513,7 @@
 
       const body = quotedMessage.get('body');
       const embeddedContact = quotedMessage.get('contact');
-      const embeddedContactName =
-        embeddedContact && embeddedContact.length > 0
+      const embeddedContactName =        embeddedContact && embeddedContact.length > 0
           ? getName(embeddedContact[0])
           : '';
 
@@ -1822,8 +1821,8 @@
           const conversation = ConversationController.get(number);
 
           if (
-            conversation &&
-            conversation.get('sealedSender') !== SEALED_SENDER.DISABLED
+            conversation
+            && conversation.get('sealedSender') !== SEALED_SENDER.DISABLED
           ) {
             window.log.info(
               `Setting sealedSender to DISABLED for conversation ${conversation.idForLogging()}`
@@ -1845,8 +1844,8 @@
           const conversation = ConversationController.get(number);
 
           if (
-            conversation &&
-            conversation.get('sealedSender') === SEALED_SENDER.UNKNOWN
+            conversation
+            && conversation.get('sealedSender') === SEALED_SENDER.UNKNOWN
           ) {
             if (conversation.get('accessKey')) {
               window.log.info(
@@ -1895,8 +1894,8 @@
       //   also enabled for our own account.
       const me = ConversationController.getOrCreate(this.ourNumber, 'private');
       if (
-        !disableMeCheck &&
-        me.get('sealedSender') === SEALED_SENDER.DISABLED
+        !disableMeCheck
+        && me.get('sealedSender') === SEALED_SENDER.DISABLED
       ) {
         return null;
       }
@@ -1922,8 +1921,8 @@
         return {
           [this.id]: {
             accessKey:
-              accessKey ||
-              window.Signal.Crypto.arrayBufferToBase64(
+              accessKey
+              || window.Signal.Crypto.arrayBufferToBase64(
                 window.Signal.Crypto.getRandomBytes(16)
               ),
           },
@@ -2011,8 +2010,8 @@
         expireTimer = null;
       }
       if (
-        this.get('expireTimer') === expireTimer ||
-        (!expireTimer && !this.get('expireTimer'))
+        this.get('expireTimer') === expireTimer
+        || (!expireTimer && !this.get('expireTimer'))
       ) {
         return null;
       }
@@ -2075,8 +2074,7 @@
       let promise;
 
       if (this.isMe()) {
-        const flags =
-          textsecure.protobuf.DataMessage.Flags.EXPIRATION_TIMER_UPDATE;
+        const flags =          textsecure.protobuf.DataMessage.Flags.EXPIRATION_TIMER_UPDATE;
         const dataMessage = await textsecure.messaging.getMessageProto(
           this.get('id'),
           null,
@@ -2321,8 +2319,8 @@
 
           if (!this.messageCollection.get(m.id)) {
             window.log.warn(
-              'Marked a message as read in the database, but ' +
-                'it was not in messageCollection.'
+              'Marked a message as read in the database, but '
+                + 'it was not in messageCollection.'
             );
           }
 
@@ -2350,9 +2348,9 @@
         const ourNumber = textsecure.storage.user.getNumber();
         return !stillUnread.some(
           m =>
-            m.propsForMessage &&
-            m.propsForMessage.text &&
-            m.propsForMessage.text.indexOf(`@${ourNumber}`) !== -1
+            m.propsForMessage
+            && m.propsForMessage.text
+            && m.propsForMessage.text.indexOf(`@${ourNumber}`) !== -1
         );
       })();
 
@@ -2470,8 +2468,8 @@
         return;
       }
       if (
-        this.get('server') !== newServer ||
-        this.get('channelId') !== newChannelId
+        this.get('server') !== newServer
+        || this.get('channelId') !== newChannelId
       ) {
         // mark active so it's not in the friends list but the conversation list
         this.set({
@@ -2972,7 +2970,7 @@
 
       if (url) {
         return { url, color };
-      } else if (this.isPrivate()) {
+      } if (this.isPrivate()) {
         const symbol = this.isValid() ? '#' : '!';
         return {
           color,

@@ -92,8 +92,8 @@
       }
 
       if (
-        socketStatus === WebSocket.CONNECTING &&
-        !this.withinConnectingGracePeriod
+        socketStatus === WebSocket.CONNECTING
+        && !this.withinConnectingGracePeriod
       ) {
         hasInterruption = true;
       }

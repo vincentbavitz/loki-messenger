@@ -232,9 +232,9 @@ function _cleanData(data) {
       // eslint-disable-next-line no-param-reassign
       data[key] = _cleanData(value);
     } else if (
-      typeof value !== 'string' &&
-      typeof value !== 'number' &&
-      typeof value !== 'boolean'
+      typeof value !== 'string'
+      && typeof value !== 'number'
+      && typeof value !== 'boolean'
     ) {
       window.log.info(`_cleanData: key ${key} had type ${typeof value}`);
     }
@@ -605,9 +605,9 @@ async function removeAllContactSignedPreKeys() {
 function signatureToBase64(signature) {
   if (signature.constructor === dcodeIO.ByteBuffer) {
     return dcodeIO.ByteBuffer.wrap(signature).toString('base64');
-  } else if (isArrayBuffer(signature)) {
+  } if (isArrayBuffer(signature)) {
     return arrayBufferToBase64(signature);
-  } else if (typeof signature === 'string') {
+  } if (typeof signature === 'string') {
     // assume it's already base64
     return signature;
   }

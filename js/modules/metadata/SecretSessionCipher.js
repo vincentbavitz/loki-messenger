@@ -66,8 +66,7 @@ function createCertificateValidator(trustRoot) {
 }
 
 function _decodePoint(serialized, offset = 0) {
-  const view =
-    offset > 0
+  const view =    offset > 0
       ? getViewOfArrayBuffer(serialized, offset, serialized.byteLength)
       : serialized;
 
@@ -132,9 +131,9 @@ function _createUnidentifiedSenderMessageFromBuffer(serialized) {
   );
 
   if (
-    !unidentifiedSenderMessage.ephemeralPublic ||
-    !unidentifiedSenderMessage.encryptedStatic ||
-    !unidentifiedSenderMessage.encryptedMessage
+    !unidentifiedSenderMessage.ephemeralPublic
+    || !unidentifiedSenderMessage.encryptedStatic
+    || !unidentifiedSenderMessage.encryptedMessage
   ) {
     throw new Error('Missing fields');
   }

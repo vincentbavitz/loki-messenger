@@ -35,21 +35,20 @@
       this.on('disconnected', this.reconnect);
 
       // Keep data around if it's a re-link, or the middle of a light import
-      this.shouldRetainData =
-        Whisper.Registration.everDone() || options.hasExistingData;
+      this.shouldRetainData =        Whisper.Registration.everDone() || options.hasExistingData;
     },
     render_attributes() {
       let errorMessage;
 
       if (this.error) {
         if (
-          this.error.name === 'HTTPError' &&
-          this.error.code === TOO_MANY_DEVICES
+          this.error.name === 'HTTPError'
+          && this.error.code === TOO_MANY_DEVICES
         ) {
           errorMessage = i18n('installTooManyDevices');
         } else if (
-          this.error.name === 'HTTPError' &&
-          this.error.code === CONNECTION_ERROR
+          this.error.name === 'HTTPError'
+          && this.error.code === CONNECTION_ERROR
         ) {
           errorMessage = i18n('installConnectionFailed');
         } else if (this.error.message === 'websocket closed') {
@@ -116,8 +115,8 @@
       if (error.message === 'websocket closed') {
         this.trigger('disconnected');
       } else if (
-        error.name !== 'HTTPError' ||
-        (error.code !== CONNECTION_ERROR && error.code !== TOO_MANY_DEVICES)
+        error.name !== 'HTTPError'
+        || (error.code !== CONNECTION_ERROR && error.code !== TOO_MANY_DEVICES)
       ) {
         throw error;
       }

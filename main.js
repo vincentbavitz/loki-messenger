@@ -9,12 +9,13 @@ const crypto = require('crypto');
 const _ = require('lodash');
 const pify = require('pify');
 const electron = require('electron');
+const electronLocalshortcut = require('electron-localshortcut');
+const _sodium = require('libsodium-wrappers');
 const { setup: setupSpellChecker } = require('./app/spell_check');
 const packageJson = require('./package.json');
 const GlobalErrors = require('./app/global_errors');
 
 GlobalErrors.addHandler();
-const electronLocalshortcut = require('electron-localshortcut');
 
 const getRealPath = pify(fs.realpath);
 const {
@@ -45,9 +46,9 @@ function getMainWindow() {
 
 // Tray icon and related objects
 let tray = null;
-const startInTray = process.argv.some(arg => arg === '--start-in-tray');
+const startInTray = process.argv.some((arg) => arg === '--start-in-tray');
 const usingTrayIcon =
-  startInTray || process.argv.some(arg => arg === '--use-tray-icon');
+  startInTray || process.argv.some((arg) => arg === '--use-tray-icon');
 
 const config = require('./app/config');
 
@@ -57,7 +58,7 @@ const userConfig = require('./app/user_config');
 const passwordUtil = require('./app/password_util');
 
 const importMode =
-  process.argv.some(arg => arg === '--import') || config.get('import');
+  process.argv.some((arg) => arg === '--import') || config.get('import');
 
 const development = config.environment === 'development';
 const appInstance = config.util.getEnv('NODE_APP_INSTANCE') || 0;
@@ -81,8 +82,6 @@ const {
   installWebHandler,
 } = require('./app/protocol_filter');
 const { installPermissionsHandler } = require('./app/permissions');
-
-const _sodium = require('libsodium-wrappers');
 
 async function getSodium() {
   await _sodium.ready;
@@ -240,34 +239,32 @@ function isVisible(window, bounds) {
 
 async function createWindow() {
   const { screen } = electron;
-  const windowOptions = Object.assign(
-    {
-      show: !startInTray, // allow to start minimised in tray
-      width: DEFAULT_WIDTH,
-      height: DEFAULT_HEIGHT,
-      minWidth: MIN_WIDTH,
-      minHeight: MIN_HEIGHT,
-      autoHideMenuBar: false,
-      backgroundColor: '#fff',
-      webPreferences: {
-        nodeIntegration: false,
-        nodeIntegrationInWorker: false,
-        contextIsolation: false,
-        preload: path.join(__dirname, 'preload.js'),
-        nativeWindowOpen: true,
-        spellcheck: await getSpellCheckSetting(),
-      },
-      icon: path.join(__dirname, 'images', 'session', 'icon_64.png'),
+  const windowOptions = {
+    show: !startInTray, // allow to start minimised in tray
+    width: DEFAULT_WIDTH,
+    height: DEFAULT_HEIGHT,
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
+    autoHideMenuBar: false,
+    backgroundColor: '#fff',
+    webPreferences: {
+      nodeIntegration: false,
+      nodeIntegrationInWorker: false,
+      contextIsolation: false,
+      preload: path.join(__dirname, 'preload.js'),
+      nativeWindowOpen: true,
+      spellcheck: await getSpellCheckSetting(),
     },
-    _.pick(windowConfig, [
+    icon: path.join(__dirname, 'images', 'session', 'icon_64.png'),
+    ..._.pick(windowConfig, [
       'maximized',
       'autoHideMenuBar',
       'width',
       'height',
       'x',
       'y',
-    ])
-  );
+    ]),
+  };
 
   if (!_.isNumber(windowOptions.width) || windowOptions.width < MIN_WIDTH) {
     windowOptions.width = DEFAULT_WIDTH;
@@ -282,7 +279,7 @@ async function createWindow() {
     delete windowOptions.autoHideMenuBar;
   }
 
-  const visibleOnAnyScreen = _.some(screen.getAllDisplays(), display => {
+  const visibleOnAnyScreen = _.some(screen.getAllDisplays(), (display) => {
     if (!_.isNumber(windowOptions.x) || !_.isNumber(windowOptions.y)) {
       return false;
     }
@@ -387,7 +384,7 @@ async function createWindow() {
   // Emitted when the window is about to be closed.
   // Note: We do most of our shutdown logic here because all windows are closed by
   //   Electron before the app quits.
-  mainWindow.on('close', async e => {
+  mainWindow.on('close', async (e) => {
     console.log('close event', {
       readyForShutdown: mainWindow ? mainWindow.readyForShutdown : null,
       shouldQuit: windowState.shouldQuit(),
@@ -542,7 +539,7 @@ function showPasswordWindow() {
 
   captureClicks(passwordWindow);
 
-  passwordWindow.on('close', e => {
+  passwordWindow.on('close', (e) => {
     // If the application is terminating, just do the default
     if (
       config.environment === 'test' ||
@@ -852,7 +849,8 @@ async function showMainWindow(sqlKey, passwordAttempt = false) {
 
 function setupMenu(options) {
   const { platform } = process;
-  const menuOptions = Object.assign({}, options, {
+  const menuOptions = {
+    ...options,
     development,
     showDebugLog: showDebugLogWindow,
     showWindow,
@@ -864,7 +862,7 @@ function setupMenu(options) {
     setupWithImport,
     setupAsNewDevice,
     setupAsStandalone,
-  });
+  };
   const template = createTemplate(menuOptions, locale.messages);
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
@@ -950,16 +948,16 @@ app.on('activate', () => {
 
 // Defense in depth. We never intend to open webviews or windows. Prevent it completely.
 app.on('web-contents-created', (createEvent, contents) => {
-  contents.on('will-attach-webview', attachEvent => {
+  contents.on('will-attach-webview', (attachEvent) => {
     attachEvent.preventDefault();
   });
-  contents.on('new-window', newEvent => {
+  contents.on('new-window', (newEvent) => {
     newEvent.preventDefault();
   });
 });
 
 // Ingested in preload.js via a sendSync call
-ipc.on('locale-data', event => {
+ipc.on('locale-data', (event) => {
   // eslint-disable-next-line no-param-reassign
   event.returnValue = locale.messages;
 });
@@ -1024,7 +1022,7 @@ ipc.on('update-tray-icon', (event, unreadCount) => {
 
 // Password screen related IPC calls
 ipc.on('password-window-login', async (event, passPhrase) => {
-  const sendResponse = e =>
+  const sendResponse = (e) =>
     event.sender.send('password-window-login-response', e);
 
   try {
@@ -1038,7 +1036,7 @@ ipc.on('password-window-login', async (event, passPhrase) => {
 });
 
 ipc.on('set-password', async (event, passPhrase, oldPhrase) => {
-  const sendResponse = e => event.sender.send('set-password-response', e);
+  const sendResponse = (e) => event.sender.send('set-password-response', e);
 
   try {
     // Check if the hash we have stored matches the hash of the old passphrase.
@@ -1104,7 +1102,7 @@ function removeDarkOverlay() {
 }
 
 // This should be called with an ipc sendSync
-ipc.on('get-media-permissions', event => {
+ipc.on('get-media-permissions', (event) => {
   // eslint-disable-next-line no-param-reassign
   event.returnValue = userConfig.get('mediaPermissions') || false;
 });
@@ -1121,7 +1119,7 @@ ipc.on('set-media-permissions', (event, value) => {
 });
 
 // Loki - Auto updating
-ipc.on('get-auto-update-setting', event => {
+ipc.on('get-auto-update-setting', (event) => {
   const configValue = userConfig.get('autoUpdate');
   // eslint-disable-next-line no-param-reassign
   event.returnValue = typeof configValue !== 'boolean' ? true : configValue;
@@ -1185,7 +1183,7 @@ ipc.on('set-auto-update-setting', (event, enabled) => {
 });
 
 function getThemeFromMainWindow() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     ipc.once('get-success-theme-setting', (_event, value) => resolve(value));
     mainWindow.webContents.send('get-theme-setting');
   });

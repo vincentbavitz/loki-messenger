@@ -5,7 +5,7 @@ module.exports = {
     'import/core-modules': ['electron'],
   },
 
-  extends: ['airbnb-base', 'prettier'],
+  extends: ['airbnb-base', 'prettier:/recommended', 'plugin:react/recommended'],
 
   plugins: ['mocha', 'more'],
 
@@ -51,6 +51,10 @@ module.exports = {
       'single',
       { avoidEscape: true, allowTemplateLiterals: true },
     ],
+
+    // Rules for TS Upgrade @ April 2020
+    'arrow-parens': 'as-needed',
+
 
     // Prettier overrides:
     'arrow-parens': 'off',

@@ -26,8 +26,8 @@ exports.open = (name, version, { onUpgradeNeeded } = {}) => {
 
       reject(
         new Error(
-          'Database upgrade required:' +
-            ` oldVersion: ${oldVersion}, newVersion: ${newVersion}`
+          'Database upgrade required:'
+            + ` oldVersion: ${oldVersion}, newVersion: ${newVersion}`
         )
       );
     };

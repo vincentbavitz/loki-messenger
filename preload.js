@@ -7,6 +7,7 @@ const electron = require('electron');
 const { webFrame } = electron;
 const semver = require('semver');
 
+const config = require('url').parse(window.location.toString(), true).query;
 const { deferredToPromise } = require('./js/modules/deferred_to_promise');
 const { JobQueue } = require('./js/modules/job_queue');
 
@@ -15,7 +16,6 @@ const { clipboard } = electron;
 
 window.PROTO_ROOT = 'protos';
 const appConfig = require('./app/config');
-const config = require('url').parse(window.location.toString(), true).query;
 
 let title = config.name;
 if (config.environment !== 'production') {
@@ -46,7 +46,7 @@ window.getHostName = () => config.hostname;
 window.getServerTrustRoot = () => config.serverTrustRoot;
 window.isBehindProxy = () => Boolean(config.proxyUrl);
 window.JobQueue = JobQueue;
-window.getStoragePubKey = key =>
+window.getStoragePubKey = (key) =>
   window.isDev() ? key.substring(0, key.length - 2) : key;
 window.getDefaultFileServer = () => config.defaultFileServer;
 window.initialisedAPI = false;
@@ -95,7 +95,7 @@ window.wrapDeferred = deferredToPromise;
 const ipc = electron.ipcRenderer;
 const localeMessages = ipc.sendSync('locale-data');
 
-window.blake2b = input =>
+window.blake2b = (input) =>
   new Promise((resolve, reject) => {
     ipc.once('blake2b-digest-response', (event, error, res) => {
       // eslint-disable-next-line no-unused-expressions
@@ -120,7 +120,7 @@ window.updateZoomFactor = () => {
   window.setZoomFactor(zoomFactor / 100);
 };
 
-window.setZoomFactor = number => {
+window.setZoomFactor = (number) => {
   webFrame.setZoomFactor(number);
 };
 
@@ -128,7 +128,7 @@ window.getZoomFactor = () => {
   webFrame.getZoomFactor();
 };
 
-window.setBadgeCount = count => ipc.send('set-badge-count', count);
+window.setBadgeCount = (count) => ipc.send('set-badge-count', count);
 
 // Set the password for the database
 window.setPassword = (passPhrase, oldPhrase) =>
@@ -159,10 +159,10 @@ window.showWindow = () => {
   ipc.send('show-window');
 };
 
-window.setAutoHideMenuBar = autoHide =>
+window.setAutoHideMenuBar = (autoHide) =>
   ipc.send('set-auto-hide-menu-bar', autoHide);
 
-window.setMenuBarVisibility = visibility =>
+window.setMenuBarVisibility = (visibility) =>
   ipc.send('set-menu-bar-visibility', visibility);
 
 window.restart = () => {
@@ -175,7 +175,7 @@ window.resetDatabase = () => {
   ipc.send('resetDatabase');
 };
 
-window.onUnblockNumber = number => {
+window.onUnblockNumber = (number) => {
   // Unblock the number
   if (window.BlockedNumberController) {
     window.BlockedNumberController.unblock(number);
@@ -202,7 +202,7 @@ ipc.on('mediaPermissionsChanged', () => {
 window.closeAbout = () => ipc.send('close-about');
 window.readyForUpdates = () => ipc.send('ready-for-updates');
 
-window.updateTrayIcon = unreadCount =>
+window.updateTrayIcon = (unreadCount) =>
   ipc.send('update-tray-icon', unreadCount);
 
 ipc.on('set-up-with-import', () => {
@@ -247,7 +247,8 @@ window.getSettingValue = (settingID, comparisonValue = null) => {
   // We need to get specific settings from the main process
   if (settingID === 'media-permissions') {
     return window.getMediaPermissions();
-  } else if (settingID === 'auto-update') {
+  }
+  if (settingID === 'auto-update') {
     return window.getAutoUpdateEnabled();
   }
 
@@ -275,7 +276,7 @@ window.getMediaPermissions = () => ipc.sendSync('get-media-permissions');
 
 // Auto update setting
 window.getAutoUpdateEnabled = () => ipc.sendSync('get-auto-update-setting');
-window.setAutoUpdateEnabled = value =>
+window.setAutoUpdateEnabled = (value) =>
   ipc.send('set-auto-update-setting', !!value);
 
 ipc.on('get-ready-for-shutdown', async () => {
@@ -393,7 +394,7 @@ window.Signal.Backup = require('./js/modules/backup');
 window.Signal.Debug = require('./js/modules/debug');
 window.Signal.Logs = require('./js/modules/logs');
 
-window.addEventListener('contextmenu', e => {
+window.addEventListener('contextmenu', (e) => {
   const editable = e.target.closest(
     'textarea, input, [contenteditable="true"]'
   );
@@ -404,7 +405,8 @@ window.addEventListener('contextmenu', e => {
   }
 });
 
-window.shortenPubkey = pubkey => `(...${pubkey.substring(pubkey.length - 6)})`;
+window.shortenPubkey = (pubkey) =>
+  `(...${pubkey.substring(pubkey.length - 6)})`;
 
 window.pubkeyPattern = /@[a-fA-F0-9]{64,66}\b/g;
 
@@ -418,7 +420,7 @@ window.lokiFeatureFlags = {
 };
 
 // eslint-disable-next-line no-extend-native,func-names
-Promise.prototype.ignore = function() {
+Promise.prototype.ignore = function () {
   // eslint-disable-next-line more/no-then
   this.then(() => {});
 };

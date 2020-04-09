@@ -221,9 +221,9 @@ class LokiMessageAPI {
         // Make sure we aren't doing too much PoW
         const currentDifficulty = window.storage.get('PoWDifficulty', null);
         if (
-          result &&
-          result.difficulty &&
-          result.difficulty !== currentDifficulty
+          result
+          && result.difficulty
+          && result.difficulty !== currentDifficulty
         ) {
           window.storage.put('PoWDifficulty', result.difficulty);
           // should we return false?
@@ -242,7 +242,7 @@ class LokiMessageAPI {
           this.sendingData[params.timestamp].swarm = newSwarm;
           this.sendingData[params.timestamp].hasFreshList = true;
           return false;
-        } else if (e instanceof textsecure.WrongDifficultyError) {
+        } if (e instanceof textsecure.WrongDifficultyError) {
           const { newDifficulty } = e;
           if (!Number.isNaN(newDifficulty)) {
             window.storage.put('PoWDifficulty', newDifficulty);
@@ -291,8 +291,8 @@ class LokiMessageAPI {
       delete this.ourSwarmNodes[address];
       let successiveFailures = 0;
       while (
-        !stopPollingResult &&
-        successiveFailures < MAX_ACCEPTABLE_FAILURES
+        !stopPollingResult
+        && successiveFailures < MAX_ACCEPTABLE_FAILURES
       ) {
         // TODO: Revert back to using snode address instead of IP
         try {

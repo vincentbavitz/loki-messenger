@@ -27,8 +27,8 @@ exports.createConversation = async ({
   WhisperMessage,
 } = {}) => {
   if (
-    !isObject(ConversationController) ||
-    !isFunction(ConversationController.getOrCreateAndWait)
+    !isObject(ConversationController)
+    || !isFunction(ConversationController.getOrCreateAndWait)
   ) {
     throw new TypeError("'ConversationController' is required");
   }
@@ -115,20 +115,16 @@ const createRandomMessage = async ({ conversationId } = {}) => {
 const _createMessage = ({ commonProperties, conversationId, type } = {}) => {
   switch (type) {
     case 'incoming':
-      return Object.assign({}, commonProperties, {
-        flags: 0,
+      return { ...commonProperties, flags: 0,
         source: conversationId,
-        sourceDevice: 1,
-      });
+        sourceDevice: 1};
     case 'outgoing':
-      return Object.assign({}, commonProperties, {
-        delivered: 1,
+      return { ...commonProperties, delivered: 1,
         delivered_to: [conversationId],
         expireTimer: 0,
         recipients: [conversationId],
         sent_to: [conversationId],
-        synced: true,
-      });
+        synced: true};
     default:
       throw new TypeError(`Unknown message type: '${type}'`);
   }

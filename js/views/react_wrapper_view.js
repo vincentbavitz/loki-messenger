@@ -55,12 +55,10 @@
       });
     },
     augmentProps(props) {
-      return Object.assign({}, props, {
-        close: () => {
+      return { ...props, close: () => {
           this.remove();
         },
-        i18n,
-      });
+        i18n};
     },
     remove() {
       if (this.onClose) {

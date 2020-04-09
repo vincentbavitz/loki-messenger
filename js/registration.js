@@ -1,7 +1,7 @@
 /* global storage, Whisper */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   Whisper.Registration = {

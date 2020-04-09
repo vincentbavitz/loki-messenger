@@ -2,6 +2,7 @@
 
 const { ipcRenderer } = require('electron');
 const url = require('url');
+const electron = require('electron');
 const i18n = require('./js/modules/i18n');
 
 const config = url.parse(window.location.toString(), true).query;
@@ -20,7 +21,6 @@ window.getAppInstance = () => config.appInstance;
 
 // So far we're only using this for Signal.Types
 const Signal = require('./js/modules/signal');
-const electron = require('electron');
 
 const ipc = electron.ipcRenderer;
 
@@ -56,7 +56,7 @@ window.clearLocalData = async () => {
   window.restart();
 };
 
-window.onLogin = passPhrase =>
+window.onLogin = (passPhrase) =>
   new Promise((resolve, reject) => {
     ipcRenderer.once('password-window-login-response', (event, error) => {
       if (error) {

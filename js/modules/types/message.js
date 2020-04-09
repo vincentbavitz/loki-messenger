@@ -61,8 +61,7 @@ exports.isValid = () => true;
 
 // Schema
 exports.initializeSchemaVersion = ({ message, logger }) => {
-  const isInitialized =
-    SchemaVersion.isValid(message.schemaVersion) && message.schemaVersion >= 1;
+  const isInitialized =    SchemaVersion.isValid(message.schemaVersion) && message.schemaVersion >= 1;
   if (isInitialized) {
     return message;
   }
@@ -72,9 +71,7 @@ exports.initializeSchemaVersion = ({ message, logger }) => {
     : 0;
   const hasAttachments = numAttachments > 0;
   if (!hasAttachments) {
-    return Object.assign({}, message, {
-      schemaVersion: INITIAL_SCHEMA_VERSION,
-    });
+    return { ...message, schemaVersion: INITIAL_SCHEMA_VERSION};
   }
 
   // All attachments should have the same schema version, so we just pick
@@ -85,12 +82,10 @@ exports.initializeSchemaVersion = ({ message, logger }) => {
   )
     ? firstAttachment.schemaVersion
     : INITIAL_SCHEMA_VERSION;
-  const messageWithInitialSchema = Object.assign({}, message, {
-    schemaVersion: inheritedSchemaVersion,
+  const messageWithInitialSchema = { ...message, schemaVersion: inheritedSchemaVersion,
     attachments: message.attachments.map(attachment =>
       Attachment.removeSchemaVersion({ attachment, logger })
-    ),
-  });
+    )};
 
   return messageWithInitialSchema;
 };
@@ -158,7 +153,7 @@ exports._withSchemaVersion = ({ schemaVersion, upgrade }) => {
       return message;
     }
 
-    return Object.assign({}, upgradedMessage, { schemaVersion });
+    return { ...upgradedMessage, schemaVersion};
   };
 };
 
@@ -172,7 +167,7 @@ exports._mapAttachments = upgradeAttachment => async (message, context) => {
   const attachments = await Promise.all(
     (message.attachments || []).map(upgradeWithContext)
   );
-  return Object.assign({}, message, { attachments });
+  return { ...message, attachments};
 };
 
 // Public API
@@ -180,13 +175,13 @@ exports._mapAttachments = upgradeAttachment => async (message, context) => {
 //                     (Message, Context) ->
 //                     Promise Message
 exports._mapContact = upgradeContact => async (message, context) => {
-  const contextWithMessage = Object.assign({}, context, { message });
+  const contextWithMessage = { ...context, message};
   const upgradeWithContext = contact =>
     upgradeContact(contact, contextWithMessage);
   const contact = await Promise.all(
     (message.contact || []).map(upgradeWithContext)
   );
-  return Object.assign({}, message, { contact });
+  return { ...message, contact};
 };
 
 //      _mapQuotedAttachments :: (QuotedAttachment -> Promise QuotedAttachment) ->
@@ -210,9 +205,7 @@ exports._mapQuotedAttachments = upgradeAttachment => async (
     }
 
     const upgradedThumbnail = await upgradeAttachment(thumbnail, context);
-    return Object.assign({}, attachment, {
-      thumbnail: upgradedThumbnail,
-    });
+    return { ...attachment, thumbnail: upgradedThumbnail};
   };
 
   const quotedAttachments = (message.quote && message.quote.attachments) || [];
@@ -220,11 +213,7 @@ exports._mapQuotedAttachments = upgradeAttachment => async (
   const attachments = await Promise.all(
     quotedAttachments.map(upgradeWithContext)
   );
-  return Object.assign({}, message, {
-    quote: Object.assign({}, message.quote, {
-      attachments,
-    }),
-  });
+  return { ...message, quote: { ...message.quote, attachments}};
 };
 
 //      _mapPreviewAttachments :: (PreviewAttachment -> Promise PreviewAttachment) ->
@@ -248,17 +237,13 @@ exports._mapPreviewAttachments = upgradeAttachment => async (
     }
 
     const upgradedImage = await upgradeAttachment(image, context);
-    return Object.assign({}, preview, {
-      image: upgradedImage,
-    });
+    return { ...preview, image: upgradedImage};
   };
 
   const preview = await Promise.all(
     (message.preview || []).map(upgradeWithContext)
   );
-  return Object.assign({}, message, {
-    preview,
-  });
+  return { ...message, preview};
 };
 
 const toVersion0 = async (message, context) =>
@@ -470,11 +455,9 @@ exports.createAttachmentLoader = loadAttachmentData => {
   }
 
   return async message =>
-    Object.assign({}, message, {
-      attachments: await Promise.all(
+    ({ ...message, attachments: await Promise.all(
         message.attachments.map(loadAttachmentData)
-      ),
-    });
+      )});
 };
 
 exports.loadQuoteData = loadAttachmentData => {
@@ -620,19 +603,17 @@ exports.createAttachmentDataWriter = ({
     });
 
     const { attachments, quote, contact, preview } = message;
-    const hasFilesToWrite =
-      (quote && quote.attachments && quote.attachments.length > 0) ||
-      (attachments && attachments.length > 0) ||
-      (contact && contact.length > 0) ||
-      (preview && preview.length > 0);
+    const hasFilesToWrite =      (quote && quote.attachments && quote.attachments.length > 0)
+      || (attachments && attachments.length > 0)
+      || (contact && contact.length > 0)
+      || (preview && preview.length > 0);
 
     if (!hasFilesToWrite) {
       return message;
     }
 
     const lastVersionWithAttachmentDataInMemory = 2;
-    const willAttachmentsGoToFileSystemOnUpgrade =
-      message.schemaVersion <= lastVersionWithAttachmentDataInMemory;
+    const willAttachmentsGoToFileSystemOnUpgrade =      message.schemaVersion <= lastVersionWithAttachmentDataInMemory;
     if (willAttachmentsGoToFileSystemOnUpgrade) {
       return message;
     }
@@ -678,11 +659,7 @@ exports.createAttachmentDataWriter = ({
 
       await writeExistingAttachmentData(avatar.avatar);
 
-      return Object.assign({}, messageContact, {
-        avatar: Object.assign({}, avatar, {
-          avatar: omit(avatar.avatar, ['data']),
-        }),
-      });
+      return { ...messageContact, avatar: { ...avatar, avatar: omit(avatar.avatar, ['data'])}};
     };
 
     const writePreviewImage = async item => {
@@ -693,16 +670,13 @@ exports.createAttachmentDataWriter = ({
 
       await writeExistingAttachmentData(image);
 
-      return Object.assign({}, item, {
-        image: omit(image, ['data']),
-      });
+      return { ...item, image: omit(image, ['data'])};
     };
 
-    const messageWithoutAttachmentData = Object.assign(
-      {},
-      await writeThumbnails(message, { logger }),
-      {
-        contact: await Promise.all((contact || []).map(writeContactAvatar)),
+    const messageWithoutAttachmentData = {
+      
+      ...await writeThumbnails(message, { logger }),
+      contact: await Promise.all((contact || []).map(writeContactAvatar)),
         preview: await Promise.all((preview || []).map(writePreviewImage)),
         attachments: await Promise.all(
           (attachments || []).map(async attachment => {
@@ -726,8 +700,7 @@ exports.createAttachmentDataWriter = ({
             };
           })
         ),
-      }
-    );
+    };
 
     return messageWithoutAttachmentData;
   };

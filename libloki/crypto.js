@@ -11,7 +11,7 @@
 */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.libloki = window.libloki || {};
 
   class FallBackDecryptionError extends Error {}
@@ -125,9 +125,7 @@
         return await DHDecrypt(symmetricKey, ivAndCiphertext);
       } catch (e) {
         throw new FallBackDecryptionError(
-          `Could not decrypt message from ${
-            this.identityKeyString
-          } using FallBack encryption.`
+          `Could not decrypt message from ${this.identityKeyString} using FallBack encryption.`
         );
       }
     }
@@ -183,7 +181,8 @@
         'Received a pairing request with missing pubkeys. Ignored.'
       );
       return false;
-    } else if (!requestSignature) {
+    }
+    if (!requestSignature) {
       window.log.warn(
         'Received a pairing request with missing request signature. Ignored.'
       );
@@ -237,12 +236,14 @@
         'Received a pairing request while being a secondary device. Ignored.'
       );
       return false;
-    } else if (isRequest && primaryDevicePubKey !== ourPubKey) {
+    }
+    if (isRequest && primaryDevicePubKey !== ourPubKey) {
       window.log.warn(
         'Received a pairing request addressed to another pubkey. Ignored.'
       );
       return false;
-    } else if (isRequest && secondaryDevicePubKey === ourPubKey) {
+    }
+    if (isRequest && secondaryDevicePubKey === ourPubKey) {
       window.log.warn('Received a pairing request from ourselves. Ignored.');
       return false;
     }
@@ -301,7 +302,7 @@
     return tokenString;
   }
 
-  const sha512 = data => crypto.subtle.digest('SHA-512', data);
+  const sha512 = (data) => crypto.subtle.digest('SHA-512', data);
 
   const PairingType = Object.freeze({
     REQUEST: 1,

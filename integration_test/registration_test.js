@@ -2,12 +2,12 @@
 /* eslint-disable func-names  */
 /* eslint-disable import/no-extraneous-dependencies */
 
-const common = require('./common');
 const { afterEach, beforeEach, describe, it } = require('mocha');
+const common = require('./common');
 const RegistrationPage = require('./page-objects/registration.page');
 const ConversationPage = require('./page-objects/conversation.page');
 
-describe('Window Test and Login', function() {
+describe('Window Test and Login', function () {
   let app;
   this.timeout(20000);
   this.slow(15000);

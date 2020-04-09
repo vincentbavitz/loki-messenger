@@ -24,11 +24,11 @@
       // private friends (not you) that aren't already moderators
       const friends = convos.filter(
         d =>
-          !!d &&
-          d.isFriend() &&
-          d.isPrivate() &&
-          !d.isMe() &&
-          !modPubKeys.includes(d.id)
+          !!d
+          && d.isFriend()
+          && d.isPrivate()
+          && !d.isMe()
+          && !modPubKeys.includes(d.id)
       );
 
       this.friends = friends;

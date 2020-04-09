@@ -19,8 +19,7 @@
     },
     render_attributes() {
       // Show the appropriate message based on model validity
-      const message =
-        this.model && this.model.isValid()
+      const message =        this.model && this.model.isValid()
           ? i18n('startConversation')
           : i18n('invalidNumberError');
       return {

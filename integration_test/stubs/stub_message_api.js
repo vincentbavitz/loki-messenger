@@ -1,4 +1,6 @@
 /* global clearTimeout, dcodeIO, Buffer, TextDecoder, process */
+/* eslint-disable no-redeclare */
+
 const nodeFetch = require('node-fetch');
 
 class StubMessageAPI {

@@ -43,8 +43,8 @@ function getStringable(thing) {
 // Number formatting utils
 window.textsecure.utils = (() => {
   const self = {};
-  self.unencodeNumber = number => number.split('.');
-  self.isNumberSane = number =>
+  self.unencodeNumber = (number) => number.split('.');
+  self.isNumberSane = (number) =>
     number[0] === '+' && /^[0-9]+$/.test(number.substring(1));
 
   /** ************************
@@ -53,25 +53,28 @@ window.textsecure.utils = (() => {
   function ensureStringed(thing) {
     if (getStringable(thing)) {
       return getString(thing);
-    } else if (thing instanceof Array) {
+    }
+    if (thing instanceof Array) {
       const res = [];
       for (let i = 0; i < thing.length; i += 1) {
         res[i] = ensureStringed(thing[i]);
       }
       return res;
-    } else if (thing === Object(thing)) {
+    }
+    if (thing === Object(thing)) {
       const res = {};
       for (const key in thing) {
         res[key] = ensureStringed(thing[key]);
       }
       return res;
-    } else if (thing === null) {
+    }
+    if (thing === null) {
       return null;
     }
     throw new Error(`unsure of how to jsonify object of type ${typeof thing}`);
   }
 
-  self.jsonThing = thing => JSON.stringify(ensureStringed(thing));
+  self.jsonThing = (thing) => JSON.stringify(ensureStringed(thing));
 
   return self;
 })();

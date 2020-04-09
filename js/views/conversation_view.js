@@ -747,9 +747,9 @@
     async toggleMicrophone() {
       const allowMicrophone = await window.getMediaPermissions();
       if (
-        !allowMicrophone ||
-        this.$('.send-message').val().length > 0 ||
-        this.fileInput.hasFiles()
+        !allowMicrophone
+        || this.$('.send-message').val().length > 0
+        || this.fileInput.hasFiles()
       ) {
         this.$('.capture-audio').hide();
       } else {
@@ -1140,8 +1140,8 @@
         if (!this.lastSeenIndicator) {
           this.resetLastSeenIndicator({ scroll: false });
         } else if (
-          this.view.atBottom() &&
-          this.model.get('unreadCount') === this.lastSeenIndicator.getCount()
+          this.view.atBottom()
+          && this.model.get('unreadCount') === this.lastSeenIndicator.getCount()
         ) {
           // The count check ensures that the last seen indicator is still in
           //   sync with the real number of unread, so we can scroll to it.
@@ -1432,8 +1432,8 @@
       const { contentType, path } = attachment;
 
       if (
-        !Signal.Util.GoogleChrome.isImageTypeSupported(contentType) &&
-        !Signal.Util.GoogleChrome.isVideoTypeSupported(contentType)
+        !Signal.Util.GoogleChrome.isImageTypeSupported(contentType)
+        && !Signal.Util.GoogleChrome.isVideoTypeSupported(contentType)
       ) {
         this.downloadAttachment({ attachment, message });
         return;
@@ -1547,8 +1547,7 @@
           }),
           hasSignalAccount,
           onSendMessage: () => {
-            const number =
-              contact.number && contact.number[0] && contact.number[0].value;
+            const number =              contact.number && contact.number[0] && contact.number[0].value;
             if (number) {
               this.openConversation(number);
             }
@@ -1820,10 +1819,9 @@
         const startPos = textarea.selectionStart;
         const endPos = textarea.selectionEnd;
 
-        textarea.value =
-          textarea.value.substring(0, startPos) +
-          colons +
-          textarea.value.substring(endPos, textarea.value.length);
+        textarea.value =          textarea.value.substring(0, startPos)
+          + colons
+          + textarea.value.substring(endPos, textarea.value.length);
         textarea.selectionStart = startPos + colons.length;
         textarea.selectionEnd = startPos + colons.length;
       } else {
@@ -1882,12 +1880,10 @@
         className: 'quote-wrapper',
         Component: window.Signal.Components.Quote,
         elCallback: el => this.$('.send').prepend(el),
-        props: Object.assign({}, props, {
-          withContentAbove: true,
+        props: { ...props, withContentAbove: true,
           onClose: () => {
             this.setQuoteMessage(null);
-          },
-        }),
+          }},
         onInitialRender: () => {
           this.view.restoreBottomOffset();
           this.updateMessageFieldSize({});
@@ -2023,8 +2019,8 @@
 
       const link = links.find(
         item =>
-          window.Signal.LinkPreviews.isLinkInWhitelist(item) &&
-          !this.excludedPreviewUrls.includes(item)
+          window.Signal.LinkPreviews.isLinkInWhitelist(item)
+          && !this.excludedPreviewUrls.includes(item)
       );
       if (!link) {
         this.removeLinkPreview();
@@ -2190,8 +2186,8 @@
         const result = await promise;
 
         if (
-          url !== this.currentlyMatchedLink ||
-          promise !== this.previewLoading
+          url !== this.currentlyMatchedLink
+          || promise !== this.previewLoading
         ) {
           // another request was started, or this was canceled
           return;
@@ -2383,8 +2379,7 @@
 
       const text = this.$messageField.val();
 
-      const posToChange =
-        $input.selectionDirection === 'forward' ? posEnd : posStart;
+      const posToChange =        $input.selectionDirection === 'forward' ? posEnd : posStart;
 
       let newPos = nextPos(text, posToChange, isLeft, event.altKey);
 
@@ -2463,10 +2458,10 @@
       const keyCode = event.which || event.keyCode;
 
       if (
-        keyCode === 13 &&
-        !event.altKey &&
-        !event.shiftKey &&
-        !event.ctrlKey
+        keyCode === 13
+        && !event.altKey
+        && !event.shiftKey
+        && !event.ctrlKey
       ) {
         // enter pressed - submit the form now
         event.preventDefault();
@@ -2534,12 +2529,11 @@
         ? this.quoteView.$el.outerHeight(includeMargin)
         : 0;
 
-      const height =
-        this.$messageField.outerHeight() +
-        $attachmentPreviews.outerHeight() +
-        this.$emojiPanelContainer.outerHeight() +
-        quoteHeight +
-        parseInt($bottomBar.css('min-height'), 10);
+      const height =        this.$messageField.outerHeight()
+        + $attachmentPreviews.outerHeight()
+        + this.$emojiPanelContainer.outerHeight()
+        + quoteHeight
+        + parseInt($bottomBar.css('min-height'), 10);
 
       $bottomBar.outerHeight(height);
 
@@ -2627,8 +2621,7 @@
 
       let membersToShow = [];
       if (query !== null) {
-        membersToShow =
-          query !== ''
+        membersToShow =          query !== ''
             ? allMembers.filter(m => filterMembers(query, m))
             : allMembers;
       }
@@ -2651,8 +2644,8 @@
 
     isHidden() {
       return (
-        this.$el.css('display') === 'none' ||
-        this.$('.panel').css('display') === 'none'
+        this.$el.css('display') === 'none'
+        || this.$('.panel').css('display') === 'none'
       );
     },
   });

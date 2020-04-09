@@ -91,8 +91,8 @@
       let chars = 4;
 
       while (
-        _.has(this.memberMapping, handle) &&
-        this.memberMapping[handle] !== pubkey
+        _.has(this.memberMapping, handle)
+        && this.memberMapping[handle] !== pubkey
       ) {
         const shortenedPubkey = pubkey.substr(pubkey.length - chars);
         handle = `@${name}(..${shortenedPubkey})`;

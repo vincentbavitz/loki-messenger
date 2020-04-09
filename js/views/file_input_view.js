@@ -340,8 +340,7 @@
           file,
         });
         let limitKb = 10000;
-        const blobType =
-          file.type === 'image/gif' ? 'gif' : contentType.split('/')[0];
+        const blobType =          file.type === 'image/gif' ? 'gif' : contentType.split('/')[0];
 
         switch (blobType) {
           case 'image':
@@ -411,8 +410,8 @@
     autoScale(attachment) {
       const { contentType, file } = attachment;
       if (
-        contentType.split('/')[0] !== 'image' ||
-        contentType === 'image/tiff'
+        contentType.split('/')[0] !== 'image'
+        || contentType === 'image/tiff'
       ) {
         // nothing to do
         return Promise.resolve(attachment);
@@ -429,9 +428,9 @@
           const maxHeight = 4096;
           const maxWidth = 4096;
           if (
-            img.naturalWidth <= maxWidth &&
-            img.naturalHeight <= maxHeight &&
-            file.size <= maxSize
+            img.naturalWidth <= maxWidth
+            && img.naturalHeight <= maxHeight
+            && file.size <= maxSize
           ) {
             resolve(attachment);
             return;

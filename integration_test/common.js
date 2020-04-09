@@ -7,12 +7,12 @@ const path = require('path');
 
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
-const RegistrationPage = require('./page-objects/registration.page');
-const ConversationPage = require('./page-objects/conversation.page');
 const { exec } = require('child_process');
 const url = require('url');
 const http = require('http');
 const fse = require('fs-extra');
+const ConversationPage = require('./page-objects/conversation.page');
+const RegistrationPage = require('./page-objects/registration.page');
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -47,7 +47,7 @@ module.exports = {
   USER_DATA_ROOT_FOLDER: '',
 
   async timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   },
 
   // a wrapper to work around electron/spectron bug
@@ -134,7 +134,7 @@ module.exports = {
       process.platform === 'win32'
         ? 'taskkill /im electron.exe /t /f'
         : 'pkill -f "node_modules/electron/dist/electron" | pkill -f "node_modules/.bin/electron"';
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       exec(killStr, (err, stdout, stderr) => {
         if (err) {
           resolve({ stdout, stderr });
@@ -414,7 +414,7 @@ module.exports = {
   generateSendMessageText: () =>
     `Test message from integration tests ${Date.now()}`,
 
-  stubOpenGroupsCalls: app1 => {
+  stubOpenGroupsCalls: (app1) => {
     app1.webContents.executeJavaScript(
       'window.LokiAppDotNetServerAPI = window.StubAppDotNetAPI;'
     );

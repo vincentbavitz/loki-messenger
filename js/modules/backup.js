@@ -62,10 +62,10 @@ function unstringify(object) {
   for (const key in object) {
     const val = object[key];
     if (
-      val &&
-      val.type === 'ArrayBuffer' &&
-      val.encoding === 'base64' &&
-      typeof val.data === 'string'
+      val
+      && val.type === 'ArrayBuffer'
+      && val.encoding === 'base64'
+      && typeof val.data === 'string'
     ) {
       object[key] = crypto.base64ToArrayBuffer(val.data);
     } else if (val instanceof Object) {
@@ -178,8 +178,7 @@ async function importConversationsFromJSON(conversations, options) {
 
   for (let i = 0, max = conversations.length; i < max; i += 1) {
     const toAdd = unstringify(conversations[i]);
-    const haveConversationAlready =
-      conversationLookup[getConversationKey(toAdd)];
+    const haveConversationAlready =      conversationLookup[getConversationKey(toAdd)];
 
     if (haveConversationAlready) {
       skipCount += 1;
@@ -461,9 +460,7 @@ async function writeQuoteThumbnails(quotedAttachments, options) {
       _.map(quotedAttachments, (attachment, index) =>
         writeQuoteThumbnail(
           attachment,
-          Object.assign({}, options, {
-            index,
-          })
+          { ...options, index}
         )
       )
     );
@@ -533,9 +530,7 @@ async function writeAttachments(attachments, options) {
   const promises = _.map(attachments, (attachment, index) =>
     writeAttachment(
       attachment,
-      Object.assign({}, options, {
-        index,
-      })
+      { ...options, index}
     )
   );
   try {
@@ -578,9 +573,7 @@ async function writeContactAvatars(contact, options) {
       _.map(contact, (item, index) =>
         writeAvatar(
           item,
-          Object.assign({}, options, {
-            index,
-          })
+          { ...options, index}
         )
       )
     );
@@ -622,9 +615,7 @@ async function writePreviews(preview, options) {
       _.map(preview, (item, index) =>
         writePreviewImage(
           item,
-          Object.assign({}, options, {
-            index,
-          })
+          { ...options, index}
         )
       )
     );
@@ -1054,10 +1045,9 @@ async function importConversation(dir, options) {
     }
 
     const hasAttachments = message.attachments && message.attachments.length;
-    const hasQuotedAttachments =
-      message.quote &&
-      message.quote.attachments &&
-      message.quote.attachments.length > 0;
+    const hasQuotedAttachments =      message.quote
+      && message.quote.attachments
+      && message.quote.attachments.length > 0;
     const hasContacts = message.contact && message.contact.length;
     const hasPreviews = message.preview && message.preview.length;
 
@@ -1066,8 +1056,7 @@ async function importConversation(dir, options) {
         const getName = attachmentsDir
           ? _getAnonymousAttachmentFileName
           : _getExportAttachmentFileName;
-        const parentDir =
-          attachmentsDir || path.join(dir, message.received_at.toString());
+        const parentDir =          attachmentsDir || path.join(dir, message.received_at.toString());
 
         await loadAttachments(parentDir, getName, {
           message,
@@ -1231,10 +1220,8 @@ async function exportToDirectory(directory, options) {
 
     await exportConversationListToFile(stagingDir);
     await exportConversations(
-      Object.assign({}, options, {
-        messagesDir: stagingDir,
-        attachmentsDir,
-      })
+      { ...options, messagesDir: stagingDir,
+        attachmentsDir}
     );
 
     const archivePath = path.join(directory, ARCHIVE_NAME);
@@ -1275,10 +1262,8 @@ async function importFromDirectory(directory, options) {
       loadConversationLookup(),
     ]);
     const [messageLookup, conversationLookup] = lookups;
-    options = Object.assign({}, options, {
-      messageLookup,
-      conversationLookup,
-    });
+    options = { ...options, messageLookup,
+      conversationLookup};
 
     const archivePath = path.join(directory, ARCHIVE_NAME);
     if (fs.existsSync(archivePath)) {
@@ -1306,11 +1291,9 @@ async function importFromDirectory(directory, options) {
         await decryptFile(archivePath, decryptedArchivePath, options);
         await decompressArchive(decryptedArchivePath, stagingDir);
 
-        options = Object.assign({}, options, {
-          attachmentsDir,
-        });
+        options = { ...options, attachmentsDir};
         const result = await importNonMessages(stagingDir, options);
-        await importConversations(stagingDir, Object.assign({}, options));
+        await importConversations(stagingDir, { ...options});
 
         window.log.info('Done importing from backup!');
         return result;

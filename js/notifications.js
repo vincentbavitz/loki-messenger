@@ -10,7 +10,7 @@
 /* global _: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -73,12 +73,10 @@
         userSetting,
       });
 
-      window.log.info(
-        'Update notifications:',
-        Object.assign({}, status, {
-          isNotificationGroupingSupported,
-        })
-      );
+      window.log.info('Update notifications:', {
+        ...status,
+        isNotificationGroupingSupported,
+      });
 
       if (status.type !== 'ok') {
         if (status.shouldClearNotifications) {
@@ -94,7 +92,7 @@
 
       // The number of notifications excluding friend request
       const messagesNotificationCount = this.models.filter(
-        n => !n.get('isFriendRequest')
+        (n) => !n.get('isFriendRequest')
       ).length;
 
       // NOTE: i18n has more complex rules for pluralization than just

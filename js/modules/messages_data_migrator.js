@@ -31,8 +31,8 @@ exports.processNext = async ({
 
   if (!isFunction(BackboneMessageCollection)) {
     throw new TypeError(
-      "'BackboneMessageCollection' (Whisper.MessageCollection)" +
-        ' constructor is required'
+      "'BackboneMessageCollection' (Whisper.MessageCollection)"
+        + ' constructor is required'
     );
   }
 
@@ -138,8 +138,8 @@ exports.dangerouslyProcessAllWithoutIndex = async ({
   });
   if (!isValidDatabaseVersion) {
     throw new Error(
-      `Expected database version (${databaseVersion})` +
-        ` to be at least ${minDatabaseVersion}`
+      `Expected database version (${databaseVersion})`
+        + ` to be at least ${minDatabaseVersion}`
     );
   }
 
@@ -167,10 +167,8 @@ exports.dangerouslyProcessAllWithoutIndex = async ({
     numCumulativeMessagesProcessed += status.numMessagesProcessed;
     logger.info(
       'Upgrade message schema:',
-      Object.assign({}, status, {
-        numTotalMessages,
-        numCumulativeMessagesProcessed,
-      })
+      { ...status, numTotalMessages,
+        numCumulativeMessagesProcessed}
     );
   }
 
@@ -224,8 +222,8 @@ const _getConnection = async ({ databaseName, minDatabaseVersion }) => {
   const isValidDatabaseVersion = databaseVersion >= minDatabaseVersion;
   if (!isValidDatabaseVersion) {
     throw new Error(
-      `Expected database version (${databaseVersion})` +
-        ` to be at least ${minDatabaseVersion}`
+      `Expected database version (${databaseVersion})`
+        + ` to be at least ${minDatabaseVersion}`
     );
   }
 

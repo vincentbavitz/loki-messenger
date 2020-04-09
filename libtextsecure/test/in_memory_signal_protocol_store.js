@@ -12,10 +12,10 @@ SignalProtocolStore.prototype = {
   },
   put(key, value) {
     if (
-      key === undefined ||
-      value === undefined ||
-      key === null ||
-      value === null
+      key === undefined
+      || value === undefined
+      || key === null
+      || value === null
     ) {
       throw new Error('Tried to store undefined/null');
     }
