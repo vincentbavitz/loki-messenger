@@ -129,8 +129,8 @@
     }
     let authorisations = deviceMapping.authorisations || [];
     if (deviceMapping.isPrimary === '0') {
-      const { primaryDevicePubKey } =
-        authorisations.find(
+      const { primaryDevicePubKey }
+        = authorisations.find(
           (authorisation) =>
             authorisation && authorisation.secondaryDevicePubKey === pubKey
         ) || {};
@@ -250,8 +250,8 @@
 
   async function getAllDevicePubKeysForPrimaryPubKey(primaryDevicePubKey) {
     await saveAllPairingAuthorisationsFor(primaryDevicePubKey);
-    const secondaryPubKeys =
-      (await getSecondaryDevicesFor(primaryDevicePubKey)) || [];
+    const secondaryPubKeys
+      = (await getSecondaryDevicesFor(primaryDevicePubKey)) || [];
     return secondaryPubKeys.concat(primaryDevicePubKey);
   }
 

@@ -8,9 +8,9 @@ describe('TextSecureWebSocket', () => {
   after(() => {
     window.WebSocket = RealWebSocket;
   });
-  it('connects and disconnects', done => {
+  it('connects and disconnects', (done) => {
     const mockServer = new MockServer('ws://localhost:8080');
-    mockServer.on('connection', server => {
+    mockServer.on('connection', (server) => {
       socket.close();
       server.close();
       done();
@@ -18,16 +18,16 @@ describe('TextSecureWebSocket', () => {
     const socket = new TextSecureWebSocket('ws://localhost:8080');
   });
 
-  it('sends and receives', done => {
+  it('sends and receives', (done) => {
     const mockServer = new MockServer('ws://localhost:8080');
-    mockServer.on('connection', server => {
+    mockServer.on('connection', (server) => {
       server.on('message', () => {
         server.send('ack');
         server.close();
       });
     });
     const socket = new TextSecureWebSocket('ws://localhost:8080');
-    socket.onmessage = response => {
+    socket.onmessage = (response) => {
       assert.strictEqual(response.data, 'ack');
       socket.close();
       done();
@@ -35,9 +35,9 @@ describe('TextSecureWebSocket', () => {
     socket.send('syn');
   });
 
-  it('exposes the socket status', done => {
+  it('exposes the socket status', (done) => {
     const mockServer = new MockServer('ws://localhost:8082');
-    mockServer.on('connection', server => {
+    mockServer.on('connection', (server) => {
       assert.strictEqual(socket.getStatus(), WebSocket.OPEN);
       server.close();
       socket.close();
@@ -55,7 +55,7 @@ describe('TextSecureWebSocket', () => {
     const socket = new TextSecureWebSocket('ws://localhost:8082');
     socket.onclose = () => {
       const secondServer = new MockServer('ws://localhost:8082');
-      secondServer.on('connection', server => {
+      secondServer.on('connection', (server) => {
         socket.close();
         server.close();
         done();

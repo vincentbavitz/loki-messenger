@@ -27,8 +27,8 @@
       }
       const receipts = this.filter(
         (receipt) =>
-          receipt.get('timestamp') === message.get('sent_at') &&
-          _.contains(ids, receipt.get('reader'))
+          receipt.get('timestamp') === message.get('sent_at')
+          && _.contains(ids, receipt.get('reader'))
       );
       if (receipts.length) {
         window.log.info('Found early read receipts for message');

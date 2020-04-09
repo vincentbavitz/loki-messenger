@@ -29,7 +29,7 @@ export class InviteFriendsDialog extends React.Component<Props, State> {
 
     let friends = this.props.friendList;
 
-    friends = friends.map(d => {
+    friends = friends.map((d) => {
       const lokiProfile = d.getLokiProfile();
       const name = lokiProfile ? lokiProfile.displayName : 'Anonymous';
 
@@ -95,8 +95,8 @@ export class InviteFriendsDialog extends React.Component<Props, State> {
 
   private onClickOK() {
     const selectedFriends = this.state.friendList
-      .filter(d => d.checkmarked)
-      .map(d => d.id);
+      .filter((d) => d.checkmarked)
+      .map((d) => d.id);
 
     if (selectedFriends.length > 0) {
       this.props.onSubmit(selectedFriends);
@@ -136,7 +136,7 @@ export class InviteFriendsDialog extends React.Component<Props, State> {
   }
 
   private onMemberClicked(clickedMember: ContactType) {
-    const updatedFriends = this.state.friendList.map(member => {
+    const updatedFriends = this.state.friendList.map((member) => {
       if (member.id === clickedMember.id) {
         return { ...member, checkmarked: !member.checkmarked };
       } else {
@@ -144,7 +144,7 @@ export class InviteFriendsDialog extends React.Component<Props, State> {
       }
     });
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         friendList: updatedFriends,

@@ -1,7 +1,7 @@
 /* global window, dcodeIO, textsecure */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.textsecure = window.textsecure || {};
   window.textsecure.protobuf = {};
 
@@ -18,9 +18,7 @@
         }
         const protos = result.build('signalservice');
         if (!protos) {
-          const text = `Error loading protos from ${filename} (root: ${
-            window.PROTO_ROOT
-          })`;
+          const text = `Error loading protos from ${filename} (root: ${window.PROTO_ROOT})`;
           window.log.error(text);
           throw new Error(text);
         }

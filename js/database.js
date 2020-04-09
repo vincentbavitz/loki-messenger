@@ -4,7 +4,7 @@
 /* global Whisper: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   const { getPlaceholderMigrations } = window.Signal.Migrations;
@@ -31,7 +31,7 @@
       const transaction = db.transaction(storeNames, 'readwrite');
 
       let finished = false;
-      const finish = via => {
+      const finish = (via) => {
         window.log.info('clearing all stores done via', via);
         if (finished) {
           resolve();
@@ -51,7 +51,7 @@
       let count = 0;
 
       // can't use built-in .forEach because db.objectStoreNames is not a plain array
-      _.forEach(storeNames, storeName => {
+      _.forEach(storeNames, (storeName) => {
         const store = transaction.objectStore(storeName);
         const request = store.clear();
 
@@ -101,7 +101,7 @@
     db.close();
   };
 
-  Whisper.Database.clearStores = async storeNames => {
+  Whisper.Database.clearStores = async (storeNames) => {
     const db = await Whisper.Database.open();
     await clearStores(db, storeNames);
     db.close();

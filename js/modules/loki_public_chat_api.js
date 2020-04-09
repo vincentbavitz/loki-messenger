@@ -16,12 +16,12 @@ class LokiPublicChatFactoryAPI extends EventEmitter {
   // MessageReceiver.connect calls this
   // start polling in all existing registered channels
   async open() {
-    await Promise.all(this.servers.map(server => server.open()));
+    await Promise.all(this.servers.map((server) => server.open()));
   }
 
   // MessageReceiver.close
   async close() {
-    await Promise.all(this.servers.map(server => server.close()));
+    await Promise.all(this.servers.map((server) => server.close()));
   }
 
   static async validServer(serverUrl) {
@@ -49,12 +49,12 @@ class LokiPublicChatFactoryAPI extends EventEmitter {
   // server getter/factory
   async findOrCreateServer(serverUrl) {
     let thisServer = this.servers.find(
-      server => server.baseServerUrl === serverUrl
+      (server) => server.baseServerUrl === serverUrl
     );
     if (!thisServer) {
       log.info(`LokiAppDotNetAPI creating ${serverUrl}`);
 
-      if (!await this.constructor.validServer(serverUrl)) {
+      if (!(await this.constructor.validServer(serverUrl))) {
         return null;
       }
 
@@ -128,7 +128,7 @@ class LokiPublicChatFactoryAPI extends EventEmitter {
   // deallocate resources server uses
   unregisterChannel(serverUrl, channelId) {
     const i = this.servers.findIndex(
-      server => server.baseServerUrl === serverUrl
+      (server) => server.baseServerUrl === serverUrl
     );
     if (i === -1) {
       log.warn(`Tried to unregister from nonexistent server ${serverUrl}`);
@@ -169,7 +169,7 @@ class LokiPublicChatFactoryAPI extends EventEmitter {
 
   async setProfileName(profileName) {
     await Promise.all(
-      this.servers.map(async server => {
+      this.servers.map(async (server) => {
         await server.setProfileName(profileName);
       })
     );
@@ -177,7 +177,7 @@ class LokiPublicChatFactoryAPI extends EventEmitter {
 
   async setHomeServer(homeServer) {
     await Promise.all(
-      this.servers.map(async server => {
+      this.servers.map(async (server) => {
         // this may fail
         // but we can't create a sql table to remember to retry forever
         // I think we just silently fail for now
@@ -188,7 +188,7 @@ class LokiPublicChatFactoryAPI extends EventEmitter {
 
   async setAvatar(url, profileKey) {
     await Promise.all(
-      this.servers.map(async server => {
+      this.servers.map(async (server) => {
         // this may fail
         // but we can't create a sql table to remember to retry forever
         // I think we just silently fail for now

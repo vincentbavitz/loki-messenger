@@ -52,8 +52,8 @@ window.getDefaultFileServer = () => config.defaultFileServer;
 window.initialisedAPI = false;
 
 if (
-  typeof process.env.NODE_ENV === 'string' &&
-  process.env.NODE_ENV.includes('test-integration')
+  typeof process.env.NODE_ENV === 'string'
+  && process.env.NODE_ENV.includes('test-integration')
 ) {
   window.electronRequire = require;
 }
@@ -426,8 +426,8 @@ Promise.prototype.ignore = function () {
 };
 
 if (
-  config.environment.includes('test') &&
-  !config.environment.includes('swarm-testing')
+  config.environment.includes('test')
+  && !config.environment.includes('swarm-testing')
 ) {
   const isWindows = process.platform === 'win32';
   /* eslint-disable global-require, import/no-extraneous-dependencies */

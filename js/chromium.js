@@ -1,7 +1,7 @@
 /* global extension: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   // Browser specific functions for Chrom*

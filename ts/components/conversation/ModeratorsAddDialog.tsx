@@ -38,7 +38,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
     this.inputRef = React.createRef();
 
     let friends = this.props.friendList;
-    friends = friends.map(d => {
+    friends = friends.map((d) => {
       const lokiProfile = d.getLokiProfile();
       const name = lokiProfile ? lokiProfile.displayName : 'Anonymous';
 
@@ -72,7 +72,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
       return;
     }
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         inputBoxValue: searchTerm,
@@ -83,7 +83,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
     // if we have valid data
     if (this.state.inputBoxValue.length > 64) {
       const weHave = this.state.friendList.some(
-        user => user.authorPhoneNumber === this.state.inputBoxValue
+        (user) => user.authorPhoneNumber === this.state.inputBoxValue
       );
       if (!weHave) {
         // lookup to verify it's registered?
@@ -101,7 +101,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
           checkmarked: true,
           existingMember: false,
         });
-        this.setState(state => {
+        this.setState((state) => {
           return {
             ...state,
             friendList: friends,
@@ -114,7 +114,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
     if (this.inputRef.current) {
       this.inputRef.current.value = '';
     }
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         inputBoxValue: '',
@@ -175,8 +175,8 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
   private onClickOK() {
     this.add(); // process inputBox
     const selectedFriends = this.state.friendList
-      .filter(d => d.checkmarked)
-      .map(d => d.id);
+      .filter((d) => d.checkmarked)
+      .map((d) => d.id);
     if (selectedFriends.length > 0) {
       this.props.onSubmit(selectedFriends);
     }
@@ -204,7 +204,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
   }
 
   private onMemberClicked(selected: any) {
-    const updatedFriends = this.state.friendList.map(member => {
+    const updatedFriends = this.state.friendList.map((member) => {
       if (member.id === selected.id) {
         return { ...member, checkmarked: !member.checkmarked };
       } else {
@@ -212,7 +212,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
       }
     });
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         friendList: updatedFriends,

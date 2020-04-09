@@ -17,8 +17,8 @@
     },
     everDone() {
       return (
-        storage.get('chromiumRegistrationDoneEver') === '' ||
-        storage.get('chromiumRegistrationDone') === ''
+        storage.get('chromiumRegistrationDoneEver') === ''
+        || storage.get('chromiumRegistrationDone') === ''
       );
     },
     ongoingSecondaryDeviceRegistration() {

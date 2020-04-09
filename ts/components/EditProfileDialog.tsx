@@ -278,7 +278,7 @@ export class EditProfileDialog extends React.Component<Props, State> {
 
     const newName = event.target.value.replace(window.displayNameRegex, '');
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         profileName: newName,

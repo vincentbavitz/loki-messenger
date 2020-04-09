@@ -158,7 +158,7 @@ async function canAutoUpdate(): Promise<boolean> {
       : app.getAppPath();
   const appUpdateConfigPath = path.join(basePath, updateFile);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     try {
       // tslint:disable-next-line: non-literal-fs-path
       const exists = fs.existsSync(appUpdateConfigPath);

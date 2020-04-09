@@ -347,8 +347,8 @@
         );
       }
 
-      const decryptFunction =
-        type === this.TYPE.PREKEY
+      const decryptFunction
+        = type === this.TYPE.PREKEY
           ? this.sessionCipher.decryptPreKeyWhisperMessage
           : this.sessionCipher.decryptWhisperMessage;
       const result = await decryptFunction(buffer, encoding);

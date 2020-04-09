@@ -22,11 +22,11 @@
       'loki/v1/version/client/desktop'
     );
     if (
-      result &&
-      result.response &&
-      result.response.data &&
-      result.response.data.length &&
-      result.response.data[0].length
+      result
+      && result.response
+      && result.response.data
+      && result.response.data.length
+      && result.response.data[0].length
     ) {
       const latestVer = semver.clean(result.response.data[0][0]);
       if (semver.valid(latestVer)) {

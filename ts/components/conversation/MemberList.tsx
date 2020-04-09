@@ -123,7 +123,7 @@ export class MemberList extends React.Component<MemberListProps> {
   public render() {
     const { members } = this.props;
 
-    const itemList = members.map(item => {
+    const itemList = members.map((item) => {
       const selected = item === this.props.selected;
 
       return (

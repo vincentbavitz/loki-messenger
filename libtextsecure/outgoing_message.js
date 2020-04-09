@@ -72,9 +72,9 @@ function OutgoingMessage(
   this.numberInfo = numberInfo;
   this.isPublic = isPublic;
   this.isGroup = !!(
-    this.message &&
-    this.message.dataMessage &&
-    this.message.dataMessage.group
+    this.message
+    && this.message.dataMessage
+    && this.message.dataMessage.group
   );
   this.publicSendData = publicSendData;
   this.senderCertificate = senderCertificate;
@@ -140,8 +140,8 @@ OutgoingMessage.prototype = {
           // eslint-disable-next-line no-param-reassign
           device.identityKey = response.identityKey;
           if (
-            updateDevices === undefined ||
-            updateDevices.indexOf(device.deviceId) > -1
+            updateDevices === undefined
+            || updateDevices.indexOf(device.deviceId) > -1
           ) {
             const address = new libsignal.SignalProtocolAddress(
               number,
@@ -266,9 +266,9 @@ OutgoingMessage.prototype = {
     return this.convertMessageToText(messageBuffer);
   },
   async wrapInWebsocketMessage(outgoingObject) {
-    const source =
-      outgoingObject.type ===
-      textsecure.protobuf.Envelope.Type.UNIDENTIFIED_SENDER
+    const source
+      = outgoingObject.type
+      === textsecure.protobuf.Envelope.Type.UNIDENTIFIED_SENDER
         ? null
         : outgoingObject.ourKey;
 
@@ -336,8 +336,8 @@ OutgoingMessage.prototype = {
         let isMultiDeviceRequest = false;
         let thisDeviceMessageType = this.messageType;
         if (
-          thisDeviceMessageType !== 'pairing-request' &&
-          thisDeviceMessageType !== 'friend-request'
+          thisDeviceMessageType !== 'pairing-request'
+          && thisDeviceMessageType !== 'friend-request'
         ) {
           let conversation;
           try {
@@ -347,9 +347,9 @@ OutgoingMessage.prototype = {
           }
           if (conversation && !this.isGroup) {
             const isOurDevice = await conversation.isOurDevice();
-            const isFriends =
-              conversation.isFriend() ||
-              conversation.hasReceivedFriendRequest();
+            const isFriends
+              = conversation.isFriend()
+              || conversation.hasReceivedFriendRequest();
             // We should only send a friend request to our device if we don't have keys
             const shouldSendAutomatedFR = isOurDevice ? !keysFound : !isFriends;
             if (shouldSendAutomatedFR) {
@@ -379,15 +379,15 @@ OutgoingMessage.prototype = {
         // Check if we need to attach the preKeys
         let sessionCipher;
         const isFriendRequest = thisDeviceMessageType === 'friend-request';
-        enableFallBackEncryption =
-          enableFallBackEncryption || isFriendRequest || isMultiDeviceRequest;
+        enableFallBackEncryption
+          = enableFallBackEncryption || isFriendRequest || isMultiDeviceRequest;
         const flags = this.message.dataMessage
           ? this.message.dataMessage.get_flags()
           : null;
-        const isEndSession =
-          flags === textsecure.protobuf.DataMessage.Flags.END_SESSION;
-        const isSessionRequest =
-          flags === textsecure.protobuf.DataMessage.Flags.SESSION_REQUEST;
+        const isEndSession
+          = flags === textsecure.protobuf.DataMessage.Flags.END_SESSION;
+        const isSessionRequest
+          = flags === textsecure.protobuf.DataMessage.Flags.SESSION_REQUEST;
         const signalCipher = new libsignal.SessionCipher(
           textsecure.storage.protocol,
           address
@@ -526,8 +526,8 @@ OutgoingMessage.prototype = {
         // for which the transmission failed.
 
         // ensure numberCompleted() will execute the callback
-        this.numbersCompleted +=
-          this.errors.length + this.successfulNumbers.length;
+        this.numbersCompleted
+          += this.errors.length + this.successfulNumbers.length;
         // Absorb errors if message sent to at least 1 device
         if (this.successfulNumbers.length > 0) {
           this.errors = [];
@@ -540,9 +540,9 @@ OutgoingMessage.prototype = {
         // - ignore if 409 (conflict) means the hash already exists
         throw error;
         if (
-          error instanceof Error &&
-          error.name === 'HTTPError' &&
-          (error.code === 410 || error.code === 409)
+          error instanceof Error
+          && error.name === 'HTTPError'
+          && (error.code === 410 || error.code === 409)
         ) {
           if (!recurse) {
             return this.registerError(
@@ -569,8 +569,8 @@ OutgoingMessage.prototype = {
           }
 
           return p.then(() => {
-            const resetDevices =
-              error.code === 410
+            const resetDevices
+              = error.code === 410
                 ? error.response.staleDevices
                 : error.response.missingDevices;
             return this.getKeysForNumber(number, resetDevices).then(

@@ -9,16 +9,16 @@ const DEFAULT_JPEG_QUALITY = 0.85;
 exports.autoOrientImage = (fileOrBlobOrURL, options = {}) => {
   const optionsWithDefaults = {
     type: 'image/jpeg',
-      quality: DEFAULT_JPEG_QUALITY,
+    quality: DEFAULT_JPEG_QUALITY,
     ...options,
     canvas: true,
-      orientation: true,
+    orientation: true,
   };
 
   return new Promise((resolve, reject) => {
     loadImage(
       fileOrBlobOrURL,
-      canvasOrError => {
+      (canvasOrError) => {
         if (canvasOrError.type === 'error') {
           const error = new Error('autoOrientImage: Failed to process image');
           error.cause = canvasOrError;

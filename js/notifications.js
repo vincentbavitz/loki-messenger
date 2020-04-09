@@ -57,8 +57,8 @@
 
       const { isEnabled } = this;
       const isAppFocused = isFocused();
-      const isAudioNotificationEnabled =
-        storage.get('audio-notification') || false;
+      const isAudioNotificationEnabled
+        = storage.get('audio-notification') || false;
       const isAudioNotificationSupported = Settings.isAudioNotificationSupported();
       const isNotificationGroupingSupported = Settings.isNotificationGroupingSupported();
       const numNotifications = this.length;
@@ -152,8 +152,8 @@
           break;
       }
 
-      const shouldHideExpiringMessageBody =
-        last.isExpiringMessage && Signal.OS.isMacOS();
+      const shouldHideExpiringMessageBody
+        = last.isExpiringMessage && Signal.OS.isMacOS();
       if (shouldHideExpiringMessageBody) {
         message = i18n('newMessage');
       }

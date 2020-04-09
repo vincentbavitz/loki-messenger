@@ -24,7 +24,7 @@ const isColors = (arr: Array<string>) => {
     return false;
   }
 
-  if (arr.every(value => typeof value === 'string' && isColor(value))) {
+  if (arr.every((value) => typeof value === 'string' && isColor(value))) {
     return true;
   }
 
@@ -94,11 +94,7 @@ export class JazzIcon extends React.PureComponent<Props> {
   private hueShift(colors: Array<string>, generator: RNG) {
     const amount = generator.random() * 30 - wobble / 2;
 
-    return colors.map(hex =>
-      Color(hex)
-        .rotate(amount)
-        .hex()
-    );
+    return colors.map((hex) => Color(hex).rotate(amount).hex());
   }
 
   private genShape(
@@ -112,7 +108,7 @@ export class JazzIcon extends React.PureComponent<Props> {
     const firstRot = generator.random();
     const angle = Math.PI * 2 * firstRot;
     const velocity =
-      diameter / total * generator.random() + i * diameter / total;
+      (diameter / total) * generator.random() + (i * diameter) / total;
     const tx = Math.cos(angle) * velocity;
     const ty = Math.sin(angle) * velocity;
     const translate = `translate(${tx} ${ty})`;

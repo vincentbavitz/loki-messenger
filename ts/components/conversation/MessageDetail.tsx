@@ -134,7 +134,7 @@ export class MessageDetail extends React.Component<Props> {
 
     return (
       <div className="module-message-detail__contact-container">
-        {contacts.map(contact => this.renderContact(contact))}
+        {contacts.map((contact) => this.renderContact(contact))}
       </div>
     );
   }

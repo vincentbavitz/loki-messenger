@@ -111,7 +111,7 @@ export function contactSelector(
     avatar,
     number:
       contact.number &&
-      contact.number.map(item => ({
+      contact.number.map((item) => ({
         ...item,
         value: formatPhoneNumber(item.value, {
           ourRegionCode: regionCode,

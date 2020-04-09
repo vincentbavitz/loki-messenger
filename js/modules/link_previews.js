@@ -111,7 +111,7 @@ function findLinks(text, caretLocation) {
 
   const matches = linkify.match(text || '') || [];
   return compact(
-    matches.map(match => {
+    matches.map((match) => {
       if (!haveCaretLocation) {
         return match.text;
       }
@@ -144,15 +144,20 @@ const KB = 1024;
 function getChunkPattern(size) {
   if (size > MB) {
     return _getRequestPattern(size, MB);
-  } if (size > 500 * KB) {
+  }
+  if (size > 500 * KB) {
     return _getRequestPattern(size, 500 * KB);
-  } if (size > 100 * KB) {
+  }
+  if (size > 100 * KB) {
     return _getRequestPattern(size, 100 * KB);
-  } if (size > 50 * KB) {
+  }
+  if (size > 50 * KB) {
     return _getRequestPattern(size, 50 * KB);
-  } if (size > 10 * KB) {
+  }
+  if (size > 10 * KB) {
     return _getRequestPattern(size, 10 * KB);
-  } if (size > KB) {
+  }
+  if (size > KB) {
     return _getRequestPattern(size, KB);
   }
 

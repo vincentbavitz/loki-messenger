@@ -378,7 +378,8 @@ describe('Contact', () => {
           },
         ],
       };
-      const expected =        "Message the-message-id: Contact had neither 'displayName' nor 'organization'";
+      const expected
+        = "Message the-message-id: Contact had neither 'displayName' nor 'organization'";
 
       const result = Contact._validate(contact, { messageId });
       assert.deepEqual(result.message, expected);
@@ -393,7 +394,8 @@ describe('Contact', () => {
         number: [],
         email: [],
       };
-      const expected =        'Message the-message-id: Contact had no included numbers, email or addresses';
+      const expected
+        = 'Message the-message-id: Contact had no included numbers, email or addresses';
 
       const result = Contact._validate(contact, { messageId });
       assert.deepEqual(result.message, expected);

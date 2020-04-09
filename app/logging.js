@@ -160,8 +160,8 @@ function eliminateOutOfDateFiles(logPath, date) {
             path: target,
             start: isLineAfterDate(start, date),
             end:
-              isLineAfterDate(end[end.length - 1], date) ||
-              isLineAfterDate(end[end.length - 2], date),
+              isLineAfterDate(end[end.length - 1], date)
+              || isLineAfterDate(end[end.length - 2], date),
           };
 
           if (!file.start && !file.end) {

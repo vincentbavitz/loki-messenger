@@ -40,7 +40,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
     this.closeDialog = this.closeDialog.bind(this);
 
     let friends = this.props.friendList;
-    friends = friends.map(d => {
+    friends = friends.map((d) => {
       const lokiProfile = d.getLokiProfile();
       const name = lokiProfile ? lokiProfile.displayName : 'Anonymous';
 
@@ -69,7 +69,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
 
   public onClickOK() {
     const members = this.getWouldBeMembers(this.state.friendList).map(
-      d => d.id
+      (d) => d.id
     );
 
     this.props.onSubmit(this.props.groupName, members);
@@ -192,7 +192,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
   // Return members that would comprise the group given the
   // current state in `users`
   private getWouldBeMembers(users: Array<Contact>) {
-    return users.filter(d => {
+    return users.filter((d) => {
       return (
         (d.existingMember && !d.checkmarked) ||
         (!d.existingMember && d.checkmarked)
@@ -218,7 +218,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
       return;
     }
 
-    const updatedFriends = this.state.friendList.map(member => {
+    const updatedFriends = this.state.friendList.map((member) => {
       if (member.id === selected.id) {
         return { ...member, checkmarked: !member.checkmarked };
       } else {
@@ -226,7 +226,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
       }
     });
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         friendList: updatedFriends,

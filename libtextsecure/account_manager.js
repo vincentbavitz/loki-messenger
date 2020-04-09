@@ -53,9 +53,9 @@
       if (!name) {
         return null;
       }
-      const identityKey =
-        providedIdentityKey ||
-        (await textsecure.storage.protocol.getIdentityKeyPair());
+      const identityKey
+        = providedIdentityKey
+        || (await textsecure.storage.protocol.getIdentityKeyPair());
       if (!identityKey) {
         throw new Error(
           'Identity key was not provided and is not in database!'
@@ -260,13 +260,13 @@
             );
 
             if (
-              e instanceof Error &&
-              e.name === 'HTTPError' &&
-              e.code >= 400 &&
-              e.code <= 599
+              e instanceof Error
+              && e.name === 'HTTPError'
+              && e.code >= 400
+              && e.code <= 599
             ) {
-              const rejections =
-                1 + textsecure.storage.get('signedKeyRotationRejected', 0);
+              const rejections
+                = 1 + textsecure.storage.get('signedKeyRotationRejected', 0);
               textsecure.storage.put('signedKeyRotationRejected', rejections);
               window.log.error(
                 'Signed key rotation rejected count:',
@@ -436,8 +436,8 @@
       );
     },
     generateKeys(count, providedProgressCallback) {
-      const progressCallback =
-        typeof providedProgressCallback === 'function'
+      const progressCallback
+        = typeof providedProgressCallback === 'function'
           ? providedProgressCallback
           : null;
       const startId = textsecure.storage.get('maxPreKeyId', 1);

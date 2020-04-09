@@ -7,7 +7,7 @@
 /* global Signal: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -47,7 +47,7 @@
       const { attachments } = this;
 
       // We never want to display voice notes in our attachment list
-      if (_.any(attachments, attachment => Boolean(attachment.isVoiceNote))) {
+      if (_.any(attachments, (attachment) => Boolean(attachment.isVoiceNote))) {
         return {
           attachments: [],
         };
@@ -70,7 +70,7 @@
         onSave,
       });
 
-      const onSave = caption => {
+      const onSave = (caption) => {
         // eslint-disable-next-line no-param-reassign
         attachment.caption = caption;
         this.captionEditorView.remove();
@@ -166,14 +166,14 @@
 
     async getFiles() {
       const files = await Promise.all(
-        this.attachments.map(attachment => this.getFile(attachment))
+        this.attachments.map((attachment) => this.getFile(attachment))
       );
       this.clearAttachments();
       return files;
     },
 
     clearAttachments() {
-      this.attachments.forEach(attachment => {
+      this.attachments.forEach((attachment) => {
         if (attachment.url) {
           URL.revokeObjectURL(attachment.url);
         }
@@ -267,7 +267,7 @@
 
       const haveNonImage = _.any(
         this.attachments,
-        attachment => !MIME.isImage(attachment.contentType)
+        (attachment) => !MIME.isImage(attachment.contentType)
       );
       // You can't add another attachment if you already have a non-image staged
       if (haveNonImage) {
@@ -340,7 +340,8 @@
           file,
         });
         let limitKb = 10000;
-        const blobType =          file.type === 'image/gif' ? 'gif' : contentType.split('/')[0];
+        const blobType
+          = file.type === 'image/gif' ? 'gif' : contentType.split('/')[0];
 
         switch (blobType) {
           case 'image':
@@ -461,7 +462,7 @@
             blob = window.dataURLToBlobSync(
               canvas.toDataURL('image/jpeg', quality)
             );
-            quality = quality * maxSize / blob.size;
+            quality = (quality * maxSize) / blob.size;
             // NOTE: During testing with a large image, we observed the
             // `quality` value being > 1. Should we clamp it to [0.5, 1.0]?
             // See: https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob#Syntax
@@ -501,7 +502,7 @@
     readFile(attachment) {
       return new Promise((resolve, reject) => {
         const FR = new FileReader();
-        FR.onload = e => {
+        FR.onload = (e) => {
           const data = e.target.result;
           resolve({
             ...attachment,

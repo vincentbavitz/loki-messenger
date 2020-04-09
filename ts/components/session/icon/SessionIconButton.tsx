@@ -47,7 +47,7 @@ export class SessionIconButton extends React.PureComponent<SProps> {
           isSelected ? 'no-opacity' : ''
         )}
         role="button"
-        onClick={e => {
+        onClick={(e) => {
           this.clickHandler(e);
         }}
       >

@@ -110,7 +110,7 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
     return (
       <>
         {this.state.hasPassword !== null &&
-          settings.map(setting => {
+          settings.map((setting) => {
             const content = setting.content || undefined;
             const shouldRenderSettings = setting.category === category;
             const description = setting.description || '';
@@ -139,21 +139,18 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
 
             return (
               <div key={setting.id}>
-                {shouldRenderSettings &&
-                  !setting.hidden && (
-                    <SessionSettingListItem
-                      title={setting.title}
-                      description={description}
-                      type={setting.type}
-                      value={value}
-                      onClick={onClickFn}
-                      onSliderChange={sliderFn}
-                      content={content}
-                      confirmationDialogParams={
-                        setting.confirmationDialogParams
-                      }
-                    />
-                  )}
+                {shouldRenderSettings && !setting.hidden && (
+                  <SessionSettingListItem
+                    title={setting.title}
+                    description={description}
+                    type={setting.type}
+                    value={value}
+                    onClick={onClickFn}
+                    onSliderChange={sliderFn}
+                    content={content}
+                    confirmationDialogParams={setting.confirmationDialogParams}
+                  />
+                )}
               </div>
             );
           })}

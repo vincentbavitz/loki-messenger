@@ -42,8 +42,8 @@
       const conversation = message.getConversation();
 
       if (
-        now - timestamp > FIVE_MINUTES &&
-        (!conversation || !conversation.messageCollection.length)
+        now - timestamp > FIVE_MINUTES
+        && (!conversation || !conversation.messageCollection.length)
       ) {
         delete messageLookup[message.id];
       }

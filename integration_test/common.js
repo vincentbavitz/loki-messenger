@@ -130,8 +130,8 @@ module.exports = {
   async killallElectron() {
     // rtharp - my 2nd client on MacOs needs: pkill -f "node_modules/.bin/electron"
     // node_modules/electron/dist/electron is node_modules/electron/dist/Electron.app on MacOS
-    const killStr =
-      process.platform === 'win32'
+    const killStr
+      = process.platform === 'win32'
         ? 'taskkill /im electron.exe /t /f'
         : 'pkill -f "node_modules/electron/dist/electron" | pkill -f "node_modules/.bin/electron"';
     return new Promise((resolve) => {

@@ -17,7 +17,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -37,9 +37,9 @@
   window.AccountCache = Object.create(null);
   window.AccountJobs = Object.create(null);
 
-  window.doesAcountCheckJobExist = number =>
+  window.doesAcountCheckJobExist = (number) =>
     Boolean(window.AccountJobs[number]);
-  window.checkForSignalAccount = number => {
+  window.checkForSignalAccount = (number) => {
     if (window.AccountJobs[number]) {
       return window.AccountJobs[number];
     }
@@ -67,9 +67,9 @@
     return job;
   };
 
-  window.isSignalAccountCheckComplete = number =>
+  window.isSignalAccountCheckComplete = (number) =>
     window.AccountCache[number] !== undefined;
-  window.hasSignalAccount = number => window.AccountCache[number];
+  window.hasSignalAccount = (number) => window.AccountCache[number];
 
   window.Whisper.Message = Backbone.Model.extend({
     initialize(attributes) {
@@ -115,7 +115,8 @@
       };
       this.on('change', generateProps);
 
-      const applicableConversationChanges =        'change:color change:name change:number change:profileName change:profileAvatar';
+      const applicableConversationChanges
+        = 'change:color change:name change:number change:profileName change:profileAvatar';
 
       const conversation = this.getConversation();
       const fromContact = this.getIncomingContact();
@@ -148,7 +149,7 @@
     },
     validate(attributes) {
       const required = ['conversationId', 'received_at', 'sent_at'];
-      const missing = _.filter(required, attr => !attributes[attr]);
+      const missing = _.filter(required, (attr) => !attributes[attr]);
       if (missing.length) {
         window.log.warn(`Message missing attributes: ${missing}`);
       }
@@ -162,13 +163,15 @@
       const sessionType = this.get('endSessionType');
       if (sessionType === 'ongoing') {
         return 'sessionResetOngoing';
-      } if (sessionType === 'failed') {
+      }
+      if (sessionType === 'failed') {
         return 'sessionResetFailed';
       }
       return 'sessionEnded';
     },
     isExpirationTimerUpdate() {
-      const flag =        textsecure.protobuf.DataMessage.Flags.EXPIRATION_TIMER_UPDATE;
+      const flag
+        = textsecure.protobuf.DataMessage.Flags.EXPIRATION_TIMER_UPDATE;
       // eslint-disable-next-line no-bitwise
       return !!(this.get('flags') & flag);
     },
@@ -213,7 +216,8 @@
         const groupUpdate = this.get('group_update');
         if (groupUpdate.left === 'You') {
           return i18n('youLeftTheGroup');
-        } if (groupUpdate.left) {
+        }
+        if (groupUpdate.left) {
           return i18n('leftTheGroup', this.getNameForNumber(groupUpdate.left));
         }
 
@@ -229,7 +233,7 @@
           messages.push(i18n('titleIsNow', groupUpdate.name));
         }
         if (groupUpdate.joined && groupUpdate.joined.length) {
-          const names = groupUpdate.joined.map(name =>
+          const names = groupUpdate.joined.map((name) =>
             this.getLokiNameForNumber(name)
           );
 
@@ -359,7 +363,8 @@
           ...basicProps,
           type: 'fromSync',
         };
-      } if (source === this.OUR_NUMBER) {
+      }
+      if (source === this.OUR_NUMBER) {
         return {
           ...basicProps,
           type: 'fromMe',
@@ -528,7 +533,7 @@
             Array.isArray(groupUpdate.joined)
               ? groupUpdate.joined
               : [groupUpdate.joined],
-            phoneNumber => this.findAndFormatContact(phoneNumber)
+            (phoneNumber) => this.findAndFormatContact(phoneNumber)
           ),
         });
       }
@@ -545,7 +550,7 @@
             Array.isArray(groupUpdate.kicked)
               ? groupUpdate.kicked
               : [groupUpdate.kicked],
-            phoneNumber => this.findAndFormatContact(phoneNumber)
+            (phoneNumber) => this.findAndFormatContact(phoneNumber)
           ),
         });
       }
@@ -562,7 +567,7 @@
             Array.isArray(groupUpdate.left)
               ? groupUpdate.left
               : [groupUpdate.left],
-            phoneNumber => this.findAndFormatContact(phoneNumber)
+            (phoneNumber) => this.findAndFormatContact(phoneNumber)
           ),
         });
       }
@@ -585,7 +590,8 @@
 
       // Handle friend request statuses
       const isFriendRequest = this.isFriendRequest();
-      const isOutgoingFriendRequest =        isFriendRequest && this.get('direction') === 'outgoing';
+      const isOutgoingFriendRequest
+        = isFriendRequest && this.get('direction') === 'outgoing';
       const isOutgoing = this.isOutgoing() || isOutgoingFriendRequest;
 
       // Only return the status on outgoing messages
@@ -655,7 +661,8 @@
 
       const expirationLength = this.get('expireTimer') * 1000;
       const expireTimerStart = this.get('expirationStartTimestamp');
-      const expirationTimestamp =        expirationLength && expireTimerStart
+      const expirationTimestamp
+        = expirationLength && expireTimerStart
           ? expireTimerStart + expirationLength
           : null;
 
@@ -663,7 +670,8 @@
       // for the public group chat
       const conversation = this.getConversation();
 
-      const isModerator =        conversation && !!conversation.isModerator(this.OUR_NUMBER);
+      const isModerator
+        = conversation && !!conversation.isModerator(this.OUR_NUMBER);
 
       const convoId = conversation ? conversation.id : undefined;
       const isGroup = !!conversation && !conversation.isPrivate();
@@ -686,8 +694,8 @@
         conversationType: isGroup ? 'group' : 'direct',
         convoId,
         attachments: attachments
-          .filter(attachment => !attachment.error)
-          .map(attachment => this.getPropsForAttachment(attachment)),
+          .filter((attachment) => !attachment.error)
+          .map((attachment) => this.getPropsForAttachment(attachment)),
         previews: this.getPropsForPreview(),
         quote: this.getPropsForQuote(options),
         authorAvatarPath,
@@ -717,20 +725,20 @@
         onRetrySend: () => this.retrySend(),
         onShowDetail: () => this.trigger('show-message-detail', this),
         onDelete: () => this.trigger('delete', this),
-        onClickLinkPreview: url => this.trigger('navigate-to', url),
-        onClickAttachment: attachment =>
+        onClickLinkPreview: (url) => this.trigger('navigate-to', url),
+        onClickAttachment: (attachment) =>
           this.trigger('show-lightbox', {
             attachment,
             message: this,
           }),
 
-        onDownload: isDangerous =>
+        onDownload: (isDangerous) =>
           this.trigger('download', {
             attachment: firstAttachment,
             message: this,
             isDangerous,
           }),
-        onShowUserDetails: pubkey =>
+        onShowUserDetails: (pubkey) =>
           window.Whisper.events.trigger('onShowUserDetails', {
             userPubKey: pubkey,
           }),
@@ -744,8 +752,9 @@
       const nbsp = '\xa0';
       const regex = /(\S)( +)(\S+\s*)$/;
       return text.replace(regex, (match, start, spaces, end) => {
-        const newSpaces =          end.length < 12
-            ? _.reduce(spaces, accumulator => accumulator + nbsp, '')
+        const newSpaces
+          = end.length < 12
+            ? _.reduce(spaces, (accumulator) => accumulator + nbsp, '')
             : spaces;
         return `${start}${newSpaces}${end}`;
       });
@@ -760,7 +769,8 @@
       }
 
       const contact = contacts[0];
-      const firstNumber =        contact.number && contact.number[0] && contact.number[0].value;
+      const firstNumber
+        = contact.number && contact.number[0] && contact.number[0].value;
       const onSendMessage = firstNumber
         ? () => {
             this.trigger('open-conversation', firstNumber);
@@ -793,17 +803,22 @@
     },
     processQuoteAttachment(attachment) {
       const { thumbnail } = attachment;
-      const path =        thumbnail
+      const path
+        = thumbnail
         && thumbnail.path
         && getAbsoluteAttachmentPath(thumbnail.path);
       const objectUrl = thumbnail && thumbnail.objectUrl;
 
-      const thumbnailWithObjectUrl =        !path && !objectUrl
+      const thumbnailWithObjectUrl
+        = !path && !objectUrl
           ? null
-          : ({ ...attachment.thumbnail || {}, objectUrl: path || objectUrl});
+          : { ...(attachment.thumbnail || {}), objectUrl: path || objectUrl };
 
-      return { ...attachment, isVoiceMessage: Signal.Types.Attachment.isVoiceMessage(attachment),
-        thumbnail: thumbnailWithObjectUrl};
+      return {
+        ...attachment,
+        isVoiceMessage: Signal.Types.Attachment.isVoiceMessage(attachment),
+        thumbnail: thumbnailWithObjectUrl,
+      };
     },
     getPropsForPreview() {
       // Don't generate link previews if user has turned them off
@@ -813,7 +828,7 @@
 
       const previews = this.get('preview') || [];
 
-      return previews.map(preview => {
+      return previews.map((preview) => {
         let image = null;
         try {
           if (preview.image) {
@@ -852,7 +867,7 @@
       const isFromMe = contact ? contact.id === this.OUR_NUMBER : false;
       const onClick = noClick
         ? null
-        : event => {
+        : (event) => {
             event.stopPropagation();
             this.trigger('scroll-to-message', {
               author,
@@ -937,7 +952,7 @@
           );
 
       // This will make the error message for outgoing key errors a bit nicer
-      const allErrors = (this.get('errors') || []).map(error => {
+      const allErrors = (this.get('errors') || []).map((error) => {
         if (error.name === OUTGOING_KEY_ERROR) {
           // eslint-disable-next-line no-param-reassign
           error.message = newIdentity;
@@ -948,15 +963,16 @@
 
       // If an error has a specific number it's associated with, we'll show it next to
       //   that contact. Otherwise, it will be a standalone entry.
-      const errors = _.reject(allErrors, error => Boolean(error.number));
+      const errors = _.reject(allErrors, (error) => Boolean(error.number));
       const errorsGroupedById = _.groupBy(allErrors, 'number');
       const primaryDevicePubKey = this.get('conversationId');
-      const finalContacts = (phoneNumbers || []).map(id => {
+      const finalContacts = (phoneNumbers || []).map((id) => {
         const errorsForContact = errorsGroupedById[id];
         const isOutgoingKeyError = Boolean(
-          _.find(errorsForContact, error => error.name === OUTGOING_KEY_ERROR)
+          _.find(errorsForContact, (error) => error.name === OUTGOING_KEY_ERROR)
         );
-        const isUnidentifiedDelivery =          storage.get('unidentifiedDeliveryIndicators')
+        const isUnidentifiedDelivery
+          = storage.get('unidentifiedDeliveryIndicators')
           && this.isUnidentifiedDelivery(id, unidentifiedLookup);
 
         const isPrimaryDevice = id === primaryDevicePubKey;
@@ -987,7 +1003,7 @@
       //   first; otherwise it's alphabetical
       const sortedContacts = _.sortBy(
         finalContacts,
-        contact =>
+        (contact) =>
           `${contact.isPrimaryDevice ? '0' : '1'}${contact.phoneNumber}`
       );
 
@@ -1250,7 +1266,7 @@
     removeOutgoingErrors(number) {
       const errors = _.partition(
         this.get('errors'),
-        e =>
+        (e) =>
           e.number === number
           && (e.name === 'MessageError'
             || e.name === 'OutgoingMessageError'
@@ -1384,7 +1400,7 @@
     send(promise) {
       this.trigger('pending');
       return promise
-        .then(async result => {
+        .then(async (result) => {
           this.trigger('done');
 
           // This is used by sendSyncMessage, then set to null
@@ -1413,7 +1429,7 @@
             }
           }
         })
-        .catch(result => {
+        .catch((result) => {
           this.trigger('done');
 
           if (result.dataMessage) {
@@ -1439,7 +1455,7 @@
               //   screen will show that we didn't send to these unregistered users.
               const filteredErrors = _.reject(
                 result.errors,
-                error => error.name === 'UnregisteredUserError'
+                (error) => error.name === 'UnregisteredUserError'
               );
 
               // We don't start the expiration timer if there are real errors
@@ -1461,7 +1477,7 @@
               this.saveErrors(result.errors);
             }
             promises = promises.concat(
-              _.map(result.errors, error => {
+              _.map(result.errors, (error) => {
                 if (error.name === 'OutgoingIdentityKeyError') {
                   const c = ConversationController.get(error.number);
                   promises.push(c.getProfiles());
@@ -1536,10 +1552,12 @@
 
     sendSyncMessage() {
       const ourNumber = textsecure.storage.user.getNumber();
-      const { wrap, sendOptions } = ConversationController.prepareForSend(
-        ourNumber,
-        { syncMessage: true }
-      );
+      const {
+        wrap,
+        sendOptions,
+      } = ConversationController.prepareForSend(ourNumber, {
+        syncMessage: true,
+      });
 
       this.syncPromise = this.syncPromise || Promise.resolve();
       const next = () => {
@@ -1557,7 +1575,7 @@
             this.get('unidentifiedDeliveries'),
             sendOptions
           )
-        ).then(result => {
+        ).then((result) => {
           this.set({
             synced: true,
             dataMessage: null,
@@ -1579,14 +1597,14 @@
       if (!(errors instanceof Array)) {
         errors = [errors];
       }
-      errors.forEach(e => {
+      errors.forEach((e) => {
         window.log.error(
           'Message.saveErrors:',
           e && e.reason ? e.reason : null,
           e && e.stack ? e.stack : e
         );
       });
-      errors = errors.map(e => {
+      errors = errors.map((e) => {
         if (
           e.constructor === Error
           || e.constructor === TypeError
@@ -1610,7 +1628,7 @@
     hasNetworkError() {
       const error = _.find(
         this.get('errors'),
-        e =>
+        (e) =>
           e.name === 'MessageError'
           || e.name === 'OutgoingMessageError'
           || e.name === 'SendMessageNetworkError'
@@ -1625,7 +1643,7 @@
 
       const [longMessageAttachments, normalAttachments] = _.partition(
         this.get('attachments') || [],
-        attachment =>
+        (attachment) =>
           attachment.contentType === Whisper.Message.LONG_MESSAGE_CONTENT_TYPE
       );
 
@@ -1766,7 +1784,7 @@
       const collection = await window.Signal.Data.getMessagesBySentAt(id, {
         MessageCollection: Whisper.MessageCollection,
       });
-      const found = collection.find(item => {
+      const found = collection.find((item) => {
         const messageAuthor = item.getContact();
 
         return messageAuthor && author === messageAuthor.id;
@@ -1884,7 +1902,8 @@
       const authorisation = await libloki.storage.getGrantAuthorisationForSecondaryPubKey(
         source
       );
-      const primarySource =        (authorisation && authorisation.primaryDevicePubKey) || source;
+      const primarySource
+        = (authorisation && authorisation.primaryDevicePubKey) || source;
       const isGroupMessage = !!initialMessage.group;
       if (isGroupMessage) {
         conversationId = initialMessage.group.id;
@@ -1921,7 +1940,8 @@
         ) {
           conversation.sendGroupInfo([source]);
           return null;
-        } if (
+        }
+        if (
           initialMessage.group.members
           && initialMessage.group.type === GROUP_TYPES.UPDATE
         ) {
@@ -1938,7 +1958,8 @@
 
             if (!fromAdmin) {
               // Make sure the message is not removing members / renaming the group
-              const nameChanged =                conversation.get('name') !== initialMessage.group.name;
+              const nameChanged
+                = conversation.get('name') !== initialMessage.group.name;
 
               if (nameChanged) {
                 window.log.warn(
@@ -1946,7 +1967,8 @@
                 );
               }
 
-              const membersMissing =                _.difference(
+              const membersMissing
+                = _.difference(
                   conversation.get('members'),
                   initialMessage.group.members
                 ).length > 0;
@@ -1964,10 +1986,10 @@
             }
           }
           // For every member, see if we need to establish a session:
-          initialMessage.group.members.forEach(memberPubKey => {
+          initialMessage.group.members.forEach((memberPubKey) => {
             const haveSession = _.some(
               textsecure.storage.protocol.sessions,
-              s => s.number === memberPubKey
+              (s) => s.number === memberPubKey
             );
 
             const ourPubKey = textsecure.storage.user.getNumber();
@@ -1998,7 +2020,8 @@
         }
       }
 
-      const isSessionRequest =        initialMessage.flags
+      const isSessionRequest
+        = initialMessage.flags
         === textsecure.protobuf.DataMessage.Flags.SESSION_REQUEST;
 
       if (
@@ -2014,7 +2037,7 @@
         // Check if the contact is a member in one of our private groups:
         const groupMember = window
           .getConversations()
-          .models.filter(c => c.get('members'))
+          .models.filter((c) => c.get('members'))
           .reduce((acc, x) => window.Lodash.concat(acc, x.get('members')), [])
           .includes(primarySource);
 
@@ -2062,7 +2085,8 @@
                 members: dataMessage.group.members,
               };
 
-              groupUpdate =                conversation.changedAttributes(
+              groupUpdate
+                = conversation.changedAttributes(
                   _.pick(dataMessage.group, 'name', 'avatar')
                 ) || {};
 
@@ -2126,15 +2150,16 @@
           const urls = window.Signal.LinkPreviews.findLinks(dataMessage.body);
           const incomingPreview = dataMessage.preview || [];
           const preview = incomingPreview.filter(
-            item =>
+            (item) =>
               (item.image || item.title)
               && urls.includes(item.url)
               && window.Signal.LinkPreviews.isLinkInWhitelist(item.url)
           );
           if (preview.length < incomingPreview.length) {
             window.log.info(
-              `${message.idForLogging()}: Eliminated ${preview.length
-                - incomingPreview.length} previews with invalid urls'`
+              `${message.idForLogging()}: Eliminated ${
+                preview.length - incomingPreview.length
+              } previews with invalid urls'`
             );
           }
 
@@ -2159,7 +2184,7 @@
               conversation,
               message
             );
-            receipts.forEach(receipt =>
+            receipts.forEach((receipt) =>
               message.set({
                 delivered: (message.get('delivered') || 0) + 1,
                 delivered_to: _.union(message.get('delivered_to') || [], [
@@ -2189,7 +2214,8 @@
           // NOTE: Remove once the above uses
           // `Conversation::updateExpirationTimer`:
           const { expireTimer } = dataMessage;
-          const shouldLogExpireTimerChange =            message.isExpirationTimerUpdate() || expireTimer;
+          const shouldLogExpireTimerChange
+            = message.isExpirationTimerUpdate() || expireTimer;
           if (shouldLogExpireTimerChange) {
             window.log.info("Update conversation 'expireTimer'", {
               id: conversation.idForLogging(),
@@ -2270,7 +2296,7 @@
               message
             );
             if (reads.length) {
-              const readBy = reads.map(receipt => receipt.get('reader'));
+              const readBy = reads.map((receipt) => receipt.get('reader'));
               message.set({
                 read_by: _.union(message.get('read_by'), readBy),
               });
@@ -2539,7 +2565,7 @@
     },
     async destroyAll() {
       await Promise.all(
-        this.models.map(message =>
+        this.models.map((message) =>
           window.Signal.Data.removeMessage(message.id, {
             Message: Whisper.Message,
           })
@@ -2556,10 +2582,12 @@
     },
 
     async fetchConversation(conversationId, limit = 100, unreadCount = 0) {
-      const startingLoadedUnread =        unreadCount > 0 ? this.getLoadedUnreadCount() : 0;
+      const startingLoadedUnread
+        = unreadCount > 0 ? this.getLoadedUnreadCount() : 0;
 
       // We look for older messages if we've fetched once already
-      const receivedAt =        this.length === 0 ? Number.MAX_VALUE : this.at(0).get('received_at');
+      const receivedAt
+        = this.length === 0 ? Number.MAX_VALUE : this.at(0).get('received_at');
 
       const messages = await window.Signal.Data.getMessagesByConversation(
         conversationId,
@@ -2571,8 +2599,8 @@
       );
 
       const models = messages
-        .filter(message => Boolean(message.id))
-        .map(message => MessageController.register(message.id, message));
+        .filter((message) => Boolean(message.id))
+        .map((message) => MessageController.register(message.id, message));
       const eliminated = messages.length - models.length;
       if (eliminated > 0) {
         window.log.warn(

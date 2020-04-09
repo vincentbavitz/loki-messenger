@@ -3,7 +3,8 @@
 
 const OriginalAppDotNetApi = require('../../js/modules/loki_app_dot_net_api.js');
 
-const sampleFeed =  '<?xml version="1.0" encoding="windows-1252"?><rss version="2.0"><channel>    <title>FeedForAll Sample Feed</title></channel></rss>';
+const sampleFeed
+  = '<?xml version="1.0" encoding="windows-1252"?><rss version="2.0"><channel>    <title>FeedForAll Sample Feed</title></channel></rss>';
 
 const samplesGetMessages = {
   meta: { code: 200 },

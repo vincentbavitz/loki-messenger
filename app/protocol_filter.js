@@ -41,8 +41,8 @@ function _createFileHandler({ userDataPath, installPath, isWindows }) {
     if (
       !properCasing.startsWith(
         isWindows ? userDataPath.toLowerCase() : userDataPath
-      ) &&
-      !properCasing.startsWith(
+      )
+      && !properCasing.startsWith(
         isWindows ? installPath.toLowerCase() : installPath
       )
     ) {

@@ -60,23 +60,23 @@ function Message(options) {
   }
   if (this.isEndSession()) {
     if (
-      this.body !== null ||
-      this.group !== null ||
-      this.attachments.length !== 0
+      this.body !== null
+      || this.group !== null
+      || this.attachments.length !== 0
     ) {
       throw new Error('Invalid end session message');
     }
   } else {
     if (
-      typeof this.timestamp !== 'number' ||
-      (this.body && typeof this.body !== 'string')
+      typeof this.timestamp !== 'number'
+      || (this.body && typeof this.body !== 'string')
     ) {
       throw new Error('Invalid message body');
     }
     if (this.group) {
       if (
-        typeof this.group.id !== 'string' ||
-        typeof this.group.type !== 'number'
+        typeof this.group.id !== 'string'
+        || typeof this.group.type !== 'number'
       ) {
         throw new Error('Invalid group context');
       }
@@ -200,8 +200,8 @@ MessageSender.prototype = {
     }
 
     if (
-      !(attachment.data instanceof ArrayBuffer) &&
-      !ArrayBuffer.isView(attachment.data)
+      !(attachment.data instanceof ArrayBuffer)
+      && !ArrayBuffer.isView(attachment.data)
     ) {
       return Promise.reject(
         new TypeError(
@@ -354,8 +354,8 @@ MessageSender.prototype = {
   sendMessage(attrs, options) {
     const message = new Message(attrs);
     const silent = false;
-    const publicServer =
-      options.publicSendData && options.publicSendData.serverAPI;
+    const publicServer
+      = options.publicSendData && options.publicSendData.serverAPI;
 
     return Promise.all([
       this.uploadAttachments(message, publicServer),
@@ -445,11 +445,11 @@ MessageSender.prototype = {
       }
 
       if (
-        number === ourNumber ||
-        haveSession ||
-        keysFound ||
-        options.isPublic ||
-        options.messageType === 'friend-request'
+        number === ourNumber
+        || haveSession
+        || keysFound
+        || options.isPublic
+        || options.messageType === 'friend-request'
       ) {
         this.queueJobForNumber(number, () => outgoing.sendToNumber(number));
       } else {
@@ -535,9 +535,9 @@ MessageSender.prototype = {
     unidentifiedDeliveries = [],
     options
   ) {
-    const primaryDeviceKey =
-      window.storage.get('primaryDevicePubKey') ||
-      textsecure.storage.user.getNumber();
+    const primaryDeviceKey
+      = window.storage.get('primaryDevicePubKey')
+      || textsecure.storage.user.getNumber();
     const allOurDevices = (
       await libloki.storage.getAllDevicePubKeysForPrimaryPubKey(
         primaryDeviceKey
@@ -952,9 +952,9 @@ MessageSender.prototype = {
 
   sendGroupProto(providedNumbers, proto, timestamp = Date.now(), options = {}) {
     // We always assume that only primary device is a member in the group
-    const primaryDeviceKey =
-      window.storage.get('primaryDevicePubKey') ||
-      textsecure.storage.user.getNumber();
+    const primaryDeviceKey
+      = window.storage.get('primaryDevicePubKey')
+      || textsecure.storage.user.getNumber();
     const numbers = providedNumbers.filter(
       (number) => number !== primaryDeviceKey
     );
@@ -1122,9 +1122,9 @@ MessageSender.prototype = {
     options
   ) {
     // We always assume that only primary device is a member in the group
-    const primaryDeviceKey =
-      window.storage.get('primaryDevicePubKey') ||
-      textsecure.storage.user.getNumber();
+    const primaryDeviceKey
+      = window.storage.get('primaryDevicePubKey')
+      || textsecure.storage.user.getNumber();
     let numbers = groupNumbers.filter((number) => number !== primaryDeviceKey);
     if (options.isPublic) {
       numbers = [groupId];
@@ -1169,9 +1169,9 @@ MessageSender.prototype = {
     proto.group.name = name;
     proto.group.members = members;
 
-    const primaryDeviceKey =
-      window.storage.get('primaryDevicePubKey') ||
-      textsecure.storage.user.getNumber();
+    const primaryDeviceKey
+      = window.storage.get('primaryDevicePubKey')
+      || textsecure.storage.user.getNumber();
     proto.group.admins = [primaryDeviceKey];
 
     return this.makeAttachmentPointer(avatar).then((attachment) => {

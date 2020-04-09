@@ -3,14 +3,14 @@
 module.exports = {
   settings: {
     'import/core-modules': ['electron'],
-    'parserOptions': {
-      'ecmaFeatures': {
-        'jsx': true
-      }
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+      },
     },
-    'react': {
-      'pragma': 'React',
-      'version': 'detect',
+    react: {
+      pragma: 'React',
+      version: 'detect',
     },
   },
 
@@ -50,7 +50,11 @@ module.exports = {
     'no-console': 'error',
 
     // consistently place operators at end of line except ternaries
-    'operator-linebreak': 'error',
+    'operator-linebreak': ['error', 'before', {"overrides": {
+        "?": "before",
+        ":": "before",
+      }
+    }],
 
     // Use LF to stay consistent
     'linebreak-style': ['error', 'unix'],
@@ -63,7 +67,7 @@ module.exports = {
 
     // Rules for TS Upgrade @ April 2020
     'arrow-parens': 'off',
-    'strict': ['error', 'function'],
+    strict: ['error', 'function'],
 
     // Prettier overrides:
     'function-paren-newline': 'off',

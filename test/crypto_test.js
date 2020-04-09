@@ -152,8 +152,8 @@ describe('Crypto', () => {
       const staticKeyPair = await libsignal.KeyHelper.generateIdentityKeyPair();
       const message = 'this is my message';
       const plaintext = Signal.Crypto.bytesFromString(message);
-      const path =
-        'fa/facdf99c22945b1c9393345599a276f4b36ad7ccdc8c2467f5441b742c2d11fa';
+      const path
+        = 'fa/facdf99c22945b1c9393345599a276f4b36ad7ccdc8c2467f5441b742c2d11fa';
 
       const encrypted = await Signal.Crypto.encryptAttachment(
         staticKeyPair.pubKey.slice(1),

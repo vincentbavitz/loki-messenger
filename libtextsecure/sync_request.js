@@ -8,8 +8,8 @@
 
   function SyncRequest(sender, receiver) {
     if (
-      !(sender instanceof textsecure.MessageSender) ||
-      !(receiver instanceof textsecure.MessageReceiver)
+      !(sender instanceof textsecure.MessageSender)
+      || !(receiver instanceof textsecure.MessageReceiver)
     ) {
       throw new Error(
         'Tried to construct a SyncRequest without MessageSender and MessageReceiver'

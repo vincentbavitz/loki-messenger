@@ -1,7 +1,7 @@
 /* global window */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   // Possible conversation friend states
   const friendRequestStatusEnum = Object.freeze({
     // New conversation, no messages sent or received

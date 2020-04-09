@@ -245,8 +245,8 @@ module.exports = (grunt) => {
       for (const key in messages) {
         if (en[key] !== undefined && messages[key] !== undefined) {
           if (
-            en[key].placeholders !== undefined &&
-            messages[key].placeholders === undefined
+            en[key].placeholders !== undefined
+            && messages[key].placeholders === undefined
           ) {
             messages[key].placeholders = en[key].placeholders;
           }
@@ -296,8 +296,8 @@ module.exports = (grunt) => {
   function runTests(environment, cb) {
     let failure;
     const { Application } = spectron;
-    const electronBinary =
-      process.platform === 'win32' ? 'electron.cmd' : 'electron';
+    const electronBinary
+      = process.platform === 'win32' ? 'electron.cmd' : 'electron';
     const app = new Application({
       path: path.join(__dirname, 'node_modules', '.bin', electronBinary),
       args: [path.join(__dirname, 'main.js')],

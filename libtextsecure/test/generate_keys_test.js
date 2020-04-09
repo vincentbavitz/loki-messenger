@@ -15,34 +15,34 @@ describe('Key generation', function thisNeeded() {
   }
   function itStoresPreKey(keyId) {
     it(`prekey ${keyId} is valid`, () =>
-      textsecure.storage.protocol.loadPreKey(keyId).then(keyPair => {
+      textsecure.storage.protocol.loadPreKey(keyId).then((keyPair) => {
         validateStoredKeyPair(keyPair);
       }));
   }
   function itStoresSignedPreKey(keyId) {
     it(`signed prekey ${keyId} is valid`, () =>
-      textsecure.storage.protocol.loadSignedPreKey(keyId).then(keyPair => {
+      textsecure.storage.protocol.loadSignedPreKey(keyId).then((keyPair) => {
         validateStoredKeyPair(keyPair);
       }));
   }
   function validateResultKey(resultKey) {
     return textsecure.storage.protocol
       .loadPreKey(resultKey.keyId)
-      .then(keyPair => {
+      .then((keyPair) => {
         assertEqualArrayBuffers(resultKey.publicKey, keyPair.pubKey);
       });
   }
   function validateResultSignedKey(resultSignedKey) {
     return textsecure.storage.protocol
       .loadSignedPreKey(resultSignedKey.keyId)
-      .then(keyPair => {
+      .then((keyPair) => {
         assertEqualArrayBuffers(resultSignedKey.publicKey, keyPair.pubKey);
       });
   }
 
   before(() => {
     localStorage.clear();
-    return libsignal.KeyHelper.generateIdentityKeyPair().then(keyPair =>
+    return libsignal.KeyHelper.generateIdentityKeyPair().then((keyPair) =>
       textsecure.storage.protocol.put('identityKey', keyPair)
     );
   });
@@ -50,15 +50,15 @@ describe('Key generation', function thisNeeded() {
   describe('the first time', () => {
     let result;
     /* result should have this format
-         * {
-         *   preKeys: [ { keyId, publicKey }, ... ],
-         *   signedPreKey: { keyId, publicKey, signature },
-         *   identityKey: <ArrayBuffer>
-         * }
-         */
+     * {
+     *   preKeys: [ { keyId, publicKey }, ... ],
+     *   signedPreKey: { keyId, publicKey, signature },
+     *   identityKey: <ArrayBuffer>
+     * }
+     */
     before(() => {
       const accountManager = new textsecure.AccountManager('');
-      return accountManager.generateKeys(count).then(res => {
+      return accountManager.generateKeys(count).then((res) => {
         result = res;
       });
     });
@@ -91,7 +91,7 @@ describe('Key generation', function thisNeeded() {
     let result;
     before(() => {
       const accountManager = new textsecure.AccountManager('');
-      return accountManager.generateKeys(count).then(res => {
+      return accountManager.generateKeys(count).then((res) => {
         result = res;
       });
     });
@@ -124,7 +124,7 @@ describe('Key generation', function thisNeeded() {
     let result;
     before(() => {
       const accountManager = new textsecure.AccountManager('');
-      return accountManager.generateKeys(count).then(res => {
+      return accountManager.generateKeys(count).then((res) => {
         result = res;
       });
     });

@@ -44,8 +44,8 @@
         nInIdx += 1
       ) {
         nMod4 = nInIdx & 3;
-        nUint24 |=
-          StringView.b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << (18 - 6 * nMod4);
+        nUint24
+          |= StringView.b64ToUint6(sB64Enc.charCodeAt(nInIdx)) << (18 - 6 * nMod4);
         if (nMod4 === 3 || nInLen - nInIdx === 1) {
           for (
             nMod3 = 0;

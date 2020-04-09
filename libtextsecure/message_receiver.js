@@ -334,10 +334,10 @@ MessageReceiver.prototype.extend({
       envelope.id = envelope.serverGuid || item.id;
       envelope.source = envelope.source || item.source;
       envelope.sourceDevice = envelope.sourceDevice || item.sourceDevice;
-      envelope.serverTimestamp =
-        envelope.serverTimestamp || item.serverTimestamp;
-      envelope.preKeyBundleMessage =
-        envelope.preKeyBundleMessage || item.preKeyBundleMessage;
+      envelope.serverTimestamp
+        = envelope.serverTimestamp || item.serverTimestamp;
+      envelope.preKeyBundleMessage
+        = envelope.preKeyBundleMessage || item.preKeyBundleMessage;
 
       const { decrypted } = item;
       if (decrypted) {
@@ -670,8 +670,8 @@ MessageReceiver.prototype.extend({
               // We might have substituted the type based on decrypted content
               if (type === textsecure.protobuf.Envelope.Type.FRIEND_REQUEST) {
                 // eslint-disable-next-line no-param-reassign
-                envelope.type =
-                  textsecure.protobuf.Envelope.Type.FRIEND_REQUEST;
+                envelope.type
+                  = textsecure.protobuf.Envelope.Type.FRIEND_REQUEST;
               }
 
               if (this.isBlocked(sender.getName())) {
@@ -779,11 +779,11 @@ MessageReceiver.prototype.extend({
       .catch((error) => {
         let errorToThrow = error;
 
-        const noSession =
-          error &&
-          (error.message.indexOf('No record for device') === 0 ||
-            error.message.indexOf('decryptWithSessionList: list is empty') ===
-              0);
+        const noSession
+          = error
+          && (error.message.indexOf('No record for device') === 0
+            || error.message.indexOf('decryptWithSessionList: list is empty')
+              === 0);
 
         if (error && error.message === 'Unknown identity key') {
           // create an error that the UI will pick up and ask the
@@ -846,12 +846,12 @@ MessageReceiver.prototype.extend({
         const groupId = message.group && message.group.id;
         const isBlocked = this.isGroupBlocked(groupId);
         const primaryDevicePubKey = window.storage.get('primaryDevicePubKey');
-        const isMe =
-          envelope.source === textsecure.storage.user.getNumber() ||
-          envelope.source === primaryDevicePubKey;
+        const isMe
+          = envelope.source === textsecure.storage.user.getNumber()
+          || envelope.source === primaryDevicePubKey;
         const isLeavingGroup = Boolean(
-          message.group &&
-            message.group.type === textsecure.protobuf.GroupContext.Type.QUIT
+          message.group
+            && message.group.type === textsecure.protobuf.GroupContext.Type.QUIT
         );
 
         if (groupId && isBlocked && !(isMe && isLeavingGroup)) {
@@ -1012,9 +1012,9 @@ MessageReceiver.prototype.extend({
   async handlePairingAuthorisationMessage(envelope, content) {
     const { pairingAuthorisation } = content;
     const { secondaryDevicePubKey, grantSignature } = pairingAuthorisation;
-    const isGrant =
-      grantSignature &&
-      secondaryDevicePubKey === textsecure.storage.user.getNumber();
+    const isGrant
+      = grantSignature
+      && secondaryDevicePubKey === textsecure.storage.user.getNumber();
     if (isGrant) {
       return this.handleAuthorisationForSelf(
         envelope,
@@ -1073,8 +1073,8 @@ MessageReceiver.prototype.extend({
     // TODO: may need to allow users to reset their avatars to null
     if (profile.avatar) {
       const prevPointer = conversation.get('avatarPointer');
-      const needsUpdate =
-        !prevPointer || !_.isEqual(prevPointer, profile.avatar);
+      const needsUpdate
+        = !prevPointer || !_.isEqual(prevPointer, profile.avatar);
 
       if (needsUpdate) {
         conversation.set('avatarPointer', profile.avatar);
@@ -1131,11 +1131,11 @@ MessageReceiver.prototype.extend({
         const isMe = envelope.source === ourPubKey;
         const conversation = window.ConversationController.get(envelope.source);
         const isLeavingGroup = Boolean(
-          message.group &&
-            message.group.type === textsecure.protobuf.GroupContext.Type.QUIT
+          message.group
+            && message.group.type === textsecure.protobuf.GroupContext.Type.QUIT
         );
-        const friendRequest =
-          envelope.type === textsecure.protobuf.Envelope.Type.FRIEND_REQUEST;
+        const friendRequest
+          = envelope.type === textsecure.protobuf.Envelope.Type.FRIEND_REQUEST;
         const { UNPAIRING_REQUEST } = textsecure.protobuf.DataMessage.Flags;
         // eslint-disable-next-line no-bitwise
         const isUnpairingRequest = Boolean(message.flags & UNPAIRING_REQUEST);
@@ -1395,11 +1395,11 @@ MessageReceiver.prototype.extend({
         ? typingMessage.groupId.toString('binary')
         : null,
       started:
-        typingMessage.action ===
-        textsecure.protobuf.TypingMessage.Action.STARTED,
+        typingMessage.action
+        === textsecure.protobuf.TypingMessage.Action.STARTED,
       stopped:
-        typingMessage.action ===
-        textsecure.protobuf.TypingMessage.Action.STOPPED,
+        typingMessage.action
+        === textsecure.protobuf.TypingMessage.Action.STOPPED,
     };
 
     return this.dispatchEvent(ev);
@@ -1767,8 +1767,8 @@ MessageReceiver.prototype.extend({
     // Here we go from binary to string/base64 in all AttachmentPointer digest/key fields
 
     if (
-      decrypted.group &&
-      decrypted.group.type === textsecure.protobuf.GroupContext.Type.UPDATE
+      decrypted.group
+      && decrypted.group.type === textsecure.protobuf.GroupContext.Type.UPDATE
     ) {
       if (decrypted.group.avatar !== null) {
         decrypted.group.avatar = this.cleanAttachment(decrypted.group.avatar);
@@ -1873,11 +1873,11 @@ textsecure.MessageReceiver.prototype = {
   constructor: textsecure.MessageReceiver,
 };
 
-textsecure.MessageReceiver.stringToArrayBuffer =
-  MessageReceiver.stringToArrayBuffer;
-textsecure.MessageReceiver.arrayBufferToString =
-  MessageReceiver.arrayBufferToString;
-textsecure.MessageReceiver.stringToArrayBufferBase64 =
-  MessageReceiver.stringToArrayBufferBase64;
-textsecure.MessageReceiver.arrayBufferToStringBase64 =
-  MessageReceiver.arrayBufferToStringBase64;
+textsecure.MessageReceiver.stringToArrayBuffer
+  = MessageReceiver.stringToArrayBuffer;
+textsecure.MessageReceiver.arrayBufferToString
+  = MessageReceiver.arrayBufferToString;
+textsecure.MessageReceiver.stringToArrayBufferBase64
+  = MessageReceiver.stringToArrayBufferBase64;
+textsecure.MessageReceiver.arrayBufferToStringBase64
+  = MessageReceiver.arrayBufferToStringBase64;

@@ -6,13 +6,13 @@ const ERRORS = {
   CHARACTER: 'Password must only contain letters, numbers and symbols',
 };
 
-const sha512 = text => {
+const sha512 = (text) => {
   const hash = crypto.createHash('sha512');
   hash.update(text.trim());
   return hash.digest('hex');
 };
 
-const generateHash = phrase => phrase && sha512(phrase.trim());
+const generateHash = (phrase) => phrase && sha512(phrase.trim());
 const matchesHash = (phrase, hash) =>
   phrase && sha512(phrase.trim()) === hash.trim();
 

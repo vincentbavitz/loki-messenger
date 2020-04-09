@@ -50,7 +50,7 @@ export const getSearchResults = createSelector(
   ) => {
     return {
       contacts: compact(
-        state.contacts.map(id => {
+        state.contacts.map((id) => {
           const value = lookup[id];
 
           if (value && id === selectedConversation) {
@@ -64,7 +64,7 @@ export const getSearchResults = createSelector(
         })
       ),
       conversations: compact(
-        state.conversations.map(id => {
+        state.conversations.map((id) => {
           const value = lookup[id];
 
           // Don't return anything when activeAt is undefined (i.e. no current conversations with this user)
@@ -83,7 +83,7 @@ export const getSearchResults = createSelector(
         })
       ),
       friends: compact(
-        state.conversations.map(id => {
+        state.conversations.map((id) => {
           const value = lookup[id];
           const friend = value && value.isFriend ? { ...value } : null;
 
@@ -98,7 +98,7 @@ export const getSearchResults = createSelector(
         })
       ),
       hideMessagesHeader: false,
-      messages: state.messages.map(message => {
+      messages: state.messages.map((message) => {
         if (message.id === selectedMessage) {
           return {
             ...message,

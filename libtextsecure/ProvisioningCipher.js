@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   function ProvisioningCipher() {}
 
   ProvisioningCipher.prototype = {
@@ -21,44 +21,46 @@
 
       return libsignal.Curve.async
         .calculateAgreement(masterEphemeral, this.keyPair.privKey)
-        .then(ecRes =>
+        .then((ecRes) =>
           libsignal.HKDF.deriveSecrets(
             ecRes,
             new ArrayBuffer(32),
             'TextSecure Provisioning Message'
           )
         )
-        .then(keys =>
+        .then((keys) =>
           libsignal.crypto
             .verifyMAC(ivAndCiphertext, keys[1], mac, 32)
             .then(() => libsignal.crypto.decrypt(keys[0], ciphertext, iv))
         )
-        .then(plaintext => {
+        .then((plaintext) => {
           const provisionMessage = textsecure.protobuf.ProvisionMessage.decode(
             plaintext
           );
           const privKey = provisionMessage.identityKeyPrivate.toArrayBuffer();
 
-          return libsignal.Curve.async.createKeyPair(privKey).then(keyPair => {
-            const ret = {
-              identityKeyPair: keyPair,
-              number: provisionMessage.number,
-              provisioningCode: provisionMessage.provisioningCode,
-              userAgent: provisionMessage.userAgent,
-              readReceipts: provisionMessage.readReceipts,
-            };
-            if (provisionMessage.profileKey) {
-              ret.profileKey = provisionMessage.profileKey.toArrayBuffer();
-            }
-            return ret;
-          });
+          return libsignal.Curve.async
+            .createKeyPair(privKey)
+            .then((keyPair) => {
+              const ret = {
+                identityKeyPair: keyPair,
+                number: provisionMessage.number,
+                provisioningCode: provisionMessage.provisioningCode,
+                userAgent: provisionMessage.userAgent,
+                readReceipts: provisionMessage.readReceipts,
+              };
+              if (provisionMessage.profileKey) {
+                ret.profileKey = provisionMessage.profileKey.toArrayBuffer();
+              }
+              return ret;
+            });
         });
     },
     getPublicKey() {
       return Promise.resolve()
         .then(() => {
           if (!this.keyPair) {
-            return libsignal.Curve.async.generateKeyPair().then(keyPair => {
+            return libsignal.Curve.async.generateKeyPair().then((keyPair) => {
               this.keyPair = keyPair;
             });
           }

@@ -25,7 +25,7 @@ export function findImage(value: string, variation?: string) {
 }
 
 export function replaceColons(str: string) {
-  return str.replace(instance.rx_colons, m => {
+  return str.replace(instance.rx_colons, (m) => {
     const name = m.substr(1, m.length - 2).toLowerCase();
     const code = instance.map.colons[name];
     if (code) {

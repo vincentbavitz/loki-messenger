@@ -47,8 +47,8 @@ function getMainWindow() {
 // Tray icon and related objects
 let tray = null;
 const startInTray = process.argv.some((arg) => arg === '--start-in-tray');
-const usingTrayIcon =
-  startInTray || process.argv.some((arg) => arg === '--use-tray-icon');
+const usingTrayIcon
+  = startInTray || process.argv.some((arg) => arg === '--use-tray-icon');
 
 const config = require('./app/config');
 
@@ -57,8 +57,8 @@ const config = require('./app/config');
 const userConfig = require('./app/user_config');
 const passwordUtil = require('./app/password_util');
 
-const importMode =
-  process.argv.some((arg) => arg === '--import') || config.get('import');
+const importMode
+  = process.argv.some((arg) => arg === '--import') || config.get('import');
 
 const development = config.environment === 'development';
 const appInstance = config.util.getEnv('NODE_APP_INSTANCE') || 0;
@@ -219,21 +219,21 @@ function isVisible(window, bounds) {
   const boundsHeight = _.get(bounds, 'height') || DEFAULT_HEIGHT;
 
   // requiring BOUNDS_BUFFER pixels on the left or right side
-  const rightSideClearOfLeftBound =
-    window.x + window.width >= boundsX + BOUNDS_BUFFER;
-  const leftSideClearOfRightBound =
-    window.x <= boundsX + boundsWidth - BOUNDS_BUFFER;
+  const rightSideClearOfLeftBound
+    = window.x + window.width >= boundsX + BOUNDS_BUFFER;
+  const leftSideClearOfRightBound
+    = window.x <= boundsX + boundsWidth - BOUNDS_BUFFER;
 
   // top can't be offscreen, and must show at least BOUNDS_BUFFER pixels at bottom
   const topClearOfUpperBound = window.y >= boundsY;
-  const topClearOfLowerBound =
-    window.y <= boundsY + boundsHeight - BOUNDS_BUFFER;
+  const topClearOfLowerBound
+    = window.y <= boundsY + boundsHeight - BOUNDS_BUFFER;
 
   return (
-    rightSideClearOfLeftBound &&
-    leftSideClearOfRightBound &&
-    topClearOfUpperBound &&
-    topClearOfLowerBound
+    rightSideClearOfLeftBound
+    && leftSideClearOfRightBound
+    && topClearOfUpperBound
+    && topClearOfLowerBound
   );
 }
 
@@ -391,11 +391,11 @@ async function createWindow() {
     });
     // If the application is terminating, just do the default
     if (
-      config.environment === 'test' ||
-      config.environment === 'test-lib' ||
-      config.environment === 'test-loki' ||
-      config.environment.includes('test-integration') ||
-      (mainWindow.readyForShutdown && windowState.shouldQuit())
+      config.environment === 'test'
+      || config.environment === 'test-lib'
+      || config.environment === 'test-loki'
+      || config.environment.includes('test-integration')
+      || (mainWindow.readyForShutdown && windowState.shouldQuit())
     ) {
       return;
     }
@@ -407,8 +407,8 @@ async function createWindow() {
     // On Mac, or on other platforms when the tray icon is in use, the window
     // should be only hidden, not closed, when the user clicks the close button
     if (
-      !windowState.shouldQuit() &&
-      (usingTrayIcon || process.platform === 'darwin')
+      !windowState.shouldQuit()
+      && (usingTrayIcon || process.platform === 'darwin')
     ) {
       // toggle the visibility of the show/hide tray icon menu entries
       if (tray) {
@@ -542,9 +542,9 @@ function showPasswordWindow() {
   passwordWindow.on('close', (e) => {
     // If the application is terminating, just do the default
     if (
-      config.environment === 'test' ||
-      config.environment === 'test-lib' ||
-      windowState.shouldQuit()
+      config.environment === 'test'
+      || config.environment === 'test-lib'
+      || windowState.shouldQuit()
     ) {
       return;
     }
@@ -556,8 +556,8 @@ function showPasswordWindow() {
     // On Mac, or on other platforms when the tray icon is in use, the window
     // should be only hidden, not closed, when the user clicks the close button
     if (
-      !windowState.shouldQuit() &&
-      (usingTrayIcon || process.platform === 'darwin')
+      !windowState.shouldQuit()
+      && (usingTrayIcon || process.platform === 'darwin')
     ) {
       // toggle the visibility of the show/hide tray icon menu entries
       if (tray) {
@@ -724,10 +724,10 @@ app.on('ready', async () => {
   const installPath = await getRealPath(app.getAppPath());
 
   if (
-    process.env.NODE_ENV !== 'test' &&
-    process.env.NODE_ENV !== 'test-lib' &&
-    process.env.NODE_ENV !== 'test-loki' &&
-    !process.env.NODE_ENV.includes('test-integration')
+    process.env.NODE_ENV !== 'test'
+    && process.env.NODE_ENV !== 'test-lib'
+    && process.env.NODE_ENV !== 'test-loki'
+    && !process.env.NODE_ENV.includes('test-integration')
   ) {
     installFileHandler({
       protocol: electronProtocol,
@@ -922,11 +922,11 @@ app.on('window-all-closed', () => {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (
-    process.platform !== 'darwin' ||
-    config.environment === 'test' ||
-    config.environment === 'test-lib' ||
-    config.environment === 'test-loki' ||
-    config.environment.includes('test-integration')
+    process.platform !== 'darwin'
+    || config.environment === 'test'
+    || config.environment === 'test-lib'
+    || config.environment === 'test-loki'
+    || config.environment.includes('test-integration')
   ) {
     app.quit();
   }
@@ -1045,8 +1045,8 @@ ipc.on('set-password', async (event, passPhrase, oldPhrase) => {
     if (hash && !hashMatches) {
       const incorrectOldPassword = locale.messages.invalidOldPassword.message;
       sendResponse(
-        incorrectOldPassword ||
-          'Failed to set password: Old password provided is invalid'
+        incorrectOldPassword
+          || 'Failed to set password: Old password provided is invalid'
       );
       return;
     }

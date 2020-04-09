@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -107,10 +107,10 @@
     },
     onImport() {
       window.Signal.Backup.getDirectoryForImport().then(
-        directory => {
+        (directory) => {
           this.doImport(directory);
         },
-        error => {
+        (error) => {
           if (error.name !== 'ChooseError') {
             window.log.error(
               'Error choosing directory:',
@@ -145,7 +145,7 @@
             window.Signal.Backup.importFromDirectory(directory),
           ])
         )
-        .then(results => {
+        .then((results) => {
           const importResult = results[1];
 
           // A full import changes so much we need a restart of the app
@@ -157,7 +157,7 @@
           //   normal link to finish the process.
           return this.finishLightImport(directory);
         })
-        .catch(error => {
+        .catch((error) => {
           window.log.error(
             'Error importing:',
             error && error.stack ? error.stack : error

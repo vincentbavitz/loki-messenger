@@ -7,7 +7,7 @@ const functions = {
   calcPoW,
 };
 
-onmessage = async e => {
+onmessage = async (e) => {
   const [jobId, fnName, ...args] = e.data;
 
   try {

@@ -20,7 +20,7 @@ exports.getImageDimensions = ({ objectUrl, logger }) =>
         width: image.naturalWidth,
       });
     });
-    image.addEventListener('error', error => {
+    image.addEventListener('error', (error) => {
       logger.error('getImageDimensions error', toLogFormat(error));
       reject(error);
     });
@@ -65,7 +65,7 @@ exports.makeImageThumbnail = ({
       resolve(blob);
     });
 
-    image.addEventListener('error', error => {
+    image.addEventListener('error', (error) => {
       logger.error('makeImageThumbnail error', toLogFormat(error));
       reject(error);
     });
@@ -97,7 +97,7 @@ exports.makeVideoScreenshot = ({
     }
 
     video.addEventListener('canplay', capture);
-    video.addEventListener('error', error => {
+    video.addEventListener('error', (error) => {
       logger.error('makeVideoScreenshot error', toLogFormat(error));
       reject(error);
     });
@@ -146,6 +146,6 @@ exports.makeObjectUrl = (data, contentType) => {
   return URL.createObjectURL(blob);
 };
 
-exports.revokeObjectUrl = objectUrl => {
+exports.revokeObjectUrl = (objectUrl) => {
   URL.revokeObjectURL(objectUrl);
 };

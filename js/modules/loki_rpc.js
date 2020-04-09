@@ -13,7 +13,7 @@ const endpointBase = '/storage_rpc/v1';
 // Request index for debugging
 let onionReqIdx = 0;
 
-const timeoutDelay = ms => new Promise(resolve => setTimeout(resolve, ms));
+const timeoutDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const encryptForNode = async (node, payload) => {
   const textEncoder = new TextEncoder();
@@ -264,9 +264,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     const ciphertext = await response.text();
     log.warn(
       `lokiRpc:::sendToProxy -`,
-      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      }`,
+      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`,
       `snode is decom or dereg: `,
       ciphertext,
       // `marking random snode bad ${randomPoolRemainingCount} remaining`
@@ -286,9 +284,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     const ciphertext = await response.text();
     log.warn(
       `lokiRpc:::sendToProxy -`,
-      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      }`,
+      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`,
       `code ${response.status} error`,
       ciphertext,
       // `marking random snode bad ${randomPoolRemainingCount} remaining`
@@ -303,9 +299,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
       // lets mark the target node bad for now
       // we'll just rotate it back in if it's a net problem
       log.warn(
-        `lokiRpc:::sendToProxy - Failing ${targetNode.ip}:${
-          targetNode.port
-        } after 5 retries`
+        `lokiRpc:::sendToProxy - Failing ${targetNode.ip}:${targetNode.port} after 5 retries`
       );
       if (options.ourPubKey) {
         lokiSnodeAPI.unreachableNode(options.ourPubKey, targetNode);
@@ -331,9 +325,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     log.warn(
       'lokiRpc:::sendToProxy - fetch non-200 statusCode',
       response.status,
-      `from snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      }`
+      `from snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`
     );
     return false;
   }
@@ -371,9 +363,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
       'lokiRpc:::sendToProxy - decode error',
       e.code,
       e.message,
-      `from ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      } ciphertext:`,
+      `from ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port} ciphertext:`,
       ciphertext
     );
     if (ciphertextBuffer) {
@@ -402,9 +392,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     if (retryNumber) {
       log.info(
         `lokiRpc:::sendToProxy - request succeeded,`,
-        `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-          targetNode.port
-        }`,
+        `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`,
         `on retry #${retryNumber}`
       );
     }
@@ -447,11 +435,7 @@ const lokiFetch = async (url, options = {}, targetNode = null) => {
         onionReqIdx += 1;
 
         log.debug(
-          `(${thisIdx}) using path ${path[0].ip}:${path[0].port} -> ${
-            path[1].ip
-          }:${path[1].port} -> ${path[2].ip}:${path[2].port} => ${
-            targetNode.ip
-          }:${targetNode.port}`
+          `(${thisIdx}) using path ${path[0].ip}:${path[0].port} -> ${path[1].ip}:${path[1].port} -> ${path[2].ip}:${path[2].port} => ${targetNode.ip}:${targetNode.port}`
         );
 
         // eslint-disable-next-line no-await-in-loop

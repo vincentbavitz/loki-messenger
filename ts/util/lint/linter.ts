@@ -20,7 +20,7 @@ function getExceptionKey(exception: any) {
 function createLookup(list: Array<any>) {
   const lookup = Object.create(null);
 
-  forEach(list, exception => {
+  forEach(list, (exception) => {
     const key = getExceptionKey(exception);
 
     if (lookup[key]) {
@@ -195,10 +195,10 @@ function setupRules(allRules: Array<RuleType>) {
 
 setupRules(rules);
 
-forEach(allSourceFiles, file => {
+forEach(allSourceFiles, (file) => {
   const relativePath = relative(basePath, file).replace(/\\/g, '/');
   if (
-    some(excludedFiles, excluded => {
+    some(excludedFiles, (excluded) => {
       const regex = new RegExp(excluded);
 
       return regex.test(relativePath);
@@ -214,7 +214,7 @@ forEach(allSourceFiles, file => {
 
   forEach(rules, (rule: RuleType) => {
     const excludedModules = rule.excludedModules || [];
-    if (some(excludedModules, module => relativePath.startsWith(module))) {
+    if (some(excludedModules, (module) => relativePath.startsWith(module))) {
       return;
     }
 

@@ -105,8 +105,8 @@
   const TimerOption = Backbone.Model.extend({
     getName() {
       return (
-        i18n(['timerOption', this.get('time'), this.get('unit')].join('_')) ||
-        moment.duration(this.get('time'), this.get('unit')).humanize()
+        i18n(['timerOption', this.get('time'), this.get('unit')].join('_'))
+        || moment.duration(this.get('time'), this.get('unit')).humanize()
       );
     },
     getAbbreviated() {

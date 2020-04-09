@@ -107,7 +107,7 @@ async function doSearch(
     queryMessages(processedQuery),
   ]);
   const { conversations, contacts } = discussions;
-  let filteredMessages = messages.filter(message => message !== undefined);
+  let filteredMessages = messages.filter((message) => message !== undefined);
 
   if (isAdvancedQuery) {
     let senderFilter: Array<string> = [];
@@ -174,7 +174,7 @@ function filterMessages(
   let filteredMessages = messages;
   if (filters.from && filters.from.length > 0) {
     if (filters.from === '@me') {
-      filteredMessages = filteredMessages.filter(message => message.sent);
+      filteredMessages = filteredMessages.filter((message) => message.sent);
     } else {
       filteredMessages = [];
       for (const contact of contacts) {
@@ -188,12 +188,12 @@ function filterMessages(
   }
   if (filters.before > 0) {
     filteredMessages = filteredMessages.filter(
-      message => message.received_at < filters.before
+      (message) => message.received_at < filters.before
     );
   }
   if (filters.after > 0) {
     filteredMessages = filteredMessages.filter(
-      message => message.received_at > filters.after
+      (message) => message.received_at > filters.after
     );
   }
 
@@ -255,7 +255,7 @@ const getMessageProps = (messages: Array<MessageType>) => {
     return [];
   }
 
-  return messages.map(message => {
+  return messages.map((message) => {
     const model = getMessageModel(message);
 
     return model.propsForSearchResult;
@@ -288,11 +288,10 @@ async function queryConversationsAndContacts(
     : ourNumber;
 
   const resultPrimaryDevices: Array<string | null> = await Promise.all(
-    searchResults.map(
-      async conversation =>
-        conversation.id === ourPrimaryDevice
-          ? Promise.resolve(ourPrimaryDevice)
-          : getPrimaryDeviceFor(conversation.id)
+    searchResults.map(async (conversation) =>
+      conversation.id === ourPrimaryDevice
+        ? Promise.resolve(ourPrimaryDevice)
+        : getPrimaryDeviceFor(conversation.id)
     )
   );
 
@@ -321,8 +320,8 @@ async function queryConversationsAndContacts(
   // Inject synthetic Note to Self entry if query matches localized 'Note to Self'
   if (noteToSelf.indexOf(providedQuery.toLowerCase()) !== -1) {
     // ensure that we don't have duplicates in our results
-    contacts = contacts.filter(id => id !== ourNumber);
-    conversations = conversations.filter(id => id !== ourNumber);
+    contacts = contacts.filter((id) => id !== ourNumber);
+    conversations = conversations.filter((id) => id !== ourNumber);
 
     contacts.unshift(ourNumber);
   }
@@ -378,7 +377,7 @@ export function reducer(
     if (state.query !== query) {
       return state;
     }
-    const filteredMessage = messages.filter(message => message !== undefined);
+    const filteredMessage = messages.filter((message) => message !== undefined);
 
     return {
       ...state,
@@ -420,7 +419,7 @@ export function reducer(
 
     return {
       ...state,
-      messages: reject(messages, message => id === message.id),
+      messages: reject(messages, (message) => id === message.id),
       messageLookup: omit(messageLookup, ['id']),
     };
   }

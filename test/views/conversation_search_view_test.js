@@ -21,7 +21,7 @@ describe('ConversationSearchView', () => {
       let input;
       let view;
 
-      before(done => {
+      before((done) => {
         input = $('<input>');
         view = new Whisper.ConversationSearchView({ input }).render();
         view.$input.val('left');
@@ -52,7 +52,7 @@ describe('ConversationSearchView', () => {
         view.$input.val('left');
         view.filterContacts();
 
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           view.typeahead_view.collection.on('reset', resolve);
         });
       });

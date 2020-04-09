@@ -57,7 +57,7 @@ exports.createConversation = async ({
   );
 
   await Promise.all(
-    range(0, numMessages).map(async index => {
+    range(0, numMessages).map(async (index) => {
       await sleep(index * 100);
       log.info(`Create message ${index + 1}`);
       const message = await createRandomMessage({ conversationId });
@@ -115,16 +115,22 @@ const createRandomMessage = async ({ conversationId } = {}) => {
 const _createMessage = ({ commonProperties, conversationId, type } = {}) => {
   switch (type) {
     case 'incoming':
-      return { ...commonProperties, flags: 0,
+      return {
+        ...commonProperties,
+        flags: 0,
         source: conversationId,
-        sourceDevice: 1};
+        sourceDevice: 1,
+      };
     case 'outgoing':
-      return { ...commonProperties, delivered: 1,
+      return {
+        ...commonProperties,
+        delivered: 1,
         delivered_to: [conversationId],
         expireTimer: 0,
         recipients: [conversationId],
         sent_to: [conversationId],
-        synced: true};
+        synced: true,
+      };
     default:
       throw new TypeError(`Unknown message type: '${type}'`);
   }
@@ -145,11 +151,11 @@ const createRandomInMemoryAttachment = async () => {
   };
 };
 
-const createFileEntry = fileName => ({
+const createFileEntry = (fileName) => ({
   fileName,
   contentType: fileNameToContentType(fileName),
 });
-const fileNameToContentType = fileName => {
+const fileNameToContentType = (fileName) => {
   const fileExtension = path.extname(fileName).toLowerCase();
   switch (fileExtension) {
     case '.gif':

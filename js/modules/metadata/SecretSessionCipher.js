@@ -66,7 +66,8 @@ function createCertificateValidator(trustRoot) {
 }
 
 function _decodePoint(serialized, offset = 0) {
-  const view =    offset > 0
+  const view
+    = offset > 0
       ? getViewOfArrayBuffer(serialized, offset, serialized.byteLength)
       : serialized;
 

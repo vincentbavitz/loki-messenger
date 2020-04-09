@@ -33,7 +33,7 @@ export class SessionRadioGroup extends React.PureComponent<Props, State> {
     return (
       <div className="session-radio-group">
         <fieldset id={group}>
-          {items.map(item => {
+          {items.map((item) => {
             const itemIsActive = item.value === this.state.activeItem;
 
             return (

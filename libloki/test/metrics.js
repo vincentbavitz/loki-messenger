@@ -5,7 +5,8 @@ let plotlyDiv;
 const workers = [];
 async function run(messageLength, numWorkers = 1, difficulty = 100, ttl = 72) {
   const timestamp = Math.floor(Date.now() / 1000);
-  const pubKey =    '05ec8635a07a13743516c7c9b3412f3e8252efb7fcaf67eb1615ffba62bebc6802';
+  const pubKey
+    = '05ec8635a07a13743516c7c9b3412f3e8252efb7fcaf67eb1615ffba62bebc6802';
   const message = randomString(messageLength);
   const messageBuffer = dcodeIO.ByteBuffer.wrap(
     message,
@@ -32,8 +33,8 @@ async function run(messageLength, numWorkers = 1, difficulty = 100, ttl = 72) {
       increment,
       index,
     ]);
-    const p = new Promise(resolve => {
-      worker.onmessage = nonce => {
+    const p = new Promise((resolve) => {
+      worker.onmessage = (nonce) => {
         resolve(nonce);
       };
     });
@@ -44,7 +45,7 @@ async function run(messageLength, numWorkers = 1, difficulty = 100, ttl = 72) {
   const duration = (t1 - t0) / 1000;
   addPoint(duration);
   // clean up
-  workers.forEach(worker => worker.terminate());
+  workers.forEach((worker) => worker.terminate());
 }
 
 async function runPoW({
@@ -73,7 +74,8 @@ async function runPoW({
 
 function randomString(length) {
   let text = '';
-  const possible =    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const possible
+    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i < length; i += 1) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
@@ -199,7 +201,7 @@ async function start(index) {
   plotlyDiv = `plotly${index}`;
   currentTrace = 0;
   window.chart = Plotly.newPlot(plotlyDiv, data, layout, options);
-  workers.forEach(worker => worker.terminate());
+  workers.forEach((worker) => worker.terminate());
 
   switch (index) {
     case 0:

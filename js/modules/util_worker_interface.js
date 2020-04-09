@@ -22,7 +22,7 @@ class WorkerInterface {
     this._DEBUG = false;
     this._jobCounter = 0;
 
-    this._utilWorker.onmessage = e => {
+    this._utilWorker.onmessage = (e) => {
       const [jobId, errorForDisplay, result] = e.data;
 
       const job = this._getJob(jobId);
@@ -68,7 +68,7 @@ class WorkerInterface {
     this._jobs[id] = {
       ...this._jobs[id],
       ...data,
-      resolve: value => {
+      resolve: (value) => {
         this._removeJob(id);
         const end = Date.now();
         window.log.info(
@@ -76,7 +76,7 @@ class WorkerInterface {
         );
         return resolve(value);
       },
-      reject: error => {
+      reject: (error) => {
         this._removeJob(id);
         const end = Date.now();
         window.log.info(

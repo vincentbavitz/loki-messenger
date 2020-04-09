@@ -100,8 +100,8 @@
 
     encryptAttachment(plaintext, keys, iv) {
       if (
-        !(plaintext instanceof ArrayBuffer) &&
-        !ArrayBuffer.isView(plaintext)
+        !(plaintext instanceof ArrayBuffer)
+        && !ArrayBuffer.isView(plaintext)
       ) {
         throw new TypeError(
           `\`plaintext\` must be an \`ArrayBuffer\` or \`ArrayBufferView\`; got: ${typeof plaintext}`
@@ -188,8 +188,8 @@
             .catch((e) => {
               if (e.name === 'OperationError') {
                 // bad mac, basically.
-                error.message =
-                  'Failed to decrypt profile data. Most likely the profile key has changed.';
+                error.message
+                  = 'Failed to decrypt profile data. Most likely the profile key has changed.';
                 error.name = 'ProfileDecryptError';
                 throw error;
               }

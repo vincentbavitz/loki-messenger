@@ -40,7 +40,7 @@ class IdleDetector extends EventEmitter {
 
   _scheduleNextCallback() {
     this._clearScheduledCallbacks();
-    this.handle = window.requestIdleCallback(deadline => {
+    this.handle = window.requestIdleCallback((deadline) => {
       const { didTimeout } = deadline;
       const timeRemaining = deadline.timeRemaining();
       const isIdle = timeRemaining >= IDLE_THRESHOLD_MS;

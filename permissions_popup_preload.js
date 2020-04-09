@@ -35,7 +35,7 @@ function makeGetter(name) {
 }
 
 function makeSetter(name) {
-  return value =>
+  return (value) =>
     new Promise((resolve, reject) => {
       ipcRenderer.once(`set-success-${name}`, (event, error) => {
         if (error) {

@@ -38,7 +38,7 @@ const {
 // Returns true if `rawAttachment` is a valid attachment based on our current schema.
 // Over time, we can expand this definition to become more narrow, e.g. require certain
 // fields, etc.
-exports.isValid = rawAttachment => {
+exports.isValid = (rawAttachment) => {
   // NOTE: We cannot use `_.isPlainObject` because `rawAttachment` is
   // deserialized by protobuf:
   if (!rawAttachment) {
@@ -51,7 +51,7 @@ exports.isValid = rawAttachment => {
 // Upgrade steps
 // NOTE: This step strips all EXIF metadata from JPEG images as
 // part of re-encoding the image:
-exports.autoOrientJPEG = async attachment => {
+exports.autoOrientJPEG = async (attachment) => {
   if (!MIME.isJPEG(attachment.contentType)) {
     return attachment;
   }
@@ -73,8 +73,11 @@ exports.autoOrientJPEG = async attachment => {
   // retain it but due to reports of data loss, we don’t want to overburden IndexedDB
   // by potentially doubling stored image data.
   // See: https://github.com/signalapp/Signal-Desktop/issues/1589
-  const newAttachment = { ...attachment, data: newDataArrayBuffer,
-    size: newDataArrayBuffer.byteLength};
+  const newAttachment = {
+    ...attachment,
+    data: newDataArrayBuffer,
+    size: newDataArrayBuffer.byteLength,
+  };
 
   // `digest` is no longer valid for auto-oriented image data, so we discard it:
   delete newAttachment.digest;
@@ -92,7 +95,7 @@ const INVALID_CHARACTERS_PATTERN = new RegExp(
 // NOTE: Expose synchronous version to do property-based testing using `testcheck`,
 // which currently doesn’t support async testing:
 // https://github.com/leebyron/testcheck-js/issues/45
-exports._replaceUnicodeOrderOverridesSync = attachment => {
+exports._replaceUnicodeOrderOverridesSync = (attachment) => {
   if (!is.string(attachment.fileName)) {
     return attachment;
   }
@@ -101,12 +104,12 @@ exports._replaceUnicodeOrderOverridesSync = attachment => {
     INVALID_CHARACTERS_PATTERN,
     UNICODE_REPLACEMENT_CHARACTER
   );
-  const newAttachment = { ...attachment, fileName: normalizedFilename};
+  const newAttachment = { ...attachment, fileName: normalizedFilename };
 
   return newAttachment;
 };
 
-exports.replaceUnicodeOrderOverrides = async attachment =>
+exports.replaceUnicodeOrderOverrides = async (attachment) =>
   exports._replaceUnicodeOrderOverridesSync(attachment);
 
 // \u202A-\u202E is LRE, RLE, PDF, LRO, RLO
@@ -116,7 +119,7 @@ exports.replaceUnicodeOrderOverrides = async attachment =>
 // \u061C is ALM
 const V2_UNWANTED_UNICODE = /[\u202A-\u202E\u2066-\u2069\u200E\u200F\u061C]/g;
 
-exports.replaceUnicodeV2 = async attachment => {
+exports.replaceUnicodeV2 = async (attachment) => {
   if (!is.string(attachment.fileName)) {
     return attachment;
   }
@@ -141,7 +144,7 @@ exports.removeSchemaVersion = ({ attachment, logger }) => {
     return attachment;
   }
 
-  const attachmentWithoutSchemaVersion = { ...attachment};
+  const attachmentWithoutSchemaVersion = { ...attachment };
   delete attachmentWithoutSchemaVersion.schemaVersion;
   return attachmentWithoutSchemaVersion;
 };
@@ -149,18 +152,18 @@ exports.removeSchemaVersion = ({ attachment, logger }) => {
 exports.migrateDataToFileSystem = migrateDataToFileSystem;
 
 //      hasData :: Attachment -> Boolean
-exports.hasData = attachment =>
+exports.hasData = (attachment) =>
   attachment.data instanceof ArrayBuffer || ArrayBuffer.isView(attachment.data);
 
 //      loadData :: (RelativePath -> IO (Promise ArrayBuffer))
 //                  Attachment ->
 //                  IO (Promise Attachment)
-exports.loadData = readAttachmentData => {
+exports.loadData = (readAttachmentData) => {
   if (!is.function(readAttachmentData)) {
     throw new TypeError("'readAttachmentData' must be a function");
   }
 
-  return async attachment => {
+  return async (attachment) => {
     if (!exports.isValid(attachment)) {
       throw new TypeError("'attachment' is not valid");
     }
@@ -175,19 +178,19 @@ exports.loadData = readAttachmentData => {
     }
 
     const data = await readAttachmentData(attachment.path);
-    return { ...attachment, data};
+    return { ...attachment, data };
   };
 };
 
 //      deleteData :: (RelativePath -> IO Unit)
 //                    Attachment ->
 //                    IO Unit
-exports.deleteData = deleteOnDisk => {
+exports.deleteData = (deleteOnDisk) => {
   if (!is.function(deleteOnDisk)) {
     throw new TypeError('deleteData: deleteOnDisk must be a function');
   }
 
-  return async attachment => {
+  return async (attachment) => {
     if (!exports.isValid(attachment)) {
       throw new TypeError('deleteData: attachment is not valid');
     }

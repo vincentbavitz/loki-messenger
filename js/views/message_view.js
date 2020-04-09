@@ -1,7 +1,7 @@
 /* global Whisper: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -49,37 +49,44 @@
           Component: Components.TimerNotification,
           props: this.model.propsForTimerNotification,
         };
-      } if (this.model.propsForSafetyNumberNotification) {
+      }
+      if (this.model.propsForSafetyNumberNotification) {
         return {
           Component: Components.SafetyNumberNotification,
           props: this.model.propsForSafetyNumberNotification,
         };
-      } if (this.model.propsForVerificationNotification) {
+      }
+      if (this.model.propsForVerificationNotification) {
         return {
           Component: Components.VerificationNotification,
           props: this.model.propsForVerificationNotification,
         };
-      } if (this.model.propsForResetSessionNotification) {
+      }
+      if (this.model.propsForResetSessionNotification) {
         return {
           Component: Components.ResetSessionNotification,
           props: this.model.propsForResetSessionNotification,
         };
-      } if (this.model.propsForGroupNotification) {
+      }
+      if (this.model.propsForGroupNotification) {
         return {
           Component: Components.GroupNotification,
           props: this.model.propsForGroupNotification,
         };
-      } if (this.model.isSessionRestoration()) {
+      }
+      if (this.model.isSessionRestoration()) {
         return {
           Component: Components.ResetSessionNotification,
           props: this.model.getPropsForResetSessionNotification(),
         };
-      } if (this.model.propsForFriendRequest) {
+      }
+      if (this.model.propsForFriendRequest) {
         return {
           Component: Components.FriendRequest,
           props: this.model.propsForFriendRequest,
         };
-      } if (this.model.propsForGroupInvitation) {
+      }
+      if (this.model.propsForGroupInvitation) {
         return {
           Component: Components.GroupInvitation,
           props: this.model.propsForGroupInvitation,
@@ -114,7 +121,8 @@
       this.listenTo(this.model, 'change', update);
       this.listenTo(this.model, 'expired', update);
 
-      const applicableConversationChanges =        'change:color change:name change:number change:profileName change:profileAvatar';
+      const applicableConversationChanges
+        = 'change:color change:name change:number change:profileName change:profileAvatar';
 
       this.conversation = this.model.getConversation();
       this.listenTo(this.conversation, applicableConversationChanges, update);

@@ -27,8 +27,8 @@ describe('Backup', () => {
     });
 
     it('handles a file with a long extension', () => {
-      const initial =
-        '0123456789012345678901234567890123456789.01234567890123456789';
+      const initial
+        = '0123456789012345678901234567890123456789.01234567890123456789';
       const expected = '012345678901234567890123456789';
       assert.strictEqual(Signal.Backup._trimFileName(initial), expected);
     });
@@ -333,8 +333,8 @@ describe('Backup', () => {
             };
           };
 
-          const quotedAttachments =
-            (message.quote && message.quote.attachments) || [];
+          const quotedAttachments
+            = (message.quote && message.quote.attachments) || [];
 
           return {
             ...message,

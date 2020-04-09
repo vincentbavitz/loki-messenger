@@ -13,7 +13,7 @@
 */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -111,7 +111,7 @@
         'show-message-detail',
         this.showMessageDetail
       );
-      this.listenTo(this.model.messageCollection, 'navigate-to', url => {
+      this.listenTo(this.model.messageCollection, 'navigate-to', (url) => {
         window.location = url;
       });
 
@@ -191,13 +191,13 @@
           selectedMessages: this.model.selectedMessages,
           expirationSettingName,
           showBackButton: Boolean(this.panels && this.panels.length),
-          timerOptions: Whisper.ExpirationTimerOptions.map(item => ({
+          timerOptions: Whisper.ExpirationTimerOptions.map((item) => ({
             name: item.getName(),
             value: item.get('seconds'),
           })),
           hasNickname: !!this.model.getNickname(),
 
-          onSetDisappearingMessages: seconds =>
+          onSetDisappearingMessages: (seconds) =>
             this.setDisappearingMessages(seconds),
           onDeleteMessages: () => this.destroyMessages(),
           onDeleteSelectedMessages: () => this.deleteSelectedMessages(),
@@ -264,7 +264,7 @@
             window.Whisper.events.trigger('removeModerators', this.model);
           },
 
-          onAvatarClick: pubkey => {
+          onAvatarClick: (pubkey) => {
             if (this.model.isPrivate()) {
               window.Whisper.events.trigger('onShowUserDetails', {
                 userPubKey: pubkey,
@@ -295,12 +295,12 @@
             window.storage.get('primaryDevicePubKey')
           ),
 
-          timerOptions: Whisper.ExpirationTimerOptions.map(item => ({
+          timerOptions: Whisper.ExpirationTimerOptions.map((item) => ({
             name: item.getName(),
             value: item.get('seconds'),
           })),
 
-          onSetDisappearingMessages: seconds =>
+          onSetDisappearingMessages: (seconds) =>
             this.setDisappearingMessages(seconds),
 
           onGoBack: () => {
@@ -420,7 +420,7 @@
         );
 
         const allMembers = await Promise.all(
-          allPubKeys.map(async pubKey => {
+          allPubKeys.map(async (pubKey) => {
             const conv = ConversationController.get(pubKey);
             let profileName = 'Anonymous';
             if (conv) {
@@ -600,7 +600,7 @@
 
       this.remove();
 
-      this.model.messageCollection.forEach(model => {
+      this.model.messageCollection.forEach((model) => {
         model.trigger('unload');
       });
       this.model.messageCollection.reset([]);
@@ -632,14 +632,14 @@
       );
 
       this.model.messageCollection.remove(models);
-      _.forEach(models, model => {
+      _.forEach(models, (model) => {
         model.trigger('unload');
       });
     },
 
     markAllAsVerifiedDefault(unverified) {
       return Promise.all(
-        unverified.map(contact => {
+        unverified.map((contact) => {
           if (contact.isUnverified()) {
             return contact.setVerifiedDefault();
           }
@@ -650,7 +650,7 @@
     },
 
     markAllAsApproved(untrusted) {
-      return Promise.all(untrusted.map(contact => contact.setApproved()));
+      return Promise.all(untrusted.map((contact) => contact.setApproved()));
     },
 
     openSafetyNumberScreens(unverified) {
@@ -934,7 +934,7 @@
       }
 
       // Look for message in memory first, which would tell us if we could scroll to it
-      const targetMessage = this.model.messageCollection.find(item => {
+      const targetMessage = this.model.messageCollection.find((item) => {
         const messageAuthor = item.getContact();
 
         if (!messageAuthor || author !== messageAuthor.id) {
@@ -954,7 +954,7 @@
           MessageCollection: Whisper.MessageCollection,
         });
         const found = Boolean(
-          collection.find(item => {
+          collection.find((item) => {
             const messageAuthor = item.getContact();
 
             return messageAuthor && author === messageAuthor.id;
@@ -1011,7 +1011,7 @@
 
       // We need to iterate here because unseen non-messages do not contribute to
       //   the badge number, but should be reflected in the indicator's count.
-      this.model.messageCollection.forEach(model => {
+      this.model.messageCollection.forEach((model) => {
         if (!model.get('unread')) {
           return;
         }
@@ -1099,7 +1099,7 @@
         .then(async () => {
           this.$('.bar-container').hide();
           await Promise.all(
-            this.model.messageCollection.where({ unread: 1 }).map(async m => {
+            this.model.messageCollection.where({ unread: 1 }).map(async (m) => {
               const latest = await window.Signal.Data.getMessageById(m.id, {
                 Message: Whisper.Message,
               });
@@ -1108,7 +1108,7 @@
           );
           this.inProgressFetch = null;
         })
-        .catch(error => {
+        .catch((error) => {
           window.log.error(
             'fetchMessages error:',
             error && error.stack ? error.stack : error
@@ -1313,7 +1313,7 @@
       const selected = Array.from(this.model.selectedMessages);
       const isModerator = this.model.isModerator(ourPubkey);
       const isAllOurs = selected.every(
-        message =>
+        (message) =>
           message.propsForMessage.authorPhoneNumber === message.OUR_NUMBER
       );
 
@@ -1360,12 +1360,12 @@
             return;
           }
         } else {
-          messages.forEach(m => this.model.messageCollection.remove(m.id));
+          messages.forEach((m) => this.model.messageCollection.remove(m.id));
           toDeleteLocally = messages;
         }
 
         await Promise.all(
-          toDeleteLocally.map(async m => {
+          toDeleteLocally.map(async (m) => {
             await window.Signal.Data.removeMessage(m.id, {
               Message: Whisper.Message,
             });
@@ -1383,7 +1383,7 @@
 
       // Only show a warning when at least one messages was successfully
       // saved in on the server
-      if (!messages.some(m => !m.hasErrors())) {
+      if (!messages.some((m) => !m.hasErrors())) {
         doDelete();
         return;
       }
@@ -1413,7 +1413,7 @@
 
     showChannelLightbox({ media, attachment, message }) {
       const selectedIndex = media.findIndex(
-        mediaMessage => mediaMessage.attachment.path === attachment.path
+        (mediaMessage) => mediaMessage.attachment.path === attachment.path
       );
       this.lightboxGalleryView = new Whisper.ReactWrapperView({
         className: 'lightbox-wrapper',
@@ -1442,7 +1442,7 @@
       const attachments = message.get('attachments') || [];
 
       const media = attachments
-        .filter(item => item.thumbnail && !item.pending && !item.error)
+        .filter((item) => item.thumbnail && !item.pending && !item.error)
         .map((item, index) => ({
           objectURL: getAbsoluteAttachmentPath(item.path),
           path: item.path,
@@ -1475,7 +1475,7 @@
 
       const selectedIndex = _.findIndex(
         media,
-        item => attachment.path === item.path
+        (item) => attachment.path === item.path
       );
 
       const onSave = async (options = {}) => {
@@ -1547,7 +1547,8 @@
           }),
           hasSignalAccount,
           onSendMessage: () => {
-            const number =              contact.number && contact.number[0] && contact.number[0].value;
+            const number
+              = contact.number && contact.number[0] && contact.number[0].value;
             if (number) {
               this.openConversation(number);
             }
@@ -1819,7 +1820,8 @@
         const startPos = textarea.selectionStart;
         const endPos = textarea.selectionEnd;
 
-        textarea.value =          textarea.value.substring(0, startPos)
+        textarea.value
+          = textarea.value.substring(0, startPos)
           + colons
           + textarea.value.substring(endPos, textarea.value.length);
         textarea.selectionStart = startPos + colons.length;
@@ -1879,11 +1881,14 @@
       this.quoteView = new Whisper.ReactWrapperView({
         className: 'quote-wrapper',
         Component: window.Signal.Components.Quote,
-        elCallback: el => this.$('.send').prepend(el),
-        props: { ...props, withContentAbove: true,
+        elCallback: (el) => this.$('.send').prepend(el),
+        props: {
+          ...props,
+          withContentAbove: true,
           onClose: () => {
             this.setQuoteMessage(null);
-          }},
+          },
+        },
         onInitialRender: () => {
           this.view.restoreBottomOffset();
           this.updateMessageFieldSize({});
@@ -2018,7 +2023,7 @@
       this.excludedPreviewUrls = this.excludedPreviewUrls || [];
 
       const link = links.find(
-        item =>
+        (item) =>
           window.Signal.LinkPreviews.isLinkInWhitelist(item)
           && !this.excludedPreviewUrls.includes(item)
       );
@@ -2038,7 +2043,7 @@
     },
 
     removeLinkPreview() {
-      (this.preview || []).forEach(item => {
+      (this.preview || []).forEach((item) => {
         if (item.url) {
           URL.revokeObjectURL(item.url);
         }
@@ -2055,7 +2060,7 @@
       const chunks = await Signal.LinkPreviews.getChunkPattern(size);
 
       let results = [];
-      const jobs = chunks.map(chunk => async () => {
+      const jobs = chunks.map((chunk) => async () => {
         const { start, end } = chunk;
 
         const result = await textsecure.messaging.makeProxiedRequest(url, {
@@ -2170,7 +2175,7 @@
     },
 
     async addLinkPreview(url) {
-      (this.preview || []).forEach(item => {
+      (this.preview || []).forEach((item) => {
         if (item.url) {
           URL.revokeObjectURL(item.url);
         }
@@ -2248,7 +2253,7 @@
       this.previewView = new Whisper.ReactWrapperView({
         className: 'preview-wrapper',
         Component: window.Signal.Components.StagedLinkPreview,
-        elCallback: el => this.$('.send').prepend(el),
+        elCallback: (el) => this.$('.send').prepend(el),
         props,
         onInitialRender: () => {
           this.view.restoreBottomOffset();
@@ -2267,7 +2272,7 @@
         return [];
       }
 
-      return this.preview.map(item => {
+      return this.preview.map((item) => {
         if (item.image) {
           // We eliminate the ObjectURL here, unneeded for send or save
           return {
@@ -2310,7 +2315,7 @@
       const pos = $input.selectionStart;
       const part = isDelete ? text.substr(pos) : text.substr(0, pos);
 
-      const curMention = _.keys(mentions).find(key => predicate(part, key));
+      const curMention = _.keys(mentions).find((key) => predicate(part, key));
 
       if (!curMention) {
         return;
@@ -2361,7 +2366,7 @@
           ? window.Lodash.endsWith
           : window.Lodash.startsWith;
 
-        const curMention = _.keys(mentions).find(key => predicate(part, key));
+        const curMention = _.keys(mentions).find((key) => predicate(part, key));
 
         const offset = curMention ? curMention.length : 1;
 
@@ -2379,7 +2384,8 @@
 
       const text = this.$messageField.val();
 
-      const posToChange =        $input.selectionDirection === 'forward' ? posEnd : posStart;
+      const posToChange
+        = $input.selectionDirection === 'forward' ? posEnd : posStart;
 
       let newPos = nextPos(text, posToChange, isLeft, event.altKey);
 
@@ -2529,7 +2535,8 @@
         ? this.quoteView.$el.outerHeight(includeMargin)
         : 0;
 
-      const height =        this.$messageField.outerHeight()
+      const height
+        = this.$messageField.outerHeight()
         + $attachmentPreviews.outerHeight()
         + this.$emojiPanelContainer.outerHeight()
         + quoteHeight
@@ -2590,9 +2597,9 @@
         // let members = await api.getSubscribers();
         let members = await window.lokiPublicChatAPI.getListOfMembers();
         members = members
-          .filter(d => !!d)
-          .filter(d => d.authorProfileName !== 'Anonymous');
-        allMembers = _.uniq(members, true, d => d.authorPhoneNumber);
+          .filter((d) => !!d)
+          .filter((d) => d.authorProfileName !== 'Anonymous');
+        allMembers = _.uniq(members, true, (d) => d.authorPhoneNumber);
       } else {
         const members = this.model.get('members');
         if (!members || members.length === 0) {
@@ -2601,12 +2608,12 @@
 
         const privateConvos = window
           .getConversations()
-          .models.filter(d => d.isPrivate());
+          .models.filter((d) => d.isPrivate());
         const memberConvos = members
-          .map(m => privateConvos.find(c => c.id === m))
-          .filter(c => !!c && c.getLokiProfile());
+          .map((m) => privateConvos.find((c) => c.id === m))
+          .filter((c) => !!c && c.getLokiProfile());
 
-        allMembers = memberConvos.map(c => ({
+        allMembers = memberConvos.map((c) => ({
           id: c.id,
           authorPhoneNumber: c.id,
           authorProfileName: c.getLokiProfile().displayName,
@@ -2621,12 +2628,13 @@
 
       let membersToShow = [];
       if (query !== null) {
-        membersToShow =          query !== ''
-            ? allMembers.filter(m => filterMembers(query, m))
+        membersToShow
+          = query !== ''
+            ? allMembers.filter((m) => filterMembers(query, m))
             : allMembers;
       }
 
-      membersToShow = membersToShow.map(m =>
+      membersToShow = membersToShow.map((m) =>
         _.pick(m, ['authorPhoneNumber', 'authorProfileName', 'id'])
       );
 

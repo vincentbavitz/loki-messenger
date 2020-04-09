@@ -55,7 +55,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
 
     const realConversations: Array<ConversationListItemPropsType> = [];
     if (conversations) {
-      conversations.forEach(conversation => {
+      conversations.forEach((conversation) => {
         const isRSS =
           conversation.id &&
           !!(conversation.id && conversation.id.match(/^rss:/));
@@ -96,7 +96,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
     let conversationList = conversations;
     if (conversationList !== undefined) {
       conversationList = conversationList.filter(
-        conversation =>
+        (conversation) =>
           !conversation.isSecondary && !conversation.isPendingFriendRequest
       );
     }
@@ -134,7 +134,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
     const { openConversationInternal, searchResults } = this.props;
     const friends =
       (searchResults &&
-        searchResults.contacts.filter(contact => contact.isFriend)) ||
+        searchResults.contacts.filter((contact) => contact.isFriend)) ||
       [];
 
     if (searchResults) {

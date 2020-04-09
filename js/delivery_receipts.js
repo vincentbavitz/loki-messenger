@@ -25,8 +25,8 @@
       }
       const receipts = this.filter(
         (receipt) =>
-          receipt.get('timestamp') === message.get('sent_at') &&
-          recipients.indexOf(receipt.get('source')) > -1
+          receipt.get('timestamp') === message.get('sent_at')
+          && recipients.indexOf(receipt.get('source')) > -1
       );
       this.remove(receipts);
       return receipts;

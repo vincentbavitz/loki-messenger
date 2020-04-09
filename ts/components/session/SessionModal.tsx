@@ -78,7 +78,7 @@ export class SessionModal extends React.PureComponent<Props, State> {
     const { isVisible } = this.state;
 
     return isVisible ? (
-      <div ref={node => (this.node = node)} className={'session-modal'}>
+      <div ref={(node) => (this.node = node)} className={'session-modal'}>
         {showHeader ? (
           <>
             <div

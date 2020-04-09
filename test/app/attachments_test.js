@@ -210,7 +210,8 @@ describe('Attachments', () => {
 
   describe('getRelativePath', () => {
     it('should return correct path', () => {
-      const name =        '608ce3bc536edbf7637a6aeb6040bdfec49349140c0dd43e97c7ce263b15ff7e';
+      const name
+        = '608ce3bc536edbf7637a6aeb6040bdfec49349140c0dd43e97c7ce263b15ff7e';
       assert.lengthOf(Attachments.getRelativePath(name), PATH_LENGTH);
     });
   });

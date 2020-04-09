@@ -6,7 +6,7 @@ export function makeLookup<T>(
 ): { [key: string]: T } {
   // Yep, we can't index into item without knowing what it is. True. But we want to.
   // @ts-ignore
-  const pairs = map(items, item => [item[key], item]);
+  const pairs = map(items, (item) => [item[key], item]);
 
   return fromPairs(pairs);
 }

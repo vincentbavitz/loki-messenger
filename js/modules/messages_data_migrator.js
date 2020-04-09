@@ -70,7 +70,7 @@ exports.processNext = async ({
 
   const upgradeStartTime = Date.now();
   const upgradedMessages = await Promise.all(
-    messagesRequiringSchemaUpgrade.map(message =>
+    messagesRequiringSchemaUpgrade.map((message) =>
       upgradeMessageSchema(message, { maxVersion })
     )
   );
@@ -78,7 +78,7 @@ exports.processNext = async ({
 
   const saveStartTime = Date.now();
   await Promise.all(
-    upgradedMessages.map(message =>
+    upgradedMessages.map((message) =>
       saveMessage(message, { Message: BackboneMessage })
     )
   );
@@ -165,11 +165,11 @@ exports.dangerouslyProcessAllWithoutIndex = async ({
       break;
     }
     numCumulativeMessagesProcessed += status.numMessagesProcessed;
-    logger.info(
-      'Upgrade message schema:',
-      { ...status, numTotalMessages,
-        numCumulativeMessagesProcessed}
-    );
+    logger.info('Upgrade message schema:', {
+      ...status,
+      numTotalMessages,
+      numCumulativeMessagesProcessed,
+    });
   }
 
   logger.info('Close database connection');
@@ -297,7 +297,7 @@ const _processBatch = async ({
 
   const upgradeStartTime = Date.now();
   const upgradedMessages = await Promise.all(
-    unprocessedMessages.map(message =>
+    unprocessedMessages.map((message) =>
       upgradeMessageSchema(message, { maxVersion })
     )
   );
@@ -307,7 +307,7 @@ const _processBatch = async ({
   const transaction = connection.transaction(MESSAGES_STORE_NAME, 'readwrite');
   const transactionCompletion = database.completeTransaction(transaction);
   await Promise.all(
-    upgradedMessages.map(message =>
+    upgradedMessages.map((message) =>
       saveMessage(message, { Message: BackboneMessage })
     )
   );
@@ -374,7 +374,7 @@ const _dangerouslyFetchMessagesRequiringSchemaUpgradeWithoutIndex = ({
   return new Promise((resolve, reject) => {
     const items = [];
     const request = messagesStore.openCursor(range);
-    request.onsuccess = event => {
+    request.onsuccess = (event) => {
       const cursor = event.target.result;
       const hasMoreData = Boolean(cursor);
       if (!hasMoreData || items.length === count) {
@@ -385,7 +385,7 @@ const _dangerouslyFetchMessagesRequiringSchemaUpgradeWithoutIndex = ({
       items.push(item);
       cursor.continue();
     };
-    request.onerror = event => reject(event.target.error);
+    request.onerror = (event) => reject(event.target.error);
   });
 };
 

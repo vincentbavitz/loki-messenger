@@ -76,8 +76,8 @@
           .fail(() =>
             reject(
               new Error(
-                'Failed to fetch from storage.' +
-                  ' This may be due to an unexpected database version.'
+                'Failed to fetch from storage.'
+                  + ' This may be due to an unexpected database version.'
               )
             )
           )

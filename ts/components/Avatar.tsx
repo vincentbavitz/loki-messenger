@@ -179,7 +179,7 @@ export class Avatar extends React.PureComponent<Props, State> {
           hasImage ? 'module-avatar--with-image' : 'module-avatar--no-image',
           !hasImage ? `module-avatar--${color}` : null
         )}
-        onClick={e => {
+        onClick={(e) => {
           this.onAvatarClickBound(e);
         }}
         role="button"

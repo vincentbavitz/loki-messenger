@@ -221,7 +221,7 @@ export class SessionGroupSettings extends React.Component<Props, any> {
       ? window.i18n('leaveOpenGroup')
       : window.i18n('leaveClosedGroup');
 
-    const disappearingMessagesOptions = timerOptions.map(option => {
+    const disappearingMessagesOptions = timerOptions.map((option) => {
       return {
         content: option.name,
         onClick: () => {

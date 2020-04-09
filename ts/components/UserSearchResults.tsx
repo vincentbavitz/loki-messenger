@@ -18,7 +18,7 @@ export class UserSearchResults extends React.Component<Props> {
 
   public render() {
     const { contacts, searchTerm } = this.props;
-    const friends = contacts.filter(contact => contact.isFriend);
+    const friends = contacts.filter((contact) => contact.isFriend);
 
     const noResults = !friends || friends.length <= 0;
 

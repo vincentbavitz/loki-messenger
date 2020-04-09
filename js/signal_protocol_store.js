@@ -30,9 +30,9 @@
 
   function validateVerifiedStatus(status) {
     if (
-      status === VerifiedStatus.DEFAULT ||
-      status === VerifiedStatus.VERIFIED ||
-      status === VerifiedStatus.UNVERIFIED
+      status === VerifiedStatus.DEFAULT
+      || status === VerifiedStatus.VERIFIED
+      || status === VerifiedStatus.UNVERIFIED
     ) {
       return true;
     }
@@ -60,10 +60,10 @@
 
   function isStringable(thing) {
     return (
-      thing === Object(thing) &&
-      (thing.__proto__ === StaticArrayBufferProto ||
-        thing.__proto__ === StaticUint8ArrayProto ||
-        thing.__proto__ === StaticByteBufferProto)
+      thing === Object(thing)
+      && (thing.__proto__ === StaticArrayBufferProto
+        || thing.__proto__ === StaticUint8ArrayProto
+        || thing.__proto__ === StaticByteBufferProto)
     );
   }
   function convertToArrayBuffer(thing) {
@@ -565,8 +565,8 @@
         const previousStatus = identityRecord.verified;
         let verifiedStatus;
         if (
-          previousStatus === VerifiedStatus.VERIFIED ||
-          previousStatus === VerifiedStatus.UNVERIFIED
+          previousStatus === VerifiedStatus.VERIFIED
+          || previousStatus === VerifiedStatus.UNVERIFIED
         ) {
           verifiedStatus = VerifiedStatus.UNVERIFIED;
         } else {
@@ -607,9 +607,9 @@
     },
     isNonBlockingApprovalRequired(identityRecord) {
       return (
-        !identityRecord.firstUse &&
-        Date.now() - identityRecord.timestamp < TIMESTAMP_THRESHOLD &&
-        !identityRecord.nonblockingApproval
+        !identityRecord.firstUse
+        && Date.now() - identityRecord.timestamp < TIMESTAMP_THRESHOLD
+        && !identityRecord.nonblockingApproval
       );
     },
     async saveIdentityWithAttributes(identifier, attributes) {
@@ -668,8 +668,8 @@
       }
 
       if (
-        !publicKey ||
-        equalArrayBuffers(identityRecord.publicKey, publicKey)
+        !publicKey
+        || equalArrayBuffers(identityRecord.publicKey, publicKey)
       ) {
         identityRecord.verified = verifiedStatus;
 
@@ -731,9 +731,9 @@
       }
 
       if (
-        isPresent &&
-        isEqual &&
-        identityRecord.verified !== VerifiedStatus.UNVERIFIED
+        isPresent
+        && isEqual
+        && identityRecord.verified !== VerifiedStatus.UNVERIFIED
       ) {
         await textsecure.storage.protocol.setVerified(
           number,
@@ -802,10 +802,10 @@
       }
 
       if (
-        isPresent &&
-        isEqual &&
-        identityRecord.verified !== VerifiedStatus.DEFAULT &&
-        verifiedStatus === VerifiedStatus.DEFAULT
+        isPresent
+        && isEqual
+        && identityRecord.verified !== VerifiedStatus.DEFAULT
+        && verifiedStatus === VerifiedStatus.DEFAULT
       ) {
         await textsecure.storage.protocol.setVerified(
           number,
@@ -816,10 +816,10 @@
       }
 
       if (
-        verifiedStatus === VerifiedStatus.VERIFIED &&
-        (!isPresent ||
-          (isPresent && !isEqual) ||
-          (isPresent && identityRecord.verified !== VerifiedStatus.VERIFIED))
+        verifiedStatus === VerifiedStatus.VERIFIED
+        && (!isPresent
+          || (isPresent && !isEqual)
+          || (isPresent && identityRecord.verified !== VerifiedStatus.VERIFIED))
       ) {
         await textsecure.storage.protocol.saveIdentityWithAttributes(number, {
           publicKey,
@@ -862,9 +862,9 @@
       }
 
       if (
-        Date.now() - identityRecord.timestamp < TIMESTAMP_THRESHOLD &&
-        !identityRecord.nonblockingApproval &&
-        !identityRecord.firstUse
+        Date.now() - identityRecord.timestamp < TIMESTAMP_THRESHOLD
+        && !identityRecord.nonblockingApproval
+        && !identityRecord.firstUse
       ) {
         return true;
       }

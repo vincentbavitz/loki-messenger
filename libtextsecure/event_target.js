@@ -5,7 +5,7 @@
  * https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
  */
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.textsecure = window.textsecure || {};
 
   function EventTarget() {}

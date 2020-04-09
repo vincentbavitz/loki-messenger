@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -35,7 +35,8 @@
       this.on('disconnected', this.reconnect);
 
       // Keep data around if it's a re-link, or the middle of a light import
-      this.shouldRetainData =        Whisper.Registration.everDone() || options.hasExistingData;
+      this.shouldRetainData
+        = Whisper.Registration.everDone() || options.hasExistingData;
     },
     render_attributes() {
       let errorMessage;
@@ -162,8 +163,8 @@
       this.selectStep(Steps.ENTER_NAME);
       this.setDeviceNameDefault();
 
-      return new Promise(resolve => {
-        this.$('#link-phone').submit(e => {
+      return new Promise((resolve) => {
+        this.$('#link-phone').submit((e) => {
           e.stopPropagation();
           e.preventDefault();
 
@@ -187,7 +188,7 @@
             return finish();
           }
 
-          return tsp.removeAllData().then(finish, error => {
+          return tsp.removeAllData().then(finish, (error) => {
             window.log.error(
               'confirmNumber: error clearing database',
               error && error.stack ? error.stack : error

@@ -153,7 +153,7 @@ export class UpdateGroupNameDialog extends React.Component<Props, State> {
   private onGroupNameChanged(event: any) {
     event.persist();
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         groupName: event.target.value,

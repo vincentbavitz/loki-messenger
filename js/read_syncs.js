@@ -7,7 +7,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -35,7 +35,7 @@
         );
 
         const found = messages.find(
-          item =>
+          (item) =>
             item.isIncoming() && item.get('source') === receipt.get('sender')
         );
         const notificationForMessage = found

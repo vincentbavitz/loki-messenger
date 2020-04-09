@@ -1,7 +1,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -58,7 +58,7 @@
 
   function callListeners() {
     if (ready) {
-      callbacks.forEach(callback => callback());
+      callbacks.forEach((callback) => callback());
       callbacks = [];
     }
   }
@@ -98,7 +98,7 @@
   window.textsecure = window.textsecure || {};
   window.textsecure.storage = window.textsecure.storage || {};
 
-  window.installStorage = newStorage => {
+  window.installStorage = (newStorage) => {
     window.storage = newStorage;
     window.textsecure.storage.impl = newStorage;
   };

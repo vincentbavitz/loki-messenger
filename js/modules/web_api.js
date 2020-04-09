@@ -18,7 +18,7 @@ function _btoa(str) {
   return buffer.toString('base64');
 }
 
-const _call = object => Object.prototype.toString.call(object);
+const _call = (object) => Object.prototype.toString.call(object);
 
 const ArrayBufferToString = _call(new ArrayBuffer());
 const Uint8ArrayToString = _call(new Uint8Array());
@@ -86,7 +86,8 @@ function _promiseAjax(providedUrl, options) {
       );
     }
 
-    const timeout =      typeof options.timeout !== 'undefined' ? options.timeout : 10000;
+    const timeout
+      = typeof options.timeout !== 'undefined' ? options.timeout : 10000;
 
     const { proxyUrl } = options;
     const agentType = options.unauthenticated ? 'unauth' : 'auth';
@@ -148,7 +149,7 @@ function _promiseAjax(providedUrl, options) {
     }
 
     fetch(url, fetchOptions)
-      .then(response => {
+      .then((response) => {
         let resultPromise;
         if (
           options.responseType === 'json'
@@ -164,7 +165,7 @@ function _promiseAjax(providedUrl, options) {
           resultPromise = response.text();
         }
 
-        return resultPromise.then(result => {
+        return resultPromise.then((result) => {
           if (
             options.responseType === 'arraybuffer'
             || options.responseType === 'arraybufferwithdetails'
@@ -235,7 +236,7 @@ function _promiseAjax(providedUrl, options) {
           );
         });
       })
-      .catch(e => {
+      .catch((e) => {
         if (options.disableLogs) {
           log.error(options.type, '[REDACTED_URL]', 0, 'Error');
         } else {
@@ -250,9 +251,9 @@ function _promiseAjax(providedUrl, options) {
 function _retryAjax(url, options, providedLimit, providedCount) {
   const count = (providedCount || 0) + 1;
   const limit = providedLimit || 3;
-  return _promiseAjax(url, options).catch(e => {
+  return _promiseAjax(url, options).catch((e) => {
     if (e.name === 'HTTPError' && e.code === -1 && count < limit) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           resolve(_retryAjax(url, options, limit, count));
         }, 1000);

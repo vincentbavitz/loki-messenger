@@ -218,7 +218,7 @@ export class Message extends React.PureComponent<Props, State> {
     const badges = [isPublic && 'Public', senderIsModerator && 'Mod'];
 
     return badges
-      .map(badgeText => {
+      .map((badgeText) => {
         if (typeof badgeText !== 'string') {
           return null;
         }
@@ -242,7 +242,7 @@ export class Message extends React.PureComponent<Props, State> {
           </div>
         );
       })
-      .filter(i => !!i);
+      .filter((i) => !!i);
   }
 
   public renderMetadata() {
@@ -1089,7 +1089,7 @@ export class Message extends React.PureComponent<Props, State> {
       : [];
     const mentionMe =
       mentions &&
-      mentions.some(m => m.slice(1) === window.lokiPublicChatAPI.ourKey);
+      mentions.some((m) => m.slice(1) === window.lokiPublicChatAPI.ourKey);
 
     const isIncoming = direction === 'incoming';
     const shouldHightlight = mentionMe && isIncoming && this.props.isPublic;
@@ -1119,7 +1119,7 @@ export class Message extends React.PureComponent<Props, State> {
               expiring ? 'module-message--expired' : null
             )}
             role="button"
-            onClick={event => {
+            onClick={(event) => {
               const selection = window.getSelection();
               // Text is being selected
               if (selection && selection.type === 'Range') {

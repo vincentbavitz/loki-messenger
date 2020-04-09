@@ -302,8 +302,8 @@
     // Ensure accounts created prior to 1.0.0-beta8 do have their
     // 'primaryDevicePubKey' defined.
     if (
-      Whisper.Registration.isDone() &&
-      !storage.get('primaryDevicePubKey', null)
+      Whisper.Registration.isDone()
+      && !storage.get('primaryDevicePubKey', null)
     ) {
       storage.put('primaryDevicePubKey', textsecure.storage.user.getNumber());
     }
@@ -523,8 +523,8 @@
 
         // Make sure we only target outgoing messages
         if (
-          message.isFriendRequest() &&
-          message.get('direction') === 'incoming'
+          message.isFriendRequest()
+          && message.get('direction') === 'incoming'
         ) {
           return;
         }
@@ -589,8 +589,8 @@
       window.log.info('Import was interrupted, showing import error screen');
       appView.openImporter();
     } else if (
-      Whisper.Registration.isDone() &&
-      !Whisper.Registration.ongoingSecondaryDeviceRegistration()
+      Whisper.Registration.isDone()
+      && !Whisper.Registration.ongoingSecondaryDeviceRegistration()
     ) {
       // listeners
       Whisper.RotateSignedPreKeyListener.init(Whisper.events, newVersion);
@@ -730,9 +730,9 @@
 
       const ev = new Event('group');
 
-      const primaryDeviceKey =
-        window.storage.get('primaryDevicePubKey') ||
-        textsecure.storage.user.getNumber();
+      const primaryDeviceKey
+        = window.storage.get('primaryDevicePubKey')
+        || textsecure.storage.user.getNumber();
       const allMembers = [primaryDeviceKey, ...members];
 
       ev.groupDetails = {
@@ -958,8 +958,8 @@
       if (friendList !== undefined) {
         friendList = friendList.filter(
           (friend) =>
-            (friend.type === 'direct' && !friend.isMe) ||
-            (friend.type === 'group' && !friend.isPublic && !friend.isRss)
+            (friend.type === 'direct' && !friend.isMe)
+            || (friend.type === 'group' && !friend.isPublic && !friend.isRss)
         );
       }
       return friendList;
@@ -1240,9 +1240,9 @@
 
     Whisper.events.on('showToast', (options) => {
       if (
-        appView &&
-        appView.inboxView &&
-        appView.inboxView.conversation_stack
+        appView
+        && appView.inboxView
+        && appView.inboxView.conversation_stack
       ) {
         appView.inboxView.conversation_stack.showToast(options);
       }
@@ -1250,9 +1250,9 @@
 
     Whisper.events.on('showConfirmationDialog', (options) => {
       if (
-        appView &&
-        appView.inboxView &&
-        appView.inboxView.conversation_stack
+        appView
+        && appView.inboxView
+        && appView.inboxView.conversation_stack
       ) {
         appView.inboxView.conversation_stack.showConfirmationDialog(options);
       }
@@ -1525,11 +1525,11 @@
     // On startup after upgrading to a new version, request a contact sync
     //   (but only if we're not the primary device)
     if (
-      !firstRun &&
-      connectCount === 1 &&
-      newVersion &&
+      !firstRun
+      && connectCount === 1
+      && newVersion
       // eslint-disable-next-line eqeqeq
-      textsecure.storage.user.getDeviceId() != '1'
+      && textsecure.storage.user.getDeviceId() != '1'
     ) {
       window.getSyncRequest();
     }
@@ -1635,8 +1635,8 @@
     storage.put('read-receipt-setting', readReceipts);
 
     if (
-      unidentifiedDeliveryIndicators === true ||
-      unidentifiedDeliveryIndicators === false
+      unidentifiedDeliveryIndicators === true
+      || unidentifiedDeliveryIndicators === false
     ) {
       storage.put(
         'unidentifiedDeliveryIndicators',
@@ -1728,10 +1728,10 @@
       );
       // TODO: We should probably just *not* send any secondary devices and
       // just load them all and send FRs when we get the mapping
-      const isOurSecondaryDevice =
-        id !== ourPrimaryKey &&
-        ourDevices &&
-        ourDevices.some((devicePubKey) => devicePubKey === id);
+      const isOurSecondaryDevice
+        = id !== ourPrimaryKey
+        && ourDevices
+        && ourDevices.some((devicePubKey) => devicePubKey === id);
 
       if (isOurSecondaryDevice) {
         await conversation.setSecondaryStatus(true, ourPrimaryKey);
@@ -1946,11 +1946,11 @@
       // When we change that, the check below needs to change too
       const ourNumber = textsecure.storage.user.getNumber();
       const primaryDevice = window.storage.get('primaryDevicePubKey');
-      const isOurDevice =
-        source && (source === ourNumber || source === primaryDevice);
-      const isPublicChatMessage =
-        messageDescriptor.type === 'group' &&
-        descriptorId.match(/^publicChat:/);
+      const isOurDevice
+        = source && (source === ourNumber || source === primaryDevice);
+      const isPublicChatMessage
+        = messageDescriptor.type === 'group'
+        && descriptorId.match(/^publicChat:/);
       if (isPublicChatMessage && isOurDevice) {
         // Public chat messages from ourselves should be outgoing
         message = await createSentMessage(data);
@@ -2114,11 +2114,11 @@
     // If we don't return early here, we can get into infinite error loops. So, no delivery receipts for sealed sender errors.
     // Note(LOKI): don't send receipt for FR as we don't have a session yet
     const isGroup = data && data.message && data.message.group;
-    const shouldSendReceipt =
-      !isError &&
-      data.unidentifiedDeliveryReceived &&
-      !data.friendRequest &&
-      !isGroup;
+    const shouldSendReceipt
+      = !isError
+      && data.unidentifiedDeliveryReceived
+      && !data.friendRequest
+      && !isGroup;
 
     // Send the receipt async and hope that it succeeds
     if (shouldSendReceipt) {
@@ -2143,10 +2143,10 @@
   }
 
   async function onError(ev) {
-    const noSession =
-      ev.error &&
-      ev.error.message &&
-      ev.error.message.indexOf('No record for device') === 0;
+    const noSession
+      = ev.error
+      && ev.error.message
+      && ev.error.message.indexOf('No record for device') === 0;
     const pubkey = ev.proto.source;
 
     if (noSession) {
@@ -2187,9 +2187,9 @@
     window.log.error('background onError:', Errors.toLogFormat(error));
 
     if (
-      error &&
-      error.name === 'HTTPError' &&
-      (error.code === 401 || error.code === 403)
+      error
+      && error.name === 'HTTPError'
+      && (error.code === 401 || error.code === 403)
     ) {
       Whisper.events.trigger('unauthorized');
 

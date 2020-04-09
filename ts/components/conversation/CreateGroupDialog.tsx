@@ -40,7 +40,7 @@ export class CreateGroupDialog extends React.Component<Props, State> {
 
     let friends = this.props.friendList;
 
-    friends = friends.map(d => {
+    friends = friends.map((d) => {
       const lokiProfile = d.getLokiProfile();
       const name = lokiProfile ? lokiProfile.displayName : 'Anonymous';
 
@@ -68,8 +68,8 @@ export class CreateGroupDialog extends React.Component<Props, State> {
 
   public onClickOK() {
     const members = this.state.friendList
-      .filter(d => d.checkmarked)
-      .map(d => d.id);
+      .filter((d) => d.checkmarked)
+      .map((d) => d.id);
 
     if (!this.state.groupName.trim()) {
       this.onShowError(this.props.i18n('emptyGroupNameError'));
@@ -158,7 +158,7 @@ export class CreateGroupDialog extends React.Component<Props, State> {
   private onGroupNameChanged(event: any) {
     event.persist();
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         groupName: event.target.value,
@@ -181,7 +181,7 @@ export class CreateGroupDialog extends React.Component<Props, State> {
 
   private getMemberCount() {
     // Add 1 to include yourself
-    return this.state.friendList.filter(d => d.checkmarked).length + 1;
+    return this.state.friendList.filter((d) => d.checkmarked).length + 1;
   }
 
   private closeDialog() {
@@ -191,7 +191,7 @@ export class CreateGroupDialog extends React.Component<Props, State> {
   }
 
   private onMemberClicked(selected: any) {
-    const updatedFriends = this.state.friendList.map(member => {
+    const updatedFriends = this.state.friendList.map((member) => {
       if (member.id === selected.id) {
         return { ...member, checkmarked: !member.checkmarked };
       } else {
@@ -200,7 +200,7 @@ export class CreateGroupDialog extends React.Component<Props, State> {
     });
 
     if (
-      updatedFriends.filter(d => d.checkmarked).length >
+      updatedFriends.filter((d) => d.checkmarked).length >
       window.CONSTANTS.SMALL_GROUP_SIZE_LIMIT - 1
     ) {
       const msg = `${this.props.i18n('maxGroupMembersError')} ${
@@ -211,7 +211,7 @@ export class CreateGroupDialog extends React.Component<Props, State> {
       return;
     }
 
-    this.setState(state => {
+    this.setState((state) => {
       return {
         ...state,
         friendList: updatedFriends,

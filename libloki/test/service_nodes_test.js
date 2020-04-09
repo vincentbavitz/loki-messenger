@@ -24,7 +24,7 @@ describe('ServiceNodes', () => {
     });
 
     it('should throw when provided a non-function selector', () => {
-      [1, 'a', 0xffffffff, { really: 'not a function' }].forEach(x => {
+      [1, 'a', 0xffffffff, { really: 'not a function' }].forEach((x) => {
         assert.throws(
           () => libloki.serviceNodes.consolidateLists([], 1, x),
           'Provided selector is not a function'
@@ -47,7 +47,11 @@ describe('ServiceNodes', () => {
 
     it('should return the union of all lists when threshold is 0', () => {
       const result = libloki.serviceNodes.consolidateLists(
-        [['a', 'b', 'c', 'h'], ['d', 'e', 'f', 'g'], ['g', 'h']],
+        [
+          ['a', 'b', 'c', 'h'],
+          ['d', 'e', 'f', 'g'],
+          ['g', 'h'],
+        ],
         0
       );
       assert.deepEqual(result.sort(), ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']);
@@ -68,10 +72,13 @@ describe('ServiceNodes', () => {
             { id: 6, val: 'f' },
             { id: 7, val: 'g' },
           ],
-          [{ id: 7, val: 'g' }, { id: 8, val: 'h' }],
+          [
+            { id: 7, val: 'g' },
+            { id: 8, val: 'h' },
+          ],
         ],
         0,
-        x => x.id
+        (x) => x.id
       );
       const expected = [
         { id: 1, val: 'a' },
@@ -83,12 +90,19 @@ describe('ServiceNodes', () => {
         { id: 7, val: 'g' },
         { id: 8, val: 'h' },
       ];
-      assert.deepEqual(result.sort((a, b) => a.val > b.val), expected);
+      assert.deepEqual(
+        result.sort((a, b) => a.val > b.val),
+        expected
+      );
     });
 
     it('should return the intersection of all lists when threshold is 1', () => {
       const result = libloki.serviceNodes.consolidateLists(
-        [['a', 'b', 'c', 'd'], ['a', 'e', 'f', 'g'], ['a', 'h']],
+        [
+          ['a', 'b', 'c', 'd'],
+          ['a', 'e', 'f', 'g'],
+          ['a', 'h'],
+        ],
         1
       );
       assert.deepEqual(result, ['a']);

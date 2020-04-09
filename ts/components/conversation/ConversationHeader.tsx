@@ -466,7 +466,7 @@ export class ConversationHeader extends React.Component<Props> {
 
     const disappearingMessagesMenuItem = isFriend && (
       <SubMenu title={disappearingTitle}>
-        {(timerOptions || []).map(item => (
+        {(timerOptions || []).map((item) => (
           <MenuItem
             key={item.value}
             onClick={() => {
@@ -481,19 +481,17 @@ export class ConversationHeader extends React.Component<Props> {
     const showMembersMenuItem = isGroup && (
       <MenuItem onClick={onShowGroupMembers}>{i18n('showMembers')}</MenuItem>
     );
-    const showSafetyNumberMenuItem = !isGroup &&
-      !isMe && (
-        <MenuItem onClick={onShowSafetyNumber}>
-          {i18n('showSafetyNumber')}
-        </MenuItem>
-      );
-    const resetSessionMenuItem = isFriend &&
-      !isGroup && (
-        <MenuItem onClick={onResetSession}>{i18n('resetSession')}</MenuItem>
-      );
-    const blockHandlerMenuItem = !isMe &&
-      !isGroup &&
-      !isRss && <MenuItem onClick={blockHandler}>{blockTitle}</MenuItem>;
+    const showSafetyNumberMenuItem = !isGroup && !isMe && (
+      <MenuItem onClick={onShowSafetyNumber}>
+        {i18n('showSafetyNumber')}
+      </MenuItem>
+    );
+    const resetSessionMenuItem = isFriend && !isGroup && (
+      <MenuItem onClick={onResetSession}>{i18n('resetSession')}</MenuItem>
+    );
+    const blockHandlerMenuItem = !isMe && !isGroup && !isRss && (
+      <MenuItem onClick={blockHandler}>{blockTitle}</MenuItem>
+    );
     // const changeNicknameMenuItem = !isMe &&
     //   !isGroup && (
     //     <MenuItem onClick={onChangeNickname}>{i18n('changeNickname')}</MenuItem>

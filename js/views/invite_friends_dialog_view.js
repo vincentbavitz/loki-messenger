@@ -1,7 +1,7 @@
 /* global Whisper, _ */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -15,7 +15,7 @@
       const convos = window.getConversations().models;
 
       const friends = convos.filter(
-        d => !!d && d.isFriend() && d.isPrivate() && !d.isMe()
+        (d) => !!d && d.isFriend() && d.isPrivate() && !d.isMe()
       );
 
       this.friends = friends;
@@ -65,8 +65,8 @@
         if (!Array.isArray(existingMembers)) {
           existingMembers = [];
         }
-        existingMembers = existingMembers.filter(d => !!d);
-        const newMembers = pubkeys.filter(d => !existingMembers.includes(d));
+        existingMembers = existingMembers.filter((d) => !!d);
+        const newMembers = pubkeys.filter((d) => !existingMembers.includes(d));
 
         if (newMembers.length > 0) {
           // Do not trigger an update if there is too many members
@@ -90,7 +90,7 @@
           const allMembers = window.Lodash.concat(existingMembers, newMembers, [
             ourPK,
           ]);
-          const uniqMembers = _.uniq(allMembers, true, d => d);
+          const uniqMembers = _.uniq(allMembers, true, (d) => d);
 
           const groupId = this.convo.get('id');
           const groupName = this.convo.get('name');

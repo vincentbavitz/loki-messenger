@@ -9,17 +9,20 @@ const APP_ROOT_PATH = path.join(__dirname, '..', '..', '..');
 describe('Privacy', () => {
   describe('redactSessionID', () => {
     it('should redact all session IDs', () => {
-      const text =        'This is a log line with a session ID 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827\n'
+      const text
+        = 'This is a log line with a session ID 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827\n'
         + 'and another one 05766049a70e725ad02f7fe61b10e461380a4d7433f98096b3cacbf0362d5cab62';
 
       const actual = Privacy.redactSessionID(text);
-      const expected =        'This is a log line with a session ID [REDACTED]\n'
+      const expected
+        = 'This is a log line with a session ID [REDACTED]\n'
         + 'and another one [REDACTED]';
       assert.equal(actual, expected);
     });
 
     it('should not redact non session IDS', () => {
-      const text =        'This is a log line with a non-session ID sadsad0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827888\n'
+      const text
+        = 'This is a log line with a non-session ID sadsad0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827888\n'
         + 'and another one 766049a70e725ad02f7fe61b10e461380a4d7433f98096b3cacbf0362d5cab6234';
 
       const actual = Privacy.redactSessionID(text);
@@ -29,21 +32,25 @@ describe('Privacy', () => {
 
   describe('redactGroupIds', () => {
     it('should redact all group IDs', () => {
-      const text =        'This is a log line with two group IDs: group(123456789)\n'
+      const text
+        = 'This is a log line with two group IDs: group(123456789)\n'
         + 'and group(abcdefghij)';
 
       const actual = Privacy.redactGroupIds(text);
-      const expected =        'This is a log line with two group IDs: group([REDACTED]789)\n'
+      const expected
+        = 'This is a log line with two group IDs: group([REDACTED]789)\n'
         + 'and group([REDACTED]hij)';
       assert.equal(actual, expected);
     });
 
     it('should remove newlines from redacted group IDs', () => {
-      const text =        'This is a log line with two group IDs: group(12345678\n9)\n'
+      const text
+        = 'This is a log line with two group IDs: group(12345678\n9)\n'
         + 'and group(abc\ndefghij)';
 
       const actual = Privacy.redactGroupIds(text);
-      const expected =        'This is a log line with two group IDs: group([REDACTED]789)\n'
+      const expected
+        = 'This is a log line with two group IDs: group([REDACTED]789)\n'
         + 'and group([REDACTED]hij)';
       assert.equal(actual, expected);
     });
@@ -52,7 +59,8 @@ describe('Privacy', () => {
   describe('redactAll', () => {
     it('should redact all sensitive information', () => {
       const encodedAppRootPath = APP_ROOT_PATH.replace(/ /g, '%20');
-      const text =        'This is a log line with sensitive information:\n'
+      const text
+        = 'This is a log line with sensitive information:\n'
         + `path1 ${APP_ROOT_PATH}/main.js\n`
         + 'phone1 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827 ipsum\n'
         + 'group1 group(123456789) doloret\n'
@@ -61,7 +69,8 @@ describe('Privacy', () => {
         + 'group2 group(abcdefghij) doloret\n';
 
       const actual = Privacy.redactAll(text);
-      const expected =        'This is a log line with sensitive information:\n'
+      const expected
+        = 'This is a log line with sensitive information:\n'
         + 'path1 [REDACTED]/main.js\n'
         + 'phone1 [REDACTED] ipsum\n'
         + 'group1 group([REDACTED]789) doloret\n'
@@ -75,12 +84,14 @@ describe('Privacy', () => {
   describe('_redactPath', () => {
     it('should redact file paths', () => {
       const testPath = '/Users/meow/Library/Application Support/Signal Beta';
-      const text =        'This is a log line with sensitive information:\n'
+      const text
+        = 'This is a log line with sensitive information:\n'
         + `path1 ${testPath}/main.js\n`
         + 'phone1 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827 ipsum\n';
 
       const actual = Privacy._redactPath(testPath)(text);
-      const expected =        'This is a log line with sensitive information:\n'
+      const expected
+        = 'This is a log line with sensitive information:\n'
         + 'path1 [REDACTED]/main.js\n'
         + 'phone1 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827 ipsum\n';
       assert.equal(actual, expected);
@@ -89,14 +100,16 @@ describe('Privacy', () => {
     it('should redact URL-encoded paths', () => {
       const testPath = '/Users/meow/Library/Application Support/Signal Beta';
       const encodedTestPath = encodeURI(testPath);
-      const text =        'This is a log line with sensitive information:\n'
+      const text
+        = 'This is a log line with sensitive information:\n'
         + `path1 ${testPath}/main.js\n`
         + 'phone1 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827 ipsum\n'
         + 'group1 group(123456789) doloret\n'
         + `path2 file:///${encodedTestPath}/js/background.js.`;
 
       const actual = Privacy._redactPath(testPath)(text);
-      const expected =        'This is a log line with sensitive information:\n'
+      const expected
+        = 'This is a log line with sensitive information:\n'
         + 'path1 [REDACTED]/main.js\n'
         + 'phone1 0531032fc7415b7cc1b7516480ad121d391eddce3cfb2cee27dd5b215609c32827 ipsum\n'
         + 'group1 group(123456789) doloret\n'
@@ -105,16 +118,20 @@ describe('Privacy', () => {
     });
 
     it('should redact stack traces with both forward and backslashes', () => {
-      const testPath =        'C:/Users/Meow/AppData/Local/Programs/loki-messenger-beta';
-      const modifiedTestPath =        'C:\\Users\\Meow\\AppData\\Local\\Programs\\loki-messenger-beta';
-      const text =        'This is a log line with sensitive information:\n'
+      const testPath
+        = 'C:/Users/Meow/AppData/Local/Programs/loki-messenger-beta';
+      const modifiedTestPath
+        = 'C:\\Users\\Meow\\AppData\\Local\\Programs\\loki-messenger-beta';
+      const text
+        = 'This is a log line with sensitive information:\n'
         + `path1 ${testPath}\\main.js\n`
         + 'phone1 +12223334455 ipsum\n'
         + 'group1 group(123456789) doloret\n'
         + `path2 ${modifiedTestPath}\\js\\background.js.`;
 
       const actual = Privacy._redactPath(testPath)(text);
-      const expected =        'This is a log line with sensitive information:\n'
+      const expected
+        = 'This is a log line with sensitive information:\n'
         + 'path1 [REDACTED]\\main.js\n'
         + 'phone1 +12223334455 ipsum\n'
         + 'group1 group(123456789) doloret\n'
@@ -123,16 +140,20 @@ describe('Privacy', () => {
     });
 
     it('should redact stack traces with escaped backslashes', () => {
-      const testPath =        'C:\\Users\\Meow\\AppData\\Local\\Programs\\loki-messenger-beta';
-      const modifiedTestPath =        'C:\\\\Users\\\\Meow\\\\AppData\\\\Local\\\\Programs\\\\loki-messenger-beta';
-      const text =        'This is a log line with sensitive information:\n'
+      const testPath
+        = 'C:\\Users\\Meow\\AppData\\Local\\Programs\\loki-messenger-beta';
+      const modifiedTestPath
+        = 'C:\\\\Users\\\\Meow\\\\AppData\\\\Local\\\\Programs\\\\loki-messenger-beta';
+      const text
+        = 'This is a log line with sensitive information:\n'
         + `path1 ${testPath}\\main.js\n`
         + 'phone1 +12223334455 ipsum\n'
         + 'group1 group(123456789) doloret\n'
         + `path2 ${modifiedTestPath}\\js\\background.js.`;
 
       const actual = Privacy._redactPath(testPath)(text);
-      const expected =        'This is a log line with sensitive information:\n'
+      const expected
+        = 'This is a log line with sensitive information:\n'
         + 'path1 [REDACTED]\\main.js\n'
         + 'phone1 +12223334455 ipsum\n'
         + 'group1 group(123456789) doloret\n'

@@ -1,7 +1,7 @@
 /* global window, textsecure, localStorage */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   /** **********************************************
    *** Utilities to store data in local storage ***
    *********************************************** */
@@ -37,5 +37,6 @@
     textsecure.storage.impl.put(key, value);
   window.textsecure.storage.get = (key, defaultValue) =>
     textsecure.storage.impl.get(key, defaultValue);
-  window.textsecure.storage.remove = key => textsecure.storage.impl.remove(key);
+  window.textsecure.storage.remove = (key) =>
+    textsecure.storage.impl.remove(key);
 })();

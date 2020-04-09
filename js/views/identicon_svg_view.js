@@ -1,14 +1,14 @@
 /* global Whisper, loadImage */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
 
   /*
-    * Render an avatar identicon to an svg for use in a notification.
-    */
+   * Render an avatar identicon to an svg for use in a notification.
+   */
   Whisper.IdenticonSVGView = Whisper.View.extend({
     templateName: 'identicon-svg',
     initialize(options) {
@@ -22,7 +22,7 @@
     },
     getDataUrl() {
       const svgurl = this.getSVGUrl();
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const img = document.createElement('img');
         img.onload = () => {
           const canvas = loadImage.scale(img, {

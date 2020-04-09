@@ -23,9 +23,11 @@ interface Props {
   close: () => void;
   i18n: LocalizerType;
   media: Array<MediaItemType>;
-  onSave?: (
-    options: { attachment: AttachmentType; message: Message; index: number }
-  ) => void;
+  onSave?: (options: {
+    attachment: AttachmentType;
+    message: Message;
+    index: number;
+  }) => void;
   selectedIndex: number;
 }
 
@@ -79,7 +81,7 @@ export class LightboxGallery extends React.Component<Props, State> {
   }
 
   private readonly handlePrevious = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: Math.max(prevState.selectedIndex - 1, 0),
     }));
   };
