@@ -678,6 +678,11 @@ class LokiSnodeAPI {
   }
 
   async getLnsMapping(lnsName, timeout) {
+    // Return value of null represents a timeout
+    const timeoutResponse = 'timeout';
+    const timeoutPromise = (cb, interval) => () => new Promise(resolve => setTimeout(() => cb(resolve), interval));
+    const onTimeout = timeoutPromise(resolve => resolve(timeoutResponse), timeout);
+    
     const _ = window.Lodash;
 
     const input = Buffer.from(lnsName);
@@ -706,21 +711,26 @@ class LokiSnodeAPI {
       // extract 3 and make requests in parallel
       const nodes = lnsNodes.splice(0, 3);
 
-      // eslint-disable-next-line no-await-in-loop
-      const results = await Promise.all(
-        nodes.map(node => this._requestLnsMapping(node, nameHash))
-      );
+      
+      ///////////////////////////// TIMEOUT TESTING //////////////////////////////
 
-      ////////// TESTING //////////
+      const nodesPromseSet = () => Promise.all(nodes.map(node => this._requestLnsMapping(node, nameHash)));
+      
+      const results = timeout && typeof timeout === 'number'
+        // eslint-disable-next-line no-await-in-loop
+        ? await Promise.race([nodesPromseSet, onTimeout].map(f => f()))
+        // eslint-disable-next-line no-await-in-loop
+        : await nodesPromseSet();
 
-      // eslint-disable-next-line no-await-in-loop
-      const testResults = await Promise.race(
+      if (results === timeoutResponse) {
+        return null;
+      }
 
-      );
-
-    
-
-      //////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
 
       results.forEach(res => {
         if (
