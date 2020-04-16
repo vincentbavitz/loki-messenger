@@ -678,6 +678,8 @@ class LokiSnodeAPI {
   }
 
   async getLnsMapping(lnsName, timeout) {
+    let pubkey;
+
     // Return value of null represents a timeout
     const timeoutResponse = 'timeout';
     const timeoutPromise = (cb, interval) => () => new Promise(resolve => setTimeout(() => cb(resolve), interval));
@@ -686,9 +688,7 @@ class LokiSnodeAPI {
     const _ = window.Lodash;
 
     const input = Buffer.from(lnsName);
-
     const output = await window.blake2b(input);
-
     const nameHash = dcodeIO.ByteBuffer.wrap(output).toString('base64');
 
     // Get nodes capable of doing LNS
@@ -697,7 +697,7 @@ class LokiSnodeAPI {
 
     // How many nodes should we query simultaneously?
     // Must be a multiple of numNodeConfirms
-    const nodePoolSize = 48;
+    const nodePoolSize = 12;
     const numNodeConfirms = 3;
     const nodeChunkSize = lnsNodes.length > nodePoolSize
       ? nodePoolSize / numNodeConfirms
@@ -714,8 +714,7 @@ class LokiSnodeAPI {
 
     if (lnsNodes.length < numNodeConfirms) {
       console.log('[vlns] Not enough nodes for lns lookup');
-      log.error('Not enough nodes for lns lookup');
-      return false;
+      return {pubkey, error: 'too-few-nodes'};
     }
 
     // extract 3 and make requests in parallel
@@ -734,9 +733,9 @@ class LokiSnodeAPI {
     const nodeChunks = _.chunk(nodesSelection, nodeChunkSize);
     const nodeChunkPromiseSet = nodeChunks.map(nodes => () => Promise.race(nodes.map(node => this._requestLnsMapping(node, nameHash))));
 
-    // console.log(`[vlns] Number of nodes: `, nodesSelection.length);
-    // console.log(`[vlns] Node chunks:`, nodeChunks);
-    // console.log(`[vlns] node chunk Promises:`, nodeChunkPromiseSet);
+    console.log(`[vlns] Number of nodes: `, nodesSelection.length);
+    console.log(`[vlns] Node chunks:`, nodeChunks);
+    console.log(`[vlns] node chunk Promises:`, nodeChunkPromiseSet);
 
     const startTime = new Date().getTime();
     // eslint-disable-next-line no-await-in-loop
@@ -746,21 +745,19 @@ class LokiSnodeAPI {
 
     console.log(`[vlns] Duration for ${nodesSelection.length}:`, (endTime - startTime) / 1000);
 
-    // const nodeRacePromiseSet = Promise.race(nodeChunks)
 
-    // ///////////////////////////// TIMEOUT TESTING //////////////////////////////
-
-    // const nodesPromseSet = () => Promise.all(nodeChunkPromiseSet.map(f => f()));
+    // Timeouts
+    const timeoutPromseSet = () => Promise.all(nodeChunkPromiseSet.map(f => f()));
     
-    // const results = timeout && typeof timeout === 'number'
-    //   // eslint-disable-next-line no-await-in-loop
-    //   ? await Promise.race([nodesPromseSet, onTimeout].map(f => f()))
-    //   // eslint-disable-next-line no-await-in-loop
-    //   : await nodesPromseSet();
+    const results = timeout && typeof timeout === 'number'
+      // eslint-disable-next-line no-await-in-loop
+      ? await Promise.race([timeoutPromseSet, onTimeout].map(f => f()))
+      // eslint-disable-next-line no-await-in-loop
+      : await timeoutPromseSet();
 
-    // if (results === timeoutResponse) {
-    //   return null;
-    // }
+    if (results === timeoutResponse) {
+      return {pubkey, error: timeoutResponse};
+    }
 
     // //////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////
@@ -781,8 +778,7 @@ class LokiSnodeAPI {
     });
 
     if (allResults.length === 0){
-      console.log(`[vlns] No LNS name found`);
-      return false;
+      return {pubkey, error: 'not-found'};
     }
 
     const [winner, count] = _.maxBy(
@@ -801,14 +797,14 @@ class LokiSnodeAPI {
 
     const res = await window.decryptLnsEntry(lnsName, ciphertext);
 
-    const pubkey = StringView.arrayBufferToHex(res);
+    pubkey = StringView.arrayBufferToHex(res);
 
     /// TESSTTTINNNGG
     const nameEndTime = new Date().getTime();
     console.log(`[vlns] Total lookup time for ${lnsNodes.length}:`, (nameEndTime - nameStartTime) / 1000);
 
-
-    return pubkey;
+    // Error is either: timeout, not-found, too-few-nodes
+    return {pubkey, error: undefined};
   }
 
   async getSnodesForPubkey(snode, pubKey) {

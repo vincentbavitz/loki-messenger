@@ -318,7 +318,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
   }
 
   private renderBottomButtons(): JSX.Element {
-    const { selectedTab } = this.state;
+    const { selectedTab, loading } = this.state;
     const edit = window.i18n('edit');
     const addContact = window.i18n('addContact');
     const createGroup = window.i18n('createGroup');
@@ -339,6 +339,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
             buttonType={SessionButtonType.SquareOutline}
             buttonColor={SessionButtonColor.Green}
             onClick={this.handleToggleOverlay}
+            disabled={loading}
           />
         ) : (
           <SessionButton
