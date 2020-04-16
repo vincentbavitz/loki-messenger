@@ -709,9 +709,15 @@ class LokiSnodeAPI {
       }
 
       // extract 3 and make requests in parallel
+      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
+      //       CONTROL FOR THIS
+      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
+      //       CONTROL FOR THIS
+      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
+      //       CONTROL FOR THIS
       const nodes = lnsNodes.splice(0, 3);
 
-      
+
       ///////////////////////////// TIMEOUT TESTING //////////////////////////////
 
       const nodesPromseSet = () => Promise.all(nodes.map(node => this._requestLnsMapping(node, nameHash)));
