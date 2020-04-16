@@ -682,8 +682,6 @@ class LokiSnodeAPI {
     const timeoutResponse = 'timeout';
     const timeoutPromise = (cb, interval) => () => new Promise(resolve => setTimeout(() => cb(resolve), interval));
     const onTimeout = timeoutPromise(resolve => resolve(timeoutResponse), timeout);
-
-    const nodeGroupSize = 3;
     
     const _ = window.Lodash;
 
@@ -697,6 +695,14 @@ class LokiSnodeAPI {
     let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
     lnsNodes = _.shuffle(lnsNodes);
 
+    // How many nodes should we query simultaneously?
+    // Must be a multiple of numNodeConfirms
+    const nodePoolSize = 48;
+    const numNodeConfirms = 3;
+    const nodeChunkSize = lnsNodes.length > nodePoolSize
+      ? nodePoolSize / numNodeConfirms
+      : lnsNodes.length / numNodeConfirms;
+
     // Loop until 3 confirmations
 
     // We don't trust any single node, so we accumulate
@@ -705,91 +711,89 @@ class LokiSnodeAPI {
     let ciphertextHex = null;
 
     const nameStartTime = new Date().getTime();
-    while (!ciphertextHex) {
-      if (lnsNodes.length < 3) {
-        console.log('[vlns] Not enough nodes for lns lookup');
-        log.error('Not enough nodes for lns lookup');
-        return false;
-      }
 
-      // extract 3 and make requests in parallel
-      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
-      //       CONTROL FOR THIS
-      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
-      //       CONTROL FOR THIS
-      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
-      //       CONTROL FOR THIS
-      const nodesSelection = lnsNodes.splice(0, 24);
-      // Chunk 8 groups of 3 nodes, then have 8 sets race
-      // each other to have 3 nodes verify LNS.
-      // This will virtually eliminate hanging calls from 33%
-      // to 0.33^8 = 0.30%
-      // and also reduce mean lookup time.
-      const nodeChunks = _.chunk(nodesSelection, nodeGroupSize).filter(chunk => chunk.length === nodeGroupSize);
-      const nodeChunkPromiseSet = nodeChunks.map(nodes => () => Promise.all(nodes.map(node => this._requestLnsMapping(node, nameHash))));
-
-      console.log(`[vlns] Number of nodes: `, nodesSelection.length);
-      console.log(`[vlns] Node chunks:`, nodeChunks);
-      console.log(`[vlns] node chunk Promises:`, nodeChunkPromiseSet);
-
-      const startTime = new Date().getTime();
-      // eslint-disable-next-line no-await-in-loop
-      const results = await Promise.race(nodeChunkPromiseSet.map(f => f()));
-
-      const endTime = new Date().getTime();
-
-      console.log(`[vlns] Results: `, results);
-
-      console.log(`[vlns] Duration for ${nodesSelection.length}:`, (endTime - startTime) / 1000);
-
-      // const nodeRacePromiseSet = Promise.race(nodeChunks)
-
-      // ///////////////////////////// TIMEOUT TESTING //////////////////////////////
-
-      // const nodesPromseSet = () => Promise.all(nodes.map(node => this._requestLnsMapping(node, nameHash)));
-      
-      // const results = timeout && typeof timeout === 'number'
-      //   // eslint-disable-next-line no-await-in-loop
-      //   ? await Promise.race([nodesPromseSet, onTimeout].map(f => f()))
-      //   // eslint-disable-next-line no-await-in-loop
-      //   : await nodesPromseSet();
-
-      // if (results === timeoutResponse) {
-      //   return null;
-      // }
-
-      // //////////////////////////////////////////////////////////////////////////
-      // //////////////////////////////////////////////////////////////////////////
-      // //////////////////////////////////////////////////////////////////////////
-      // //////////////////////////////////////////////////////////////////////////
-      // //////////////////////////////////////////////////////////////////////////
-
-      results.forEach(res => {
-        if (
-          res &&
-          res.result &&
-          res.result.status === 'OK' &&
-          res.result.entries &&
-          res.result.entries.length > 0
-        ) {
-          allResults.push(results[0].result.entries[0].encrypted_value);
-        }
-      });
-
-      const [winner, count] = _.maxBy(
-        _.entries(_.countBy(allResults)),
-        x => x[1]
-      );
-
-      if (count >= 3) {
-        // eslint-disable-next-lint prefer-destructuring
-        ciphertextHex = winner;
-      }
+    if (lnsNodes.length < numNodeConfirms) {
+      console.log('[vlns] Not enough nodes for lns lookup');
+      log.error('Not enough nodes for lns lookup');
+      return false;
     }
 
-    const nameEndTime = new Date().getTime();
+    // extract 3 and make requests in parallel
+    // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
+    //       CONTROL FOR THIS
+    // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
+    //       CONTROL FOR THIS
+    // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
+    //       CONTROL FOR THIS
+    const nodesSelection = lnsNodes.splice(0, nodePoolSize);
+    // Chunk 8 groups of 3 nodes, then have 8 sets race
+    // each other to have 3 nodes verify LNS.
+    // This will virtually eliminate hanging calls from 33%
+    // to 0.33^8 = 0.30%
+    // and also reduce mean lookup time.
+    const nodeChunks = _.chunk(nodesSelection, nodeChunkSize);
+    const nodeChunkPromiseSet = nodeChunks.map(nodes => () => Promise.race(nodes.map(node => this._requestLnsMapping(node, nameHash))));
 
-    console.log(`[vlns] Total lookup time for ${lnsNodes.length}:`, (nameEndTime - nameStartTime) / 1000);
+    // console.log(`[vlns] Number of nodes: `, nodesSelection.length);
+    // console.log(`[vlns] Node chunks:`, nodeChunks);
+    // console.log(`[vlns] node chunk Promises:`, nodeChunkPromiseSet);
+
+    const startTime = new Date().getTime();
+    // eslint-disable-next-line no-await-in-loop
+    const results = await Promise.all(nodeChunkPromiseSet.map(f => f()));
+
+    const endTime = new Date().getTime();
+
+    console.log(`[vlns] Duration for ${nodesSelection.length}:`, (endTime - startTime) / 1000);
+
+    // const nodeRacePromiseSet = Promise.race(nodeChunks)
+
+    // ///////////////////////////// TIMEOUT TESTING //////////////////////////////
+
+    // const nodesPromseSet = () => Promise.all(nodeChunkPromiseSet.map(f => f()));
+    
+    // const results = timeout && typeof timeout === 'number'
+    //   // eslint-disable-next-line no-await-in-loop
+    //   ? await Promise.race([nodesPromseSet, onTimeout].map(f => f()))
+    //   // eslint-disable-next-line no-await-in-loop
+    //   : await nodesPromseSet();
+
+    // if (results === timeoutResponse) {
+    //   return null;
+    // }
+
+    // //////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////
+
+    results.forEach(res => {
+      if (
+        res &&
+        res.result &&
+        res.result.status === 'OK' &&
+        res.result.entries &&
+        res.result.entries.length > 0
+      ) {
+        allResults.push(results[0].result.entries[0].encrypted_value);
+      }
+    });
+
+    if (allResults.length === 0){
+      console.log(`[vlns] No LNS name found`);
+      return false;
+    }
+
+    const [winner, count] = _.maxBy(
+      _.entries(_.countBy(allResults)),
+      x => x[1]
+    );
+
+    if (count >= numNodeConfirms) {
+      // eslint-disable-next-lint prefer-destructuring
+      ciphertextHex = winner;
+    }
 
     const ciphertext = new Uint8Array(
       StringView.hexToArrayBuffer(ciphertextHex)
@@ -798,6 +802,11 @@ class LokiSnodeAPI {
     const res = await window.decryptLnsEntry(lnsName, ciphertext);
 
     const pubkey = StringView.arrayBufferToHex(res);
+
+    /// TESSTTTINNNGG
+    const nameEndTime = new Date().getTime();
+    console.log(`[vlns] Total lookup time for ${lnsNodes.length}:`, (nameEndTime - nameStartTime) / 1000);
+
 
     return pubkey;
   }
