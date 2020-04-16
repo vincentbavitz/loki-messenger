@@ -677,7 +677,7 @@ class LokiSnodeAPI {
     }
   }
 
-  async getLnsMapping(lnsName) {
+  async getLnsMapping(lnsName, timeout) {
     const _ = window.Lodash;
 
     const input = Buffer.from(lnsName);
@@ -687,7 +687,7 @@ class LokiSnodeAPI {
     const nameHash = dcodeIO.ByteBuffer.wrap(output).toString('base64');
 
     // Get nodes capable of doing LNS
-    let lnsNodes = await this.getNodesMinVersion('2.0.3');
+    let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
     lnsNodes = _.shuffle(lnsNodes);
 
     // Loop until 3 confirmations
@@ -710,6 +710,17 @@ class LokiSnodeAPI {
       const results = await Promise.all(
         nodes.map(node => this._requestLnsMapping(node, nameHash))
       );
+
+      ////////// TESTING //////////
+
+      // eslint-disable-next-line no-await-in-loop
+      const testResults = await Promise.race(
+
+      );
+
+    
+
+      //////////////////////////////
 
       results.forEach(res => {
         if (

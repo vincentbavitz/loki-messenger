@@ -15,6 +15,7 @@ interface Window {
   passwordUtil: any;
   userConfig: any;
   shortenPubkey: any;
+  hasLnsRegex: any;
 
   dcodeIO: any;
   libsignal: any;
@@ -24,6 +25,7 @@ interface Window {
   Signal: any;
   Whisper: any;
   ConversationController: any;
+  lokiSnodeAPI: any;
 
   // Following function needs to be written in background.js
   // getMemberList: any;

@@ -956,6 +956,15 @@
       return toastID;
     };
 
+    window.hasLnsRegex = value => {
+      if (typeof value !== 'string'){
+        return false;
+      }
+ 
+      // Check Regex
+      return Boolean(value.match(window.CONSTANTS.LNS_REGEX));
+    }
+
     window.getFriendsFromContacts = contacts => {
       // To call from TypeScript, input / output are both
       // of type Array<ConversationType>

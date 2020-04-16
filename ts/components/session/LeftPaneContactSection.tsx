@@ -44,6 +44,7 @@ interface State {
   addContactRecipientID: string;
   showFriendRequestsPopup: boolean;
   pubKeyPasted: string;
+  loading: boolean;
 }
 
 export class LeftPaneContactSection extends React.Component<Props, State> {
@@ -57,6 +58,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
       addContactRecipientID: '',
       pubKeyPasted: '',
       showFriendRequestsPopup: false,
+      loading: false,
     };
 
     this.debouncedSearch = debounce(this.search.bind(this), 20);
@@ -201,12 +203,15 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
   }
 
   private renderClosableOverlay() {
+    const { loading } = this.state;
+
     return (
       <SessionClosableOverlay
         overlayMode="contact"
         onChangeSessionID={this.handleRecipientSessionIDChanged}
         onCloseClick={this.handleToggleOverlay}
         onButtonClick={this.handleOnAddContact}
+        showSpinner={loading}
       />
     );
   }
@@ -223,19 +228,69 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
     }));
   }
 
-  private handleOnAddContact() {
-    const sessionID = this.state.addContactRecipientID.trim();
-    const error = validateNumber(sessionID, window.i18n);
+  private handleLnsLookup(lookupName: string, callback: any) {
+    const hasLnsRegex = window.hasLnsRegex(lookupName);
 
-    if (error) {
-      window.pushToast({
-        title: error,
-        type: 'error',
-        id: 'addContact',
-      });
-    } else {
-      window.Whisper.events.trigger('showConversation', sessionID);
+    if (!hasLnsRegex) {
+      return;
     }
+
+    // Retreive LNS Mapping
+    this.setState({ loading: true }, async () => {
+      let lnsMapping: string;
+
+      // If lookup takes too long, just time out for UX
+      setTimeout(() => {
+        this.setState({ loading: false });
+
+        window.pushToast({
+          title: window.i18n('lnsLookupTimeout'),
+          type: 'error',
+          id: 'lnsLookupTimeout',
+        });
+
+        callback(lnsMapping);
+      }, window.CONSTANTS.LNS_DEFAULT_LOOKUP_TIMEOUT);
+
+      lnsMapping = await window.lokiSnodeAPI.getLnsMapping(lookupName);
+      this.setState({ loading: false });
+
+      if (!lnsMapping) {
+        window.pushToast({
+          title: window.i18n('noLnsMapping'),
+          type: 'error',
+          id: 'noLnsMapping',
+        });
+      }
+
+      callback(lnsMapping);
+    });
+  }
+
+  private async handleOnAddContact() {
+    const recipientIDInput = this.state.addContactRecipientID.trim();
+
+    this.handleLnsLookup(recipientIDInput, (lnsMapping: any) => {
+      // Get SessionID from input or LNS
+      const sessionID = lnsMapping || recipientIDInput
+      console.log(`[lns] LNS Mapping: `, lnsMapping);
+      console.log(`[lns] SessionID: `, sessionID);
+
+      // Validate SessionID
+      const error = validateNumber(sessionID, window.i18n);
+      if (error) {
+        window.pushToast({
+          title: error,
+          type: 'error',
+          id: 'addContact',
+        });
+
+        return;
+      }
+
+      window.Whisper.events.trigger('showConversation', sessionID);
+    });
+
   }
 
   private handleRecipientSessionIDChanged(value: string) {
