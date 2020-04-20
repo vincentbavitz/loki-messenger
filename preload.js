@@ -86,7 +86,7 @@ window.CONSTANTS = new function() {
   this.SESSION_ID_LENGTH = 66;
 
   // Loki Name System (LNS)
-  this.LNS_DEFAULT_LOOKUP_TIMEOUT = 7000;
+  this.LNS_DEFAULT_LOOKUP_TIMEOUT = 6000;
   // Minimum nodes version for LNS lookup
   this.LNS_CAPABLE_NODES_VERSION = '2.0.3';
   this.LNS_MAX_LENGTH = 64;

@@ -793,13 +793,13 @@ class LokiSnodeAPI {
     return {pubkey, error: undefined};
   }
 
-  async newGetLnsMapping(lnsName) {
+  async newGetLnsMapping(lnsName, timeout) {
     // Returns { pubkey, error }
     // pubkey is:
     //      null      when there is confirmed to be no LNS mapping
     //      undefined when unconfirmee 
     //      string    when found
-
+    // timeout parameter optional (ms)
 
     // How many nodes to fetch data from?
     const numRequests = 5;
@@ -815,6 +815,13 @@ class LokiSnodeAPI {
     const input = Buffer.from(lnsName);
     const output = await window.blake2b(input);
     const nameHash = dcodeIO.ByteBuffer.wrap(output).toString('base64');
+
+
+    // Return value of null represents a timeout
+    const timeoutResponse = { timedOut: true };
+    const timeoutPromise = (cb, interval) => () => new Promise(resolve => setTimeout(() => cb(resolve), interval));
+    const onTimeout = timeoutPromise(resolve => resolve(timeoutResponse), timeout || Number.MAX_SAFE_INTEGER);
+
 
     // Get nodes capable of doing LNS
     let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
@@ -890,7 +897,7 @@ class LokiSnodeAPI {
               error = window.i18n('lnsMappingNotFound');
             }
 
-            cipherResolve(ciphertextHex);
+            cipherResolve({ciphertextHex});
             return true;
           }
         }
@@ -904,13 +911,19 @@ class LokiSnodeAPI {
     // Start fetching from nodes
     Promise.resolve(nodes.map(async node => fetchFromNode(node)));
 
+    // Timeouts (optional parameter)
     // Wait for cipher to be found; race against timeout
-    await cipherPromise();
+    const { timedOut } = await Promise.race([cipherPromise, onTimeout].map(f => f()));
+
+    if (timedOut) {
+      error = window.i18n('lnsLookupTimeout');
+      return { pubkey, error };
+    }
 
     console.log(`[vlns] Ciphertext found:`, ciphertextHex);
-
     console.log(`[vlns] Cipher null? ` , ciphertextHex === null);
     
+
     pubkey = ciphertextHex === null
       ? null
       : await decryptHex(ciphertextHex);
