@@ -229,7 +229,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
   }
 
   private handleLnsLookup(lookupName: string, callback: any) {
-    const lnsTimeout = 15000; //window.CONSTANTS.LNS_DEFAULT_LOOKUP_TIMEOUT;
+    const lnsTimeout = window.CONSTANTS.LNS_DEFAULT_LOOKUP_TIMEOUT;
     const hasLnsRegex = window.hasLnsRegex(lookupName);
 
     if (!hasLnsRegex) {
@@ -239,27 +239,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
     // Retreive LNS Mapping
     this.setState({ loading: true }, async () => {
       const lnsMapping = await window.lokiSnodeAPI.getLnsMapping(lookupName, lnsTimeout);
-
       this.setState({ loading: false });
-
-      // Timed out
-      if (lnsMapping === null) {
-        // If lookup takes too long, just time out for UX
-        window.pushToast({
-          title: window.i18n('lnsLookupTimeout'),
-          type: 'error',
-          id: 'lnsLookupTimeout',
-        });
-      }
-
-      // No LNS mapping found
-      if (lnsMapping === undefined) {
-        window.pushToast({
-          title: window.i18n('noLnsMapping'),
-          type: 'error',
-          id: 'noLnsMapping',
-        });
-      }
 
       callback(lnsMapping);
     });
@@ -271,29 +251,24 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
     this.handleLnsLookup(recipientIDInput, (lnsMapping: any) => {
       let sessionID = recipientIDInput;
 
-      console.log(`[vlns] LNS Mapping: `, lnsMapping);
-      console.log(`[vlns] SessionID: `, sessionID);
-
       // Get SessionID from input or LNS
-      if (lnsMapping) {
-        sessionID = lnsMapping;
-      } else {
-        // Validate SessionID
-        const error = validateNumber(sessionID, window.i18n);
-        if (error) {
-          window.pushToast({
-            title: error,
-            type: 'error',
-            id: 'addContact',
-          });
+      if (lnsMapping.pubkey) {
+        sessionID = lnsMapping.pubkey;
+      }
 
-          return;
-        }
+      // Validate SessionID
+      const error = lnsMapping.error || validateNumber(sessionID, window.i18n);
+      if (error) {
+        window.pushToast({
+          title: error,
+          type: 'error',
+          id: 'addContactError',
+        });
+
+        return;
       }
 
       window.Whisper.events.trigger('showConversation', sessionID);
-
-
     });
   }
 
