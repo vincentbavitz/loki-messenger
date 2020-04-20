@@ -2523,7 +2523,12 @@
   "invalidHexId": {
     "message": "Invalid Session ID or LNS Name",
     "description":
-      "Error string shown when user type an invalid pubkey hex string"
+      "Error string shown when user types an invalid pubkey hex string"
+  },
+  "invalidLnsFormat": {
+    "message": "Invalid LNS Name",
+    "description":
+      "Error string shown when user types an invalid LNS name"
   },
   "invalidPubkeyFormat": {
     "message": "Invalid Pubkey Format",

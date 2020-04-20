@@ -233,12 +233,14 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
     const hasLnsRegex = window.hasLnsRegex(lookupName);
 
     if (!hasLnsRegex) {
+      callback({error: window.i18n('invalidLnsFormat')});
+
       return;
     }
 
     // Retreive LNS Mapping
     this.setState({ loading: true }, async () => {
-      const lnsMapping = await window.lokiSnodeAPI.newGetLnsMapping(lookupName, lnsTimeout);
+      const lnsMapping = await window.lokiSnodeAPI.getLnsMapping(lookupName, lnsTimeout);
       this.setState({ loading: false });
 
       callback(lnsMapping);
@@ -247,6 +249,9 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
 
   private async handleOnAddContact() {
     const recipientIDInput = this.state.addContactRecipientID.trim();
+    if (recipientIDInput.length === 0){
+      return;
+    }
 
     this.handleLnsLookup(recipientIDInput, (lnsMapping: any) => {
       let sessionID = recipientIDInput;

@@ -21,6 +21,7 @@ interface Props {
   isSelected: boolean;
   onSelect?: any;
   onUnselect?: any;
+  isLnsVerified?: boolean;
 }
 
 interface State {
@@ -47,6 +48,7 @@ export class SessionMemberListItem extends React.Component<Props, State> {
 
   public render() {
     const { isSelected } = this.state;
+    const { isLnsVerified } = this.props;
 
     const name = this.props.member.authorProfileName;
     const pubkey = this.props.member.authorPhoneNumber;
@@ -54,7 +56,7 @@ export class SessionMemberListItem extends React.Component<Props, State> {
 
     return (
       <div
-        className={classNames('session-member-item', isSelected && 'selected')}
+        className={classNames('session-member-item', isSelected && 'selected', isLnsVerified && 'verified')}
         onClick={this.handleSelectionAction}
         role="button"
       >

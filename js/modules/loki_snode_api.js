@@ -678,122 +678,6 @@ class LokiSnodeAPI {
   }
 
   async getLnsMapping(lnsName, timeout) {
-    let pubkey;
-
-    // Return value of null represents a timeout
-    const timeoutResponse = window.i18n('lnsLookupTimeout');
-    const timeoutPromise = (cb, interval) => () => new Promise(resolve => setTimeout(() => cb(resolve), interval));
-    const onTimeout = timeoutPromise(resolve => resolve(timeoutResponse), timeout);
-    
-    const _ = window.Lodash;
-
-    const input = Buffer.from(lnsName);
-    const output = await window.blake2b(input);
-    const nameHash = dcodeIO.ByteBuffer.wrap(output).toString('base64');
-
-    // Get nodes capable of doing LNS
-    let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
-    lnsNodes = _.shuffle(lnsNodes);
-
-    // How many nodes should we query simultaneously?
-    // Must be a multiple of (numNodeConfirms + 1)
-    const nodePoolSize = 8;
-    const numNodeConfirms = 3;
-    const nodeChunkSize = lnsNodes.length > nodePoolSize
-      ? nodePoolSize / (numNodeConfirms + 1)
-      : lnsNodes.length / numNodeConfirms;
-
-    // Loop until 3 confirmations
-
-    // We don't trust any single node, so we accumulate
-    // answers here and select a dominating answer
-    const allResults = [];
-    let ciphertextHex = null;
-
-    while (!ciphertextHex) {
-      if (lnsNodes.length < numNodeConfirms) {
-        return {pubkey, error: window.i18n('lnsTooFewNodes')};
-      }
-
-      console.log(`[vlns] Doing looop!!`);
-
-      const nodesSelection = lnsNodes.splice(0, nodePoolSize);
-      // Chunk 8 groups of 3 nodes, then have 8 sets race
-      // each other to have 3 nodes verify LNS.
-      // This will virtually eliminate hanging calls from 33%
-      // to 0.33^8 = 0.30%
-      // and also reduce mean lookup time.
-      const nodeChunks = _.chunk(nodesSelection, nodeChunkSize);
-      const nodeChunkPromiseSet = nodeChunks.map(nodes => () => Promise.race(nodes.map(node => this._requestLnsMapping(node, nameHash))));
-
-      console.log(`[vlns] Number of nodes: `, nodesSelection.length);
-      console.log(`[vlns] Node chunks:`, nodeChunks);
-      console.log(`[vlns] node chunk Promises:`, nodeChunkPromiseSet);
-
-      
-      // Timeouts (optional parameter)
-      const timeoutPromseSet = () => Promise.all(nodeChunkPromiseSet.map(f => f()));
-      
-      // Nodes race against timeout. If timeout wins, we report error.
-      const results = timeout && typeof timeout === 'number'
-        // eslint-disable-next-line no-await-in-loop
-        ? await Promise.race([timeoutPromseSet, onTimeout].map(f => f()))
-        // eslint-disable-next-line no-await-in-loop
-        : await timeoutPromseSet();
-
-      console.log(`[vlns] Results: `, results);
-
-      if (results === timeoutResponse) {
-        return {pubkey, error: timeoutResponse};
-      }
-
-      // Work wih results
-      results.forEach(res => {
-        if (
-          res &&
-          res.result &&
-          res.result.status === 'OK' &&
-          res.result.entries &&
-          res.result.entries.length > 0
-        ) {
-          // shouldnt it be res.result?
-          allResults.push(results[0].result.entries[0].encrypted_value);
-        }
-      });
-
-      if (allResults.length === 0){
-        return {pubkey, error: window.i18n('lnsMappingNotFound')};
-      }
-
-      console.log(`[vlns] allResults: `, allResults);
-
-      const [winner, count] = _.maxBy(
-        _.entries(_.countBy(allResults)),
-        x => x[1]
-      );
-
-      console.log(`[vlns] Winner:`, winner);
-      console.log(`[vlns] Count:`, count);
-
-      if (count >= 12) {
-        // eslint-disable-next-lint prefer-destructuring
-        ciphertextHex = winner;
-      }
-    }
-
-    const ciphertext = new Uint8Array(
-      StringView.hexToArrayBuffer(ciphertextHex)
-    );
-
-    const res = await window.decryptLnsEntry(lnsName, ciphertext);
-
-    pubkey = StringView.arrayBufferToHex(res);
-
-    // Error is either: timeout, not-found, too-few-nodes
-    return {pubkey, error: undefined};
-  }
-
-  async newGetLnsMapping(lnsName, timeout) {
     // Returns { pubkey, error }
     // pubkey is:
     //      null      when there is confirmed to be no LNS mapping
@@ -816,12 +700,10 @@ class LokiSnodeAPI {
     const output = await window.blake2b(input);
     const nameHash = dcodeIO.ByteBuffer.wrap(output).toString('base64');
 
-
     // Return value of null represents a timeout
     const timeoutResponse = { timedOut: true };
     const timeoutPromise = (cb, interval) => () => new Promise(resolve => setTimeout(() => cb(resolve), interval));
     const onTimeout = timeoutPromise(resolve => resolve(timeoutResponse), timeout || Number.MAX_SAFE_INTEGER);
-
 
     // Get nodes capable of doing LNS
     let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
@@ -842,9 +724,6 @@ class LokiSnodeAPI {
     });
 
     const decryptHex = async cipherHex => {
-
-      console.log(`[vlns] Decrypting...`);
-
       const ciphertext = new Uint8Array(
         StringView.hexToArrayBuffer(cipherHex)
       );
@@ -872,15 +751,11 @@ class LokiSnodeAPI {
 
         confirmedNodes.push(resValue);
 
-        // console.log(`[vlns] confirmedNodes:`, confirmedNodes);
-
         if (confirmedNodes.length >= numRequiredConfirms) {
           if (ciphertextHex){
             // result already found, dont worry
-            return false;
+            return;
           }
-
-          console.log(`[vlns] Confirmed Nodes:`, confirmedNodes);
 
           const [winner, count] = _.maxBy(
             _.entries(_.countBy(confirmedNodes)),
@@ -898,12 +773,9 @@ class LokiSnodeAPI {
             }
 
             cipherResolve({ciphertextHex});
-            return true;
           }
         }
       }
-
-      return false;
     }
 
     const nodes = lnsNodes.splice(0, numRequests);
@@ -920,16 +792,10 @@ class LokiSnodeAPI {
       return { pubkey, error };
     }
 
-    console.log(`[vlns] Ciphertext found:`, ciphertextHex);
-    console.log(`[vlns] Cipher null? ` , ciphertextHex === null);
-    
-
     pubkey = ciphertextHex === null
       ? null
       : await decryptHex(ciphertextHex);
       
-    console.log(`[vlns] Result:`, pubkey);
-
     return {pubkey, error};
   }
 
