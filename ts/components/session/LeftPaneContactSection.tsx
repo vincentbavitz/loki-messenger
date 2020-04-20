@@ -238,7 +238,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
 
     // Retreive LNS Mapping
     this.setState({ loading: true }, async () => {
-      const lnsMapping = await window.lokiSnodeAPI.getLnsMapping(lookupName, lnsTimeout);
+      const lnsMapping = await window.lokiSnodeAPI.newGetLnsMapping(lookupName, lnsTimeout);
       this.setState({ loading: false });
 
       callback(lnsMapping);

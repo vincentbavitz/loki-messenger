@@ -696,8 +696,8 @@ class LokiSnodeAPI {
     lnsNodes = _.shuffle(lnsNodes);
 
     // How many nodes should we query simultaneously?
-    // Must be a multiple of numNodeConfirms
-    const nodePoolSize = 12;
+    // Must be a multiple of (numNodeConfirms + 1)
+    const nodePoolSize = 8;
     const numNodeConfirms = 3;
     const nodeChunkSize = lnsNodes.length > nodePoolSize
       ? nodePoolSize / (numNodeConfirms + 1)
@@ -715,13 +715,8 @@ class LokiSnodeAPI {
         return {pubkey, error: window.i18n('lnsTooFewNodes')};
       }
 
-      // extract 3 and make requests in parallel
-      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
-      //       CONTROL FOR THIS
-      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
-      //       CONTROL FOR THIS
-      // SOMETIMES THIS IS EMPTY OR ONLY 2 ON STARTUP
-      //       CONTROL FOR THIS
+      console.log(`[vlns] Doing looop!!`);
+
       const nodesSelection = lnsNodes.splice(0, nodePoolSize);
       // Chunk 8 groups of 3 nodes, then have 8 sets race
       // each other to have 3 nodes verify LNS.
@@ -735,7 +730,8 @@ class LokiSnodeAPI {
       console.log(`[vlns] Node chunks:`, nodeChunks);
       console.log(`[vlns] node chunk Promises:`, nodeChunkPromiseSet);
 
-      // Timeouts
+      
+      // Timeouts (optional parameter)
       const timeoutPromseSet = () => Promise.all(nodeChunkPromiseSet.map(f => f()));
       
       // Nodes race against timeout. If timeout wins, we report error.
@@ -760,6 +756,7 @@ class LokiSnodeAPI {
           res.result.entries &&
           res.result.entries.length > 0
         ) {
+          // shouldnt it be res.result?
           allResults.push(results[0].result.entries[0].encrypted_value);
         }
       });
@@ -768,12 +765,17 @@ class LokiSnodeAPI {
         return {pubkey, error: window.i18n('lnsMappingNotFound')};
       }
 
+      console.log(`[vlns] allResults: `, allResults);
+
       const [winner, count] = _.maxBy(
         _.entries(_.countBy(allResults)),
         x => x[1]
       );
 
-      if (count >= numNodeConfirms) {
+      console.log(`[vlns] Winner:`, winner);
+      console.log(`[vlns] Count:`, count);
+
+      if (count >= 12) {
         // eslint-disable-next-lint prefer-destructuring
         ciphertextHex = winner;
       }
@@ -789,6 +791,99 @@ class LokiSnodeAPI {
 
     // Error is either: timeout, not-found, too-few-nodes
     return {pubkey, error: undefined};
+  }
+
+  async newGetLnsMapping(lnsName) {
+    // Simplified getLnsMapping for testing
+
+    // How many nodes to fetch data from?
+    const numRequests = 5;
+    // How many nodes must have the same response value?
+    const numRequiredConfirms = 3;
+
+    let ciphertextHex;
+
+    const _ = window.Lodash;
+
+    const input = Buffer.from(lnsName);
+    const output = await window.blake2b(input);
+    const nameHash = dcodeIO.ByteBuffer.wrap(output).toString('base64');
+
+    // Get nodes capable of doing LNS
+    let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
+    lnsNodes = _.shuffle(lnsNodes);
+
+    const confirmedNodes = [];
+
+    const nodes = lnsNodes.splice(0, numRequests);
+    
+    nodes.map(async node => fetchFromNode(node));
+
+    console.log(`[vlns] Results:`, results);
+
+    const handleResults = async cipherHex => {
+       const ciphertext = new Uint8Array(
+        StringView.hexToArrayBuffer(cipherHex)
+      );
+
+      const res = await window.decryptLnsEntry(lnsName, ciphertext);
+      const pubkey = StringView.arrayBufferToHex(res);
+
+      console.log(`[vlns] Pubkey: `, pubkey);
+
+      // Error is either: timeout, not-found, too-few-nodes
+      return {pubkey, error: undefined};
+    }
+    
+    const fetchFromNode = async node => {
+      console.log(`[vlnss] Firing!`);
+      const res = await this._requestLnsMapping(node, nameHash);
+      console.log(`[vlnss] Done`);
+
+      if (res === false){
+        return;
+      }
+
+      // Do validation
+      if (
+        res &&
+        res.result &&
+        res.result.status === 'OK' &&
+        res.result.entries &&
+        res.result.entries.length > 0
+      ) {
+        // confirmedNodes.push(res.result.entries[0].encrypted_value);
+        confirmedNodes.push(res.result.entries[0].encrypted_value);
+        
+        // random insert for testying
+        if (Math.round(Math.random())) {
+          confirmedNodes.push('hjtreg295437fbker5tg734f');
+        }
+
+        console.log(`[vlns] confirmedNodes:`, confirmedNodes);
+
+        if (confirmedNodes.length >= numRequiredConfirms) {
+          if (ciphertextHex){
+            // If result already found, dont worry
+            console.log(`[vlns] Result already found!`, ciphertextHex);
+            return;
+          }
+
+          const [winner, count] = _.maxBy(
+            _.entries(_.countBy(confirmedNodes)),
+            x => x[1]
+          );
+
+          if (count >= numRequiredConfirms) {
+            ciphertextHex = winner;
+
+            // If handle results gets a winner, then you can decrypt
+              return handleResults(ciphertextHex);
+          }
+        }
+      }
+    }
+
   }
 
   async getSnodesForPubkey(snode, pubKey) {
