@@ -802,6 +802,7 @@ class LokiSnodeAPI {
     const numRequiredConfirms = 3;
 
     let ciphertextHex;
+    let error;
 
     const _ = window.Lodash;
 
@@ -815,34 +816,35 @@ class LokiSnodeAPI {
 
     const confirmedNodes = [];
 
-    const nodes = lnsNodes.splice(0, numRequests);
-    
-    nodes.map(async node => fetchFromNode(node));
+    const cipherPromise = new Promise(resolve => {
+      console.log(`[vlns] CIPHER FOUND!`, resolve);
+    })
 
-    console.log(`[vlns] Results:`, results);
+    const decryptHex = async cipherHex => {
+      const ciphertext = new Uint8Array(
+       StringView.hexToArrayBuffer(cipherHex)
+     );
 
-    const handleResults = async cipherHex => {
-       const ciphertext = new Uint8Array(
-        StringView.hexToArrayBuffer(cipherHex)
-      );
+     const res = await window.decryptLnsEntry(lnsName, ciphertext);
+     const pubkey = StringView.arrayBufferToHex(res);
 
-      const res = await window.decryptLnsEntry(lnsName, ciphertext);
-      const pubkey = StringView.arrayBufferToHex(res);
+     console.log(`[vlns] Pubkey: `, pubkey);
 
-      console.log(`[vlns] Pubkey: `, pubkey);
-
-      // Error is either: timeout, not-found, too-few-nodes
-      return {pubkey, error: undefined};
+     return pubkey;
     }
-    
+   
     const fetchFromNode = async node => {
       console.log(`[vlnss] Firing!`);
       const res = await this._requestLnsMapping(node, nameHash);
       console.log(`[vlnss] Done`);
 
       if (res === false){
-        return;
+        error = 'Got bad response';
+        throw error;
       }
+
+      // TIMEOUTS IN HERE
+
 
       // Do validation
       if (
@@ -855,7 +857,7 @@ class LokiSnodeAPI {
         // confirmedNodes.push(res.result.entries[0].encrypted_value);
         confirmedNodes.push(res.result.entries[0].encrypted_value);
         
-        // random insert for testying
+        // random insert for testing
         if (Math.round(Math.random())) {
           confirmedNodes.push('hjtreg295437fbker5tg734f');
         }
@@ -865,8 +867,8 @@ class LokiSnodeAPI {
         if (confirmedNodes.length >= numRequiredConfirms) {
           if (ciphertextHex){
             // If result already found, dont worry
-            console.log(`[vlns] Result already found!`, ciphertextHex);
-            return;
+            error = `[vlns] Result already found!`;
+            throw error;
           }
 
           const [winner, count] = _.maxBy(
@@ -876,13 +878,32 @@ class LokiSnodeAPI {
 
           if (count >= numRequiredConfirms) {
             ciphertextHex = winner;
-
-            // If handle results gets a winner, then you can decrypt
-              return handleResults(ciphertextHex);
+            cipherPromise.resolve(ciphertextHex);
+            return true;
           }
         }
       }
+
+      error = 'Result failed at end';
+      throw error;
     }
+
+    const nodes = lnsNodes.splice(0, numRequests);
+    
+    const nodesFetchPromiseSet = nodes.map(node => async () => fetchFromNode(node));
+
+    // console.log(`[vlns] Node Set:`, nodesFetchPromiseSet);
+    
+    const result = await Promise.resolve(nodesFetchPromiseSet.map(f => f()));
+    
+    // console.log(`[vlns] Results:`, result);
+
+    // If handle results gets a winner, then you can decrypt
+    const pubkey = await decryptHex(ciphertextHex);
+
+    return {pubkey};
+
+
 
   }
 
