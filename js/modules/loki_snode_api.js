@@ -802,6 +802,7 @@ class LokiSnodeAPI {
     const numRequiredConfirms = 3;
 
     let ciphertextHex;
+    let pubkey;
     let error;
 
     const _ = window.Lodash;
@@ -813,6 +814,12 @@ class LokiSnodeAPI {
     // Get nodes capable of doing LNS
     let lnsNodes = await this.getNodesMinVersion(window.CONSTANTS.LNS_CAPABLE_NODES_VERSION);
     lnsNodes = _.shuffle(lnsNodes);
+
+    // Enough nodes?
+    if (lnsNodes.length < numRequiredConfirms) {
+      error = window.i18n('lnsTooFewNodes');
+      return {pubkey, error};
+    }
 
     const confirmedNodes = [];
 
@@ -836,11 +843,6 @@ class LokiSnodeAPI {
     const fetchFromNode = async node => {
       const res = await this._requestLnsMapping(node, nameHash);
 
-      if (res === false){
-        error = 'Got bad response';
-        throw error;
-      }
-
       // TIMEOUTS IN HERE
 
 
@@ -852,21 +854,14 @@ class LokiSnodeAPI {
         res.result.entries &&
         res.result.entries.length > 0
       ) {
-        // confirmedNodes.push(res.result.entries[0].encrypted_value);
         confirmedNodes.push(res.result.entries[0].encrypted_value);
-        
-        // random insert for testing
-        if (Math.round(Math.random())) {
-          confirmedNodes.push('hjtreg295437fbker5tg734f');
-        }
 
         // console.log(`[vlns] confirmedNodes:`, confirmedNodes);
 
         if (confirmedNodes.length >= numRequiredConfirms) {
           if (ciphertextHex){
-            // If result already found, dont worry
-            error = `[vlns] Result already found!`;
-            throw error;
+            // result already found, dont worry
+            return false;
           }
 
           const [winner, count] = _.maxBy(
@@ -883,28 +878,33 @@ class LokiSnodeAPI {
         }
       }
 
-      error = 'Result failed at end';
-      throw error;
+      error = window.i18n('lnsMappingNotFound');
+
+      return false;
     }
 
     const nodes = lnsNodes.splice(0, numRequests);
     
     const nodesFetchPromiseSet = nodes.map(node => async () => fetchFromNode(node));
 
-    // console.log(`[vlns] Node Set:`, nodesFetchPromiseSet);
+    console.log(`[vlns] Node Set:`, nodesFetchPromiseSet);
     
     // Start fetching from nodes
-    nodesFetchPromiseSet.map(f => f());
+    const result = Promise.resolve(nodesFetchPromiseSet.map(f => f()));
+
+    console.log(`[vlns] Result:`, result);
     
-    console.log(`[vlns] Decrypting...`);
-     
-    // Wait for cipher to be found
+    // Wait for cipher to be found; race against timeout
     await cipherPromise();
-    const pubkey = await decryptHex(ciphertextHex);
+
+    console.log(`[vlns] Ciphertext found:`, ciphertextHex);
+    console.log(`[vlns] Decrypting...`);
+
+    pubkey = await decryptHex(ciphertextHex);
 
     console.log(`[vlns] Result:`, pubkey);
 
-    return {pubkey};
+    return {pubkey, error};
   }
 
   async getSnodesForPubkey(snode, pubKey) {
