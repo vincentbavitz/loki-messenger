@@ -794,7 +794,12 @@ class LokiSnodeAPI {
   }
 
   async newGetLnsMapping(lnsName) {
-    // Simplified getLnsMapping for testing
+    // Returns { pubkey, error }
+    // pubkey is:
+    //      null      when there is confirmed to be no LNS mapping
+    //      undefined when unconfirmee 
+    //      string    when found
+
 
     // How many nodes to fetch data from?
     const numRequests = 5;
@@ -830,31 +835,35 @@ class LokiSnodeAPI {
     });
 
     const decryptHex = async cipherHex => {
+
+      console.log(`[vlns] Decrypting...`);
+
       const ciphertext = new Uint8Array(
-       StringView.hexToArrayBuffer(cipherHex)
-     );
+        StringView.hexToArrayBuffer(cipherHex)
+      );
 
-     const res = await window.decryptLnsEntry(lnsName, ciphertext);
-     const pubkey = StringView.arrayBufferToHex(res);
+      const res = await window.decryptLnsEntry(lnsName, ciphertext);
+      const pubicKey = StringView.arrayBufferToHex(res);
 
-     return pubkey;
+      return pubicKey;
     }
    
     const fetchFromNode = async node => {
       const res = await this._requestLnsMapping(node, nameHash);
 
-      // TIMEOUTS IN HERE
-
-
       // Do validation
       if (
         res &&
         res.result &&
-        res.result.status === 'OK' &&
-        res.result.entries &&
-        res.result.entries.length > 0
+        res.result.status === 'OK'
       ) {
-        confirmedNodes.push(res.result.entries[0].encrypted_value);
+        const hasMapping = res.result.entries && res.result.entries.length > 0;
+
+        const resValue = hasMapping
+          ? res.result.entries[0].encrypted_value
+          : null;
+
+        confirmedNodes.push(resValue);
 
         // console.log(`[vlns] confirmedNodes:`, confirmedNodes);
 
@@ -864,44 +873,48 @@ class LokiSnodeAPI {
             return false;
           }
 
+          console.log(`[vlns] Confirmed Nodes:`, confirmedNodes);
+
           const [winner, count] = _.maxBy(
             _.entries(_.countBy(confirmedNodes)),
             x => x[1]
           );
 
           if (count >= numRequiredConfirms) {
-            ciphertextHex = winner;
-            cipherResolve(ciphertextHex);
+            ciphertextHex = winner === String(null)
+              ? null
+              : winner;
 
+            // null represents no LNS mapping
+            if (ciphertextHex === null){
+              error = window.i18n('lnsMappingNotFound');
+            }
+
+            cipherResolve(ciphertextHex);
             return true;
           }
         }
       }
-
-      error = window.i18n('lnsMappingNotFound');
 
       return false;
     }
 
     const nodes = lnsNodes.splice(0, numRequests);
     
-    const nodesFetchPromiseSet = nodes.map(node => async () => fetchFromNode(node));
-
-    console.log(`[vlns] Node Set:`, nodesFetchPromiseSet);
-    
     // Start fetching from nodes
-    const result = Promise.resolve(nodesFetchPromiseSet.map(f => f()));
+    Promise.resolve(nodes.map(async node => fetchFromNode(node)));
 
-    console.log(`[vlns] Result:`, result);
-    
     // Wait for cipher to be found; race against timeout
     await cipherPromise();
 
     console.log(`[vlns] Ciphertext found:`, ciphertextHex);
-    console.log(`[vlns] Decrypting...`);
 
-    pubkey = await decryptHex(ciphertextHex);
-
+    console.log(`[vlns] Cipher null? ` , ciphertextHex === null);
+    
+    pubkey = ciphertextHex === null
+      ? null
+      : await decryptHex(ciphertextHex);
+      
     console.log(`[vlns] Result:`, pubkey);
 
     return {pubkey, error};
