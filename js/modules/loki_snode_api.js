@@ -816,9 +816,11 @@ class LokiSnodeAPI {
 
     const confirmedNodes = [];
 
-    const cipherPromise = new Promise(resolve => {
-      console.log(`[vlns] CIPHER FOUND!`, resolve);
-    })
+    let cipherResolve;
+    // eslint-disable-next-line no-unused-vars
+    const cipherPromise = () => new Promise((resolve, _reject) => {
+      cipherResolve = resolve;
+    });
 
     const decryptHex = async cipherHex => {
       const ciphertext = new Uint8Array(
@@ -828,15 +830,11 @@ class LokiSnodeAPI {
      const res = await window.decryptLnsEntry(lnsName, ciphertext);
      const pubkey = StringView.arrayBufferToHex(res);
 
-     console.log(`[vlns] Pubkey: `, pubkey);
-
      return pubkey;
     }
    
     const fetchFromNode = async node => {
-      console.log(`[vlnss] Firing!`);
       const res = await this._requestLnsMapping(node, nameHash);
-      console.log(`[vlnss] Done`);
 
       if (res === false){
         error = 'Got bad response';
@@ -862,7 +860,7 @@ class LokiSnodeAPI {
           confirmedNodes.push('hjtreg295437fbker5tg734f');
         }
 
-        console.log(`[vlns] confirmedNodes:`, confirmedNodes);
+        // console.log(`[vlns] confirmedNodes:`, confirmedNodes);
 
         if (confirmedNodes.length >= numRequiredConfirms) {
           if (ciphertextHex){
@@ -878,7 +876,8 @@ class LokiSnodeAPI {
 
           if (count >= numRequiredConfirms) {
             ciphertextHex = winner;
-            cipherPromise.resolve(ciphertextHex);
+            cipherResolve(ciphertextHex);
+
             return true;
           }
         }
@@ -894,17 +893,18 @@ class LokiSnodeAPI {
 
     // console.log(`[vlns] Node Set:`, nodesFetchPromiseSet);
     
-    const result = await Promise.resolve(nodesFetchPromiseSet.map(f => f()));
+    // Start fetching from nodes
+    nodesFetchPromiseSet.map(f => f());
     
-    // console.log(`[vlns] Results:`, result);
-
-    // If handle results gets a winner, then you can decrypt
+    console.log(`[vlns] Decrypting...`);
+     
+    // Wait for cipher to be found
+    await cipherPromise();
     const pubkey = await decryptHex(ciphertextHex);
 
+    console.log(`[vlns] Result:`, pubkey);
+
     return {pubkey};
-
-
-
   }
 
   async getSnodesForPubkey(snode, pubKey) {
