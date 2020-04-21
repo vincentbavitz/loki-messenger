@@ -272,7 +272,8 @@ window.setSettingValue = (settingID, value) => {
 };
 
 // Get the message TTL setting
-window.getMessageTTL = () => window.storage.get('message-ttl', window.CONSTANTS.DEFAULT_MESSAGE_TTL);
+window.getMessageTTL = () =>
+  window.storage.get('message-ttl', window.CONSTANTS.DEFAULT_MESSAGE_TTL);
 window.getMediaPermissions = () => ipc.sendSync('get-media-permissions');
 
 // Auto update setting
