@@ -326,6 +326,8 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
   private getLocalSettings(): Array<LocalSettingType> {
     const { Settings } = window.Signal.Types;
 
+    const {MIN_MESSAGE_TTL, DEFAULT_MESSAGE_TTL} = window.CONSTANTS;
+
     return [
       {
         id: 'theme-setting',
@@ -449,11 +451,14 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
         onClick: undefined,
         content: {
           dotsEnabled: true,
-          step: 6,
-          min: 12,
-          max: 96,
-          defaultValue: 24,
-          info: (value: number) => `${value} Hours`,
+          step: 12,
+          min: MIN_MESSAGE_TTL,
+          max: DEFAULT_MESSAGE_TTL * 2,
+          defaultValue: DEFAULT_MESSAGE_TTL,
+          info: (value: number) => value > 48
+              ? `${Math.floor((value / 24) * 2) / 2} days`
+              : `${value} hours`
+          ,
         },
         confirmationDialogParams: undefined,
       },

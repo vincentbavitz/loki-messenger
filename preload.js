@@ -76,6 +76,8 @@ window.CONSTANTS = {
   MAX_USERNAME_LENGTH: 20,
   MAX_GROUP_NAME_LENGTH: 64,
   DEFAULT_PUBLIC_CHAT_URL: appConfig.get('defaultPublicChatServer'),
+  MIN_MESSAGE_TTL: 24 / 2,
+  DEFAULT_MESSAGE_TTL: 24 * 7,
   MAX_CONNECTION_DURATION: 5000,
   MAX_MESSAGE_BODY_LENGTH: 64 * 1024,
   // Limited due to the proof-of-work requirement
@@ -270,7 +272,7 @@ window.setSettingValue = (settingID, value) => {
 };
 
 // Get the message TTL setting
-window.getMessageTTL = () => window.storage.get('message-ttl', 24);
+window.getMessageTTL = () => window.storage.get('message-ttl', window.CONSTANTS.DEFAULT_MESSAGE_TTL);
 window.getMediaPermissions = () => ipc.sendSync('get-media-permissions');
 
 // Auto update setting
