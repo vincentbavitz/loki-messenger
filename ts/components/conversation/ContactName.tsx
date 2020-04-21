@@ -12,6 +12,7 @@ interface Props {
   module?: string;
   boldProfileName?: Boolean;
   compact?: Boolean;
+  isLnsVerified?: Boolean;
 }
 
 export class ContactName extends React.Component<Props> {
@@ -24,6 +25,7 @@ export class ContactName extends React.Component<Props> {
       module,
       boldProfileName,
       compact,
+      isLnsVerified,
     } = this.props;
     const prefix = module ? module : 'module-contact-name';
 
@@ -35,7 +37,7 @@ export class ContactName extends React.Component<Props> {
         }
       : {}) as React.CSSProperties;
     const profileElement = shouldShowProfile ? (
-      <span style={styles} className={`${prefix}__profile-name`}>
+      <span style={styles} className={classNames(`${prefix}__profile-name`, isLnsVerified && 'verified')}>
         <Emojify text={profileName || ''} i18n={i18n} />
       </span>
     ) : null;

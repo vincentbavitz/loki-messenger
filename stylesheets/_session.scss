@@ -1824,19 +1824,6 @@ input {
     }
   }
 
-  &.verified {
-    .session-member-item__name {
-      position: relative;
-      margin-right: 20px;
-
-      &::after {
-        @include session-verified-bubble(16px);
-        position: absolute;
-        margin-left: 5px;
-      }
-    }
-  }
-
   &__info,
   &__checkmark {
     display: flex;
@@ -1846,6 +1833,17 @@ input {
   &__name {
     font-weight: bold;
     margin-left: $session-margin-md;
+
+    &.verified {
+      position: relative;
+      margin-right: 20px;
+
+      &::after {
+        @include session-verified-bubble(16px);
+        position: absolute;
+        margin-left: 5px;
+      }
+    }
   }
   &__pubkey {
     margin-left: 5px;

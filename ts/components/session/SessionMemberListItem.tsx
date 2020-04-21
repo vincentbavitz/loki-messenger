@@ -56,7 +56,7 @@ export class SessionMemberListItem extends React.Component<Props, State> {
 
     return (
       <div
-        className={classNames('session-member-item', isSelected && 'selected', isLnsVerified && 'verified')}
+        className={classNames('session-member-item', isSelected && 'selected')}
         onClick={this.handleSelectionAction}
         role="button"
       >
@@ -64,7 +64,7 @@ export class SessionMemberListItem extends React.Component<Props, State> {
           <span className="session-member-item__avatar">
             {this.renderAvatar()}
           </span>
-          <span className="session-member-item__name">{name}</span>
+          <span className={classNames('session-member-item__name', isLnsVerified && 'verified')}>{name}</span>
           <span className="session-member-item__pubkey">{shortPubkey}</span>
         </div>
         <span

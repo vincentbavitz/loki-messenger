@@ -38,6 +38,7 @@ export type PropsData = {
     isRss: boolean;
   };
 
+  isLnsVerified?: boolean;
   isPendingFriendRequest?: boolean;
   hasReceivedFriendRequest?: boolean;
   hasSentFriendRequest?: boolean;
@@ -360,7 +361,7 @@ export class ConversationListItem extends React.PureComponent<Props> {
   }
 
   private renderUser() {
-    const { name, phoneNumber, profileName } = this.props;
+    const { name, phoneNumber, profileName, isLnsVerified } = this.props;
 
     const shortenedPubkey = window.shortenPubkey(phoneNumber);
 
@@ -375,6 +376,7 @@ export class ConversationListItem extends React.PureComponent<Props> {
           module="module-conversation__user"
           i18n={window.i18n}
           boldProfileName={true}
+          isLnsVerified={true}
         />
       </div>
     );
