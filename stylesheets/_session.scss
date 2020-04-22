@@ -280,6 +280,11 @@ $session_message-container-border-radius: 5px;
 }
 
 .session-verified-check {
+  height: 1rem;
+  width: 1rem;
+  font-size: 0.75rem;
+  margin: 0 0.3rem;
+  color: $session-color-white;
   background-color: $session-color-verified;
   border-radius: 50%;
   display: inline-flex;

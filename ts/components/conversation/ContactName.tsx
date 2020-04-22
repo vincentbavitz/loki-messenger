@@ -38,7 +38,13 @@ export class ContactName extends React.Component<Props> {
         }
       : {}) as React.CSSProperties;
     const profileElement = shouldShowProfile ? (
-      <span style={styles} className={classNames(`${prefix}__profile-name`, isLnsVerified && 'verified')}>
+      <span
+        style={styles}
+        className={classNames(
+          `${prefix}__profile-name`,
+          isLnsVerified && 'verified'
+        )}
+      >
         <Emojify text={profileName || ''} i18n={i18n} />
         <SessionVerifiedCheck />
       </span>

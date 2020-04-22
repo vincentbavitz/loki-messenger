@@ -64,7 +64,14 @@ export class SessionMemberListItem extends React.Component<Props, State> {
           <span className="session-member-item__avatar">
             {this.renderAvatar()}
           </span>
-          <span className={classNames('session-member-item__name', isLnsVerified && 'verified')}>{name}</span>
+          <span
+            className={classNames(
+              'session-member-item__name',
+              isLnsVerified && 'verified'
+            )}
+          >
+            {name}
+          </span>
           <span className="session-member-item__pubkey">{shortPubkey}</span>
         </div>
         <span

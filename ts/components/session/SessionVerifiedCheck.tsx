@@ -1,15 +1,14 @@
 import React from 'react';
-import Tooltip from 'rc-tooltip';
 
 interface Props {
   hasTooltip: boolean;
-  size: number;
+  // Default size scales in CSS with parent REM
+  size?: number;
 }
 
 export class SessionVerifiedCheck extends React.PureComponent<Props> {
   public static defaultProps = {
     hasTooltip: true,
-    size: 16,
   };
 
   constructor(props: any) {
@@ -17,30 +16,32 @@ export class SessionVerifiedCheck extends React.PureComponent<Props> {
   }
 
   public render() {
-    const {hasTooltip, size } = this.props;
+    const { hasTooltip, size } = this.props;
 
-    const style = {
-      height: `${size}px`,
-      width: `${size}px`,
-      fontSize: `${size * 0.75}px`,
-    } as React.CSSProperties;
+    const style =
+      size &&
+      ({
+        height: `${size}px`,
+        width: `${size}px`,
+        fontSize: `${size * 0.75}px`,
+      } as React.CSSProperties);
 
     return (
-      <>
-        <div
-          data-tip="Verified LNS Name"
-          className="session-verified-check"
-          style={style}
-        >
-          ✔
+      <div
+        className="session-verified-check"
+        data-tip={window.i18n('lnsVerifiedTooltip')}
+        style={style || undefined}
+      >
+        <div className="session-verified-check__bubble">
+          {hasTooltip && (
+            // Display tooltip
+            // Look for tooltip package that isn't rc-tooltip or react-tooltip
+            // because these don't support TypeScript
+            <></>
+          )}
         </div>
-        {hasTooltip && (
-          <Tooltip placement="left" trigger={['click']} overlay={<span>tooltip</span>}>
-            <span>hover</span>
-          </Tooltip>
-        )}
-      </>
+        ✔
+      </div>
     );
   }
-
 }
