@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { Emojify } from './Emojify';
 import { LocalizerType } from '../../types/Util';
+import { SessionVerifiedCheck } from '../session/SessionVerifiedCheck';
 
 interface Props {
   phoneNumber: string;
@@ -39,6 +40,7 @@ export class ContactName extends React.Component<Props> {
     const profileElement = shouldShowProfile ? (
       <span style={styles} className={classNames(`${prefix}__profile-name`, isLnsVerified && 'verified')}>
         <Emojify text={profileName || ''} i18n={i18n} />
+        <SessionVerifiedCheck />
       </span>
     ) : null;
 

@@ -38,16 +38,7 @@ $session-compose-margin: 20px;
         color: $session-color-white;
       }
 
-      &.verified {
-        position: relative;
-        margin-right: 30px;
-  
-        &::after {
-          @include session-verified-bubble(25px);
-          position: absolute;
-          margin-left: 8px;
-        }
-      }
+      
     }
   }
 }

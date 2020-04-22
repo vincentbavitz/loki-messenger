@@ -150,18 +150,6 @@ div.spacer-lg {
   height: $session-margin-lg;
 }
 
-@mixin session-verified-bubble($size) {
-  content: '✔';
-  height: $size;
-  width: $size;
-  font-size: 0.75 * $size;
-  background-color: #34bfff;
-  border-radius: 50px;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
-
 @mixin session-filter-color-green {
   filter: brightness(0) saturate(100%) invert(67%) sepia(69%) saturate(2367%)
     hue-rotate(101deg) brightness(107%) contrast(101%);
@@ -289,6 +277,14 @@ $session_message-container-border-radius: 5px;
   display: inline-flex;
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.session-verified-check {
+  background-color: $session-color-verified;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .session-button {
@@ -1833,17 +1829,6 @@ input {
   &__name {
     font-weight: bold;
     margin-left: $session-margin-md;
-
-    &.verified {
-      position: relative;
-      margin-right: 20px;
-
-      &::after {
-        @include session-verified-bubble(16px);
-        position: absolute;
-        margin-left: 5px;
-      }
-    }
   }
   &__pubkey {
     margin-left: 5px;

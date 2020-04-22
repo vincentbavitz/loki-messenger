@@ -361,7 +361,7 @@ export class ConversationListItem extends React.PureComponent<Props> {
   }
 
   private renderUser() {
-    const { name, phoneNumber, profileName, isLnsVerified } = this.props;
+    const { name, phoneNumber, profileName } = this.props;
 
     const shortenedPubkey = window.shortenPubkey(phoneNumber);
 
