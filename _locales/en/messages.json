@@ -2527,8 +2527,7 @@
   },
   "invalidLnsFormat": {
     "message": "Invalid LNS Name",
-    "description":
-      "Error string shown when user types an invalid LNS name"
+    "description": "Error string shown when user types an invalid LNS name"
   },
   "invalidPubkeyFormat": {
     "message": "Invalid Pubkey Format",

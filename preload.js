@@ -92,8 +92,9 @@ window.CONSTANTS = new function() {
   this.LNS_MAX_LENGTH = 64;
   // Conforms to naming rules here
   // https://loki.network/2020/03/25/loki-name-system-the-facts/
-  this.LNS_REGEX = `^[a-zA-Z0-9_]([a-zA-Z0-9_-]{0,${this.LNS_MAX_LENGTH - 2}}[a-zA-Z0-9_]){0,1}$`;
-};
+  this.LNS_REGEX = `^[a-zA-Z0-9_]([a-zA-Z0-9_-]{0,${this.LNS_MAX_LENGTH -
+    2}}[a-zA-Z0-9_]){0,1}$`;
+}();
 
 window.versionInfo = {
   environment: window.getEnvironment(),
@@ -426,7 +427,8 @@ window.lokiFeatureFlags = {
   privateGroupChats: true,
   useSnodeProxy: !process.env.USE_STUBBED_NETWORK,
   useSealedSender: true,
-  useOnionRequests: false,
+  useOnionRequests: true,
+  onionRequestHops: 1,
 };
 
 // eslint-disable-next-line no-extend-native,func-names
@@ -452,19 +454,13 @@ if (
   };
   /* eslint-enable global-require, import/no-extraneous-dependencies */
   window.lokiFeatureFlags = {};
-  window.lokiSnodeAPI = {
-    refreshSwarmNodesForPubKey: () => [],
-    getFreshSwarmNodes: () => [],
-    updateSwarmNodes: () => {},
-    updateLastHash: () => {},
-    getSwarmNodesForPubKey: () => [],
-    buildNewOnionPaths: () => [],
-  };
+  window.lokiSnodeAPI = {}; // no need stub out each function here
 }
 if (config.environment.includes('test-integration')) {
   window.lokiFeatureFlags = {
     multiDeviceUnpairing: true,
     privateGroupChats: true,
     useSnodeProxy: !process.env.USE_STUBBED_NETWORK,
+    useSealedSender: true,
   };
 }
