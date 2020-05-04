@@ -594,7 +594,7 @@ class LokiSnodeAPI {
         */
         if (snodes.length === 0) {
           throw new window.textsecure.SeedNodeError(
-            'Failed to contact seed node'
+            'Failed to contact seed noxde'
           );
         }
       }
@@ -855,7 +855,7 @@ class LokiSnodeAPI {
     const nodes = lnsNodes.splice(0, numRequests);
 
     // Start fetching from nodes
-    nodes.map(async node => fetchFromNode(node));
+    nodes.forEach(node => fetchFromNode(node));
 
     // Timeouts (optional parameter)
     // Wait for cipher to be found; race against timeout
