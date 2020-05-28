@@ -75,7 +75,7 @@ describe('Message', () => {
         preview: [],
       };
 
-      const writeExistingAttachmentData = attachment => {
+      const writeExistingAttachmentData = (attachment) => {
         assert.equal(attachment.path, 'ab/abcdefghi');
         assert.deepEqual(
           attachment.data,
@@ -123,7 +123,7 @@ describe('Message', () => {
         preview: [],
       };
 
-      const writeExistingAttachmentData = attachment => {
+      const writeExistingAttachmentData = (attachment) => {
         assert.equal(attachment.path, 'ab/abcdefghi');
         assert.deepEqual(
           attachment.data,
@@ -174,7 +174,7 @@ describe('Message', () => {
         preview: [],
       };
 
-      const writeExistingAttachmentData = attachment => {
+      const writeExistingAttachmentData = (attachment) => {
         assert.equal(attachment.path, 'ab/abcdefghi');
         assert.deepEqual(
           attachment.data,
@@ -295,7 +295,7 @@ describe('Message', () => {
         'It’s easy if you try'
       );
       const context = {
-        writeNewAttachmentData: async attachmentData => {
+        writeNewAttachmentData: async (attachmentData) => {
           assert.deepEqual(attachmentData, expectedAttachmentData);
           return 'abc/abcdefg';
         },
@@ -341,13 +341,17 @@ describe('Message', () => {
           schemaVersion: 1,
         };
 
-        const v1 = async message =>
-          Object.assign({}, message, { hasUpgradedToVersion1: true });
+        const v1 = async (message) => ({
+          ...message,
+          hasUpgradedToVersion1: true,
+        });
         const v2 = async () => {
           throw new Error('boom');
         };
-        const v3 = async message =>
-          Object.assign({}, message, { hasUpgradedToVersion3: true });
+        const v3 = async (message) => ({
+          ...message,
+          hasUpgradedToVersion3: true,
+        });
 
         const toVersion1 = Message._withSchemaVersion({
           schemaVersion: 1,
@@ -363,7 +367,7 @@ describe('Message', () => {
         });
 
         const context = { logger };
-        const upgradeSchema = async message =>
+        const upgradeSchema = async (message) =>
           toVersion3(
             await toVersion2(await toVersion1(message, context), context),
             context
@@ -399,12 +403,18 @@ describe('Message', () => {
           hasUpgradedToVersion2: true,
         };
 
-        const v1 = async attachment =>
-          Object.assign({}, attachment, { hasUpgradedToVersion1: true });
-        const v2 = async attachment =>
-          Object.assign({}, attachment, { hasUpgradedToVersion2: true });
-        const v3 = async attachment =>
-          Object.assign({}, attachment, { hasUpgradedToVersion3: true });
+        const v1 = async (attachment) => ({
+          ...attachment,
+          hasUpgradedToVersion1: true,
+        });
+        const v2 = async (attachment) => ({
+          ...attachment,
+          hasUpgradedToVersion2: true,
+        });
+        const v3 = async (attachment) => ({
+          ...attachment,
+          hasUpgradedToVersion3: true,
+        });
 
         const toVersion1 = Message._withSchemaVersion({
           schemaVersion: 1,
@@ -421,7 +431,7 @@ describe('Message', () => {
 
         const context = { logger };
         // NOTE: We upgrade to 3 before 2, i.e. the pipeline should abort:
-        const upgradeSchema = async attachment =>
+        const upgradeSchema = async (attachment) =>
           toVersion2(
             await toVersion3(await toVersion1(attachment, context), context),
             context
@@ -451,8 +461,7 @@ describe('Message', () => {
     });
 
     it('should skip upgrading if message has already been upgraded', async () => {
-      const upgrade = async message =>
-        Object.assign({}, message, { foo: true });
+      const upgrade = async (message) => ({ ...message, foo: true });
       const upgradeWithVersion = Message._withSchemaVersion({
         schemaVersion: 3,
         upgrade,
@@ -683,7 +692,7 @@ describe('Message', () => {
     });
 
     it('handles one contact', async () => {
-      const upgradeContact = contact => Promise.resolve(contact);
+      const upgradeContact = (contact) => Promise.resolve(contact);
       const upgradeVersion = Message._mapContact(upgradeContact);
 
       const message = {

@@ -39,7 +39,7 @@ export class UserSearchDropdown extends React.Component<Props, State> {
       searchResults &&
       searchResults.contacts.length > 0
     ) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         selectedContact: +prevState.selectedContact - 1,
       }));
     } else if (
@@ -47,7 +47,7 @@ export class UserSearchDropdown extends React.Component<Props, State> {
       searchResults &&
       selectedContact < searchResults.contacts.length - 1
     ) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         selectedContact: +prevState.selectedContact + 1,
       }));
     } else if (

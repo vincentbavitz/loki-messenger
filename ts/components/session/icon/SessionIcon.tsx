@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { icons, SessionIconSize, SessionIconType } from '../icon';
+import { icons, SessionIconSize, SessionIconType } from '.';
 
 export interface Props {
   iconType: SessionIconType;

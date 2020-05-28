@@ -74,7 +74,7 @@ export class SessionMemberListItem extends React.Component<Props, State> {
           <SessionIcon
             iconType={SessionIconType.Check}
             iconSize={SessionIconSize.Medium}
-            iconColor={'#00f782'}
+            iconColor="#00f782"
           />
         </span>
       </div>

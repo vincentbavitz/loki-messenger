@@ -13,7 +13,7 @@
 /* eslint-disable no-proto */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   const TIMESTAMP_THRESHOLD = 5 * 1000; // 5 seconds
@@ -135,13 +135,13 @@
     validate(attrs) {
       const attributeNames = _.keys(attrs);
       const { validAttributes } = this;
-      const allValid = _.all(attributeNames, attributeName =>
+      const allValid = _.all(attributeNames, (attributeName) =>
         _.contains(validAttributes, attributeName)
       );
       if (!allValid) {
         return new Error('Invalid identity key attribute names');
       }
-      const allPresent = _.all(validAttributes, attributeName =>
+      const allPresent = _.all(validAttributes, (attributeName) =>
         _.contains(attributeNames, attributeName)
       );
       if (!allPresent) {
@@ -322,7 +322,7 @@
       }
 
       const keys = Object.values(this.signedPreKeys);
-      return keys.map(prekey => ({
+      return keys.map((prekey) => ({
         pubKey: prekey.publicKey,
         privKey: prekey.privateKey,
         created_at: prekey.created_at,
@@ -391,7 +391,9 @@
       }
 
       const allSessions = Object.values(this.sessions);
-      const sessions = allSessions.filter(session => session.number === number);
+      const sessions = allSessions.filter(
+        (session) => session.number === number
+      );
       return _.pluck(sessions, 'deviceId');
     },
     async removeSession(encodedNumber) {
@@ -420,7 +422,7 @@
       const siblings = _.without(deviceIds, address.getDeviceId());
 
       await Promise.all(
-        siblings.map(async deviceId => {
+        siblings.map(async (deviceId) => {
           const sibling = new libsignal.SignalProtocolAddress(
             address.getName(),
             deviceId
@@ -438,7 +440,7 @@
       const deviceIds = await this.getDeviceIds(number);
 
       await Promise.all(
-        deviceIds.map(async deviceId => {
+        deviceIds.map(async (deviceId) => {
           const address = new libsignal.SignalProtocolAddress(number, deviceId);
           window.log.info('closing session for', address.toString());
           const sessionCipher = new libsignal.SessionCipher(
@@ -591,7 +593,8 @@
         await this.archiveSiblingSessions(identifier);
 
         return true;
-      } else if (this.isNonBlockingApprovalRequired(identityRecord)) {
+      }
+      if (this.isNonBlockingApprovalRequired(identityRecord)) {
         window.log.info('Setting approval status...');
 
         identityRecord.nonblockingApproval = nonblockingApproval;

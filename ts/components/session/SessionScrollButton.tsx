@@ -12,7 +12,7 @@ export class SessionScrollButton extends React.PureComponent {
       <SessionIconButton
         iconType={SessionIconType.Chevron}
         iconSize={SessionIconSize.Huge}
-        iconColor={'#FFFFFF'}
+        iconColor="#FFFFFF"
       />
     );
   }

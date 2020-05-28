@@ -1,9 +1,6 @@
 /* global window, mocha, chai, assert, Whisper */
 
-mocha
-  .setup('bdd')
-  .fullTrace()
-  .timeout(10000);
+mocha.setup('bdd').fullTrace().timeout(10000);
 window.assert = chai.assert;
 window.PROTO_ROOT = '../../protos';
 
@@ -18,7 +15,7 @@ const SauceReporter = function Constructor(runner) {
   });
 
   runner.on('fail', (test, err) => {
-    const flattenTitles = item => {
+    const flattenTitles = (item) => {
       const titles = [];
       while (item.parent.title) {
         titles.push(item.parent.title);

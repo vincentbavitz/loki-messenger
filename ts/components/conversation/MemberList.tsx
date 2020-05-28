@@ -31,8 +31,8 @@ class MemberItem extends React.Component<MemberItemProps> {
   public render() {
     const name = this.props.member.authorProfileName;
     const pubkey = this.props.member.authorPhoneNumber;
-    const selected = this.props.selected;
-    const existingMember = this.props.existingMember;
+    const { selected } = this.props;
+    const { existingMember } = this.props;
     const shortPubkey = window.shortenPubkey(pubkey);
 
     let markType: 'none' | 'kicked' | 'added' | 'existing' = 'none';
@@ -43,12 +43,10 @@ class MemberItem extends React.Component<MemberItemProps> {
       } else {
         markType = 'added';
       }
+    } else if (existingMember) {
+      markType = 'existing';
     } else {
-      if (existingMember) {
-        markType = 'existing';
-      } else {
-        markType = 'none';
-      }
+      markType = 'none';
     }
 
     const markClasses = ['check-mark'];
@@ -123,7 +121,7 @@ export class MemberList extends React.Component<MemberListProps> {
   public render() {
     const { members } = this.props;
 
-    const itemList = members.map(item => {
+    const itemList = members.map((item) => {
       const selected = item === this.props.selected;
 
       return (

@@ -6,7 +6,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -32,11 +32,7 @@
       this.$('#status').text(s);
     },
     displayError(error) {
-      this.$('#error')
-        .hide()
-        .text(error)
-        .addClass('in')
-        .fadeIn();
+      this.$('#error').hide().text(error).addClass('in').fadeIn();
     },
 
     showToast(message) {
@@ -59,7 +55,7 @@
       const oldText = this.el.value;
       const length = Math.max(oldText.length, newText.length);
       // eslint-disable-next-line no-return-assign
-      const promise = new Promise(resolve => (this.resolve = resolve));
+      const promise = new Promise((resolve) => (this.resolve = resolve));
       this.queue = [];
 
       for (let i = 0; i < length; i++) {
@@ -119,7 +115,7 @@
   }
   window.Session = window.Session || {};
 
-  window.Session.setNewSessionID = sessionID => {
+  window.Session.setNewSessionID = (sessionID) => {
     const el = document.querySelector('.session-id-editable-textarea');
     const fx = new TextScramble(el);
     el.value = sessionID;

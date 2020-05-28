@@ -9,14 +9,14 @@ const primitives = require('./loki_primitives');
 const DEFAULT_CONNECTIONS = 3;
 const MAX_ACCEPTABLE_FAILURES = 10;
 
-const filterIncomingMessages = async messages => {
-  const incomingHashes = messages.map(m => m.hash);
+const filterIncomingMessages = async (messages) => {
+  const incomingHashes = messages.map((m) => m.hash);
   const dupHashes = await window.Signal.Data.getSeenMessagesByHashList(
     incomingHashes
   );
-  const newMessages = messages.filter(m => !dupHashes.includes(m.hash));
+  const newMessages = messages.filter((m) => !dupHashes.includes(m.hash));
   if (newMessages.length) {
-    const newHashes = newMessages.map(m => ({
+    const newHashes = newMessages.map((m) => ({
       expiresAt: m.expiration,
       hash: m.hash,
     }));
@@ -58,9 +58,7 @@ async function _retrieveNextMessages(nodeData, pubkey) {
   if (result === false) {
     // make a note of it because of caller doesn't care...
     log.warn(
-      `loki_message:::_retrieveNextMessages - lokiRpc could not talk to ${
-        nodeData.ip
-      }:${nodeData.port}`
+      `loki_message:::_retrieveNextMessages - lokiRpc could not talk to ${nodeData.ip}:${nodeData.port}`
     );
 
     return [];
@@ -151,9 +149,7 @@ class LokiMessageAPI {
       snode = await primitives.firstTrue(promises);
     } catch (e) {
       log.warn(
-        `loki_message:::sendMessage - ${e.code} ${e.message} to ${pubKey} via ${
-          snode.ip
-        }:${snode.port}`
+        `loki_message:::sendMessage - ${e.code} ${e.message} to ${pubKey} via ${snode.ip}:${snode.port}`
       );
       if (e instanceof textsecure.WrongDifficultyError) {
         // Force nonce recalculation
@@ -173,9 +169,7 @@ class LokiMessageAPI {
       );
     }
     log.info(
-      `loki_message:::sendMessage - Successfully stored message to ${pubKey} via ${
-        snode.ip
-      }:${snode.port}`
+      `loki_message:::sendMessage - Successfully stored message to ${pubKey} via ${snode.ip}:${snode.port}`
     );
   }
 
@@ -244,9 +238,7 @@ class LokiMessageAPI {
         if (result === false) {
           // this means the node we asked for is likely down
           log.warn(
-            `loki_message:::_sendToNode - Try #${successiveFailures}/${MAX_ACCEPTABLE_FAILURES} ${
-              targetNode.ip
-            }:${targetNode.port} failed`
+            `loki_message:::_sendToNode - Try #${successiveFailures}/${MAX_ACCEPTABLE_FAILURES} ${targetNode.ip}:${targetNode.port} failed`
           );
           successiveFailures += 1;
           // eslint-disable-next-line no-continue
@@ -277,7 +269,8 @@ class LokiMessageAPI {
           this.sendingData[params.timestamp].swarm = newSwarm;
           this.sendingData[params.timestamp].hasFreshList = true;
           return false;
-        } else if (e instanceof textsecure.WrongDifficultyError) {
+        }
+        if (e instanceof textsecure.WrongDifficultyError) {
           const { newDifficulty } = e;
           if (!Number.isNaN(newDifficulty)) {
             window.storage.put('PoWDifficulty', newDifficulty);
@@ -301,9 +294,7 @@ class LokiMessageAPI {
       targetNode
     );
     log.error(
-      `loki_message:::_sendToNode - Too many successive failures trying to send to node ${
-        targetNode.ip
-      }:${targetNode.port}, ${remainingSwarmSnodes.lengt} remaining swarm nodes`
+      `loki_message:::_sendToNode - Too many successive failures trying to send to node ${targetNode.ip}:${targetNode.port}, ${remainingSwarmSnodes.lengt} remaining swarm nodes`
     );
     return false;
   }
@@ -356,7 +347,7 @@ class LokiMessageAPI {
 
           // At this point we still know what servier identity the messages
           // are associated with, so we save it in messages' conversationId field:
-          const modifiedMessages = messages.map(m => {
+          const modifiedMessages = messages.map((m) => {
             // eslint-disable-next-line no-param-reassign
             m.conversationId = groupId;
             return m;
@@ -389,7 +380,7 @@ class LokiMessageAPI {
 
     log.info('Nodes for group id:', nodes);
 
-    _.sampleSize(nodes, 3).forEach(node =>
+    _.sampleSize(nodes, 3).forEach((node) =>
       this.pollNodeForGroupId(groupId, node, onMessages)
     );
   }
@@ -403,7 +394,7 @@ class LokiMessageAPI {
     // want to cancel these polling connections because new ones will be created
 
     // eslint-disable-next-line more/no-then
-    stopPollingPromise.then(result => {
+    stopPollingPromise.then((result) => {
       stopPollingResult = result;
     });
 
@@ -517,11 +508,11 @@ class LokiMessageAPI {
     {
       const convos = window
         .getConversations()
-        .filter(c => c.get('is_medium_group'));
+        .filter((c) => c.get('is_medium_group'));
 
       const self = this;
 
-      convos.forEach(c => {
+      convos.forEach((c) => {
         self.pollForGroupId(c.id, onMessages);
         // TODO: unsubscribe if the group is deleted
       });
@@ -571,7 +562,7 @@ class LokiMessageAPI {
       promises.push(
         // eslint-disable-next-line more/no-then
         this._openRetrieveConnection(pools[i], stopPolling, onMessages).then(
-          stoppedPolling => {
+          (stoppedPolling) => {
             unresolved -= 1;
             log.info(
               `loki_message:::startLongPolling - There are ${unresolved}`,

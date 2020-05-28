@@ -107,7 +107,7 @@ Message.prototype = {
       proto.group.type = this.group.type;
     }
     if (Array.isArray(this.preview)) {
-      proto.preview = this.preview.map(preview => {
+      proto.preview = this.preview.map((preview) => {
         const item = new textsecure.protobuf.DataMessage.Preview();
         item.title = preview.title;
         item.url = preview.url;
@@ -125,7 +125,7 @@ Message.prototype = {
       quote.id = this.quote.id;
       quote.author = this.quote.author;
       quote.text = this.quote.text;
-      quote.attachments = (this.quote.attachments || []).map(attachment => {
+      quote.attachments = (this.quote.attachments || []).map((attachment) => {
         const quotedAttachment = new QuotedAttachment();
 
         quotedAttachment.contentType = attachment.contentType;
@@ -286,15 +286,15 @@ MessageSender.prototype = {
 
   uploadAttachments(message, publicServer) {
     return Promise.all(
-      message.attachments.map(attachment =>
+      message.attachments.map((attachment) =>
         this.makeAttachmentPointer(attachment, publicServer)
       )
     )
-      .then(attachmentPointers => {
+      .then((attachmentPointers) => {
         // eslint-disable-next-line no-param-reassign
         message.attachmentPointers = attachmentPointers;
       })
-      .catch(error => {
+      .catch((error) => {
         if (error instanceof Error && error.name === 'HTTPError') {
           throw new textsecure.MessageError(message, error);
         } else {
@@ -306,7 +306,7 @@ MessageSender.prototype = {
   async uploadLinkPreviews(message, publicServer) {
     try {
       const preview = await Promise.all(
-        (message.preview || []).map(async item => ({
+        (message.preview || []).map(async (item) => ({
           ...item,
           image: await this.makeAttachmentPointer(item.image, publicServer),
         }))
@@ -331,18 +331,18 @@ MessageSender.prototype = {
     }
 
     return Promise.all(
-      quote.attachments.map(attachment => {
+      quote.attachments.map((attachment) => {
         const { thumbnail } = attachment;
         if (!thumbnail) {
           return null;
         }
 
-        return makePointer(thumbnail, publicServer).then(pointer => {
+        return makePointer(thumbnail, publicServer).then((pointer) => {
           // eslint-disable-next-line no-param-reassign
           attachment.attachmentPointer = pointer;
         });
       })
-    ).catch(error => {
+    ).catch((error) => {
       if (error instanceof Error && error.name === 'HTTPError') {
         throw new textsecure.MessageError(message, error);
       } else {
@@ -368,7 +368,7 @@ MessageSender.prototype = {
             message.timestamp,
             message.recipients,
             message.toProto(),
-            res => {
+            (res) => {
               res.dataMessage = message.toArrayBuffer();
               if (res.errors.length > 0) {
                 reject(res);
@@ -402,7 +402,7 @@ MessageSender.prototype = {
     const ourNumber = textsecure.storage.user.getNumber();
 
     // Check wether we have the keys to start a session with the user
-    const hasKeys = async number => {
+    const hasKeys = async (number) => {
       try {
         const [preKey, signedPreKey] = await Promise.all([
           textsecure.storage.protocol.loadContactPreKey(number),
@@ -418,13 +418,13 @@ MessageSender.prototype = {
     // using `async` in the `forEach` loop should be fine.
     // If however we want to use the results from forEach then
     // we would need to convert this to a Promise.all(numbers.map(...))
-    numbers.forEach(async number => {
+    numbers.forEach(async (number) => {
       // Note: if we are sending a private group message, we do our best to
       // ensure we have signal protocol sessions with every member, but if we
       // fail, let's at least send messages to those members with which we do:
       const haveSession = _.some(
         textsecure.storage.protocol.sessions,
-        s => s.number === number
+        (s) => s.number === number
       );
 
       let keysFound = false;
@@ -472,7 +472,7 @@ MessageSender.prototype = {
 
   sendMessageProtoAndWait(timestamp, numbers, message, silent, options = {}) {
     return new Promise((resolve, reject) => {
-      const callback = result => {
+      const callback = (result) => {
         if (result && result.errors && result.errors.length > 0) {
           return reject(result);
         }
@@ -493,7 +493,7 @@ MessageSender.prototype = {
 
   sendIndividualProto(number, proto, timestamp, silent, options = {}) {
     return new Promise((resolve, reject) => {
-      const callback = res => {
+      const callback = (res) => {
         if (res && res.errors && res.errors.length > 0) {
           reject(res);
         } else {
@@ -536,11 +536,13 @@ MessageSender.prototype = {
     const primaryDeviceKey =
       window.storage.get('primaryDevicePubKey') ||
       textsecure.storage.user.getNumber();
-    const allOurDevices = (await libloki.storage.getAllDevicePubKeysForPrimaryPubKey(
-      primaryDeviceKey
-    ))
+    const allOurDevices = (
+      await libloki.storage.getAllDevicePubKeysForPrimaryPubKey(
+        primaryDeviceKey
+      )
+    )
       // Don't send to ourselves
-      .filter(pubKey => pubKey !== textsecure.storage.user.getNumber());
+      .filter((pubKey) => pubKey !== textsecure.storage.user.getNumber());
     if (allOurDevices.length === 0) {
       return null;
     }
@@ -570,7 +572,7 @@ MessageSender.prototype = {
     // Though this field has 'unidenified' in the name, it should have entries for each
     //   number we sent to.
     if (sentTo && sentTo.length) {
-      sentMessage.unidentifiedStatus = sentTo.map(number => {
+      sentMessage.unidentifiedStatus = sentTo.map((number) => {
         const status = new textsecure.protobuf.SyncMessage.Sent.UnidentifiedDeliveryStatus();
         status.destination = number;
         status.unidentified = Boolean(unidentifiedLookup[number]);
@@ -666,7 +668,7 @@ MessageSender.prototype = {
     }
     // Extract required contacts information out of conversations
     const sessionContacts = conversations.filter(
-      c => c.isPrivate() && !c.isSecondaryDevice() && c.isFriend()
+      (c) => c.isPrivate() && !c.isSecondaryDevice() && c.isFriend()
     );
     if (sessionContacts.length === 0) {
       return Promise.resolve();
@@ -675,11 +677,11 @@ MessageSender.prototype = {
     // This is to avoid hitting storage server limit
     const chunked = _.chunk(sessionContacts, 3);
     const syncMessages = await Promise.all(
-      chunked.map(c => libloki.api.createContactSyncProtoMessage(c))
+      chunked.map((c) => libloki.api.createContactSyncProtoMessage(c))
     );
     const syncPromises = syncMessages
-      .filter(message => message != null)
-      .map(syncMessage => {
+      .filter((message) => message != null)
+      .map((syncMessage) => {
         const contentMessage = new textsecure.protobuf.Content();
         contentMessage.syncMessage = syncMessage;
 
@@ -710,7 +712,7 @@ MessageSender.prototype = {
     }
     // We only want to sync across closed groups that we haven't left
     const sessionGroups = conversations.filter(
-      c => c.isClosedGroup() && !c.get('left') && c.isFriend()
+      (c) => c.isClosedGroup() && !c.get('left') && c.isFriend()
     );
     if (sessionGroups.length === 0) {
       window.console.info('No closed group to sync.');
@@ -720,9 +722,9 @@ MessageSender.prototype = {
     // We need to sync across 1 group at a time
     // This is because we could hit the storage server limit with one group
     const syncPromises = sessionGroups
-      .map(c => libloki.api.createGroupSyncProtoMessage(c))
-      .filter(message => message != null)
-      .map(syncMessage => {
+      .map((c) => libloki.api.createGroupSyncProtoMessage(c))
+      .filter((message) => message != null)
+      .map((syncMessage) => {
         const contentMessage = new textsecure.protobuf.Content();
         contentMessage.syncMessage = syncMessage;
 
@@ -981,7 +983,7 @@ MessageSender.prototype = {
       window.storage.get('primaryDevicePubKey') ||
       textsecure.storage.user.getNumber();
     const numbers = providedNumbers.filter(
-      number => number !== primaryDeviceKey
+      (number) => number !== primaryDeviceKey
     );
     if (numbers.length === 0) {
       return Promise.resolve({
@@ -995,7 +997,7 @@ MessageSender.prototype = {
 
     const sendPromise = new Promise((resolve, reject) => {
       const silent = true;
-      const callback = res => {
+      const callback = (res) => {
         res.dataMessage = proto.toArrayBuffer();
         if (res.errors.length > 0) {
           reject(res);
@@ -1014,7 +1016,7 @@ MessageSender.prototype = {
       );
     });
 
-    return sendPromise.then(result => {
+    return sendPromise.then((result) => {
       // Sync the group message to our other devices
       const encoded = textsecure.protobuf.DataMessage.encode(proto);
       this.sendSyncMessage(encoded, timestamp, null, null, [], [], options);
@@ -1118,7 +1120,7 @@ MessageSender.prototype = {
     proto.body = 'TERMINATE';
     proto.flags = textsecure.protobuf.DataMessage.Flags.END_SESSION;
 
-    const logError = prefix => error => {
+    const logError = (prefix) => (error) => {
       window.log.error(prefix, error && error.stack ? error.stack : error);
       throw error;
     };
@@ -1158,7 +1160,7 @@ MessageSender.prototype = {
     const primaryDeviceKey =
       window.storage.get('primaryDevicePubKey') ||
       textsecure.storage.user.getNumber();
-    let numbers = groupNumbers.filter(number => number !== primaryDeviceKey);
+    let numbers = groupNumbers.filter((number) => number !== primaryDeviceKey);
     if (options.isPublic) {
       numbers = [groupId];
     }
@@ -1265,7 +1267,7 @@ MessageSender.prototype = {
     proto.group.type = textsecure.protobuf.GroupContext.Type.UPDATE;
     proto.group.members = groupNumbers;
 
-    return this.makeAttachmentPointer(avatar).then(attachment => {
+    return this.makeAttachmentPointer(avatar).then((attachment) => {
       proto.group.avatar = attachment;
       return this.sendGroupProto(groupNumbers, proto, Date.now(), options);
     });
@@ -1301,7 +1303,9 @@ MessageSender.prototype = {
     const primaryDeviceKey =
       window.storage.get('primaryDevicePubKey') ||
       textsecure.storage.user.getNumber();
-    const numbers = groupNumbers.filter(number => number !== primaryDeviceKey);
+    const numbers = groupNumbers.filter(
+      (number) => number !== primaryDeviceKey
+    );
 
     const attrs = {
       recipients: numbers,

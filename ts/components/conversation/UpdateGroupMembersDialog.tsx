@@ -17,7 +17,7 @@ interface Props {
   // friends not in the group
   friendList: Array<any>;
   isAdmin: boolean;
-  existingMembers: Array<String>;
+  existingMembers: Array<string>;
   i18n: any;
   onSubmit: any;
   onClose: any;
@@ -39,7 +39,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
     this.closeDialog = this.closeDialog.bind(this);
 
     let friends = this.props.friendList;
-    friends = friends.map(d => {
+    friends = friends.map((d) => {
       const lokiProfile = d.getLokiProfile();
       const name = lokiProfile ? lokiProfile.displayName : 'Anonymous';
 
@@ -68,7 +68,7 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
 
   public onClickOK() {
     const members = this.getWouldBeMembers(this.state.friendList).map(
-      d => d.id
+      (d) => d.id
     );
 
     this.props.onSubmit(members);
@@ -79,8 +79,8 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
   public render() {
     const checkMarkedCount = this.getMemberCount(this.state.friendList);
 
-    const okText = this.props.okText;
-    const cancelText = this.props.cancelText;
+    const { okText } = this.props;
+    const { cancelText } = this.props;
 
     let titleText;
     let noFriendsClasses;
@@ -191,12 +191,11 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
   // Return members that would comprise the group given the
   // current state in `users`
   private getWouldBeMembers(users: Array<Contact>) {
-    return users.filter(d => {
-      return (
+    return users.filter(
+      (d) =>
         (d.existingMember && !d.checkmarked) ||
         (!d.existingMember && d.checkmarked)
-      );
-    });
+    );
   }
 
   private getMemberCount(users: Array<Contact>) {
@@ -217,19 +216,16 @@ export class UpdateGroupMembersDialog extends React.Component<Props, State> {
       return;
     }
 
-    const updatedFriends = this.state.friendList.map(member => {
+    const updatedFriends = this.state.friendList.map((member) => {
       if (member.id === selected.id) {
         return { ...member, checkmarked: !member.checkmarked };
-      } else {
-        return member;
       }
+      return member;
     });
 
-    this.setState(state => {
-      return {
-        ...state,
-        friendList: updatedFriends,
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      friendList: updatedFriends,
+    }));
   }
 }

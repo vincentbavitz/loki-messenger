@@ -18,7 +18,7 @@ export class UserSearchResults extends React.Component<Props> {
 
   public render() {
     const { contacts, searchTerm } = this.props;
-    const friends = contacts.filter(contact => contact.isFriend);
+    const friends = contacts.filter((contact) => contact.isFriend);
 
     const noResults = !friends || friends.length <= 0;
 
@@ -43,7 +43,7 @@ export class UserSearchResults extends React.Component<Props> {
     );
   }
 
-  private renderFriend(contact: ConversationListItemPropsType, index: Number) {
+  private renderFriend(contact: ConversationListItemPropsType, index: number) {
     const { profileName, phoneNumber } = contact;
     const { selectedContact } = this.props;
 

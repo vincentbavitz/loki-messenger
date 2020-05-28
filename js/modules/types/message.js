@@ -72,9 +72,7 @@ exports.initializeSchemaVersion = ({ message, logger }) => {
     : 0;
   const hasAttachments = numAttachments > 0;
   if (!hasAttachments) {
-    return Object.assign({}, message, {
-      schemaVersion: INITIAL_SCHEMA_VERSION,
-    });
+    return { ...message, schemaVersion: INITIAL_SCHEMA_VERSION };
   }
 
   // All attachments should have the same schema version, so we just pick
@@ -85,12 +83,13 @@ exports.initializeSchemaVersion = ({ message, logger }) => {
   )
     ? firstAttachment.schemaVersion
     : INITIAL_SCHEMA_VERSION;
-  const messageWithInitialSchema = Object.assign({}, message, {
+  const messageWithInitialSchema = {
+    ...message,
     schemaVersion: inheritedSchemaVersion,
-    attachments: message.attachments.map(attachment =>
+    attachments: message.attachments.map((attachment) =>
       Attachment.removeSchemaVersion({ attachment, logger })
     ),
-  });
+  };
 
   return messageWithInitialSchema;
 };
@@ -158,7 +157,7 @@ exports._withSchemaVersion = ({ schemaVersion, upgrade }) => {
       return message;
     }
 
-    return Object.assign({}, upgradedMessage, { schemaVersion });
+    return { ...upgradedMessage, schemaVersion };
   };
 };
 
@@ -166,33 +165,33 @@ exports._withSchemaVersion = ({ schemaVersion, upgrade }) => {
 //      _mapAttachments :: (Attachment -> Promise Attachment) ->
 //                         (Message, Context) ->
 //                         Promise Message
-exports._mapAttachments = upgradeAttachment => async (message, context) => {
-  const upgradeWithContext = attachment =>
+exports._mapAttachments = (upgradeAttachment) => async (message, context) => {
+  const upgradeWithContext = (attachment) =>
     upgradeAttachment(attachment, context);
   const attachments = await Promise.all(
     (message.attachments || []).map(upgradeWithContext)
   );
-  return Object.assign({}, message, { attachments });
+  return { ...message, attachments };
 };
 
 // Public API
 //      _mapContact :: (Contact -> Promise Contact) ->
 //                     (Message, Context) ->
 //                     Promise Message
-exports._mapContact = upgradeContact => async (message, context) => {
-  const contextWithMessage = Object.assign({}, context, { message });
-  const upgradeWithContext = contact =>
+exports._mapContact = (upgradeContact) => async (message, context) => {
+  const contextWithMessage = { ...context, message };
+  const upgradeWithContext = (contact) =>
     upgradeContact(contact, contextWithMessage);
   const contact = await Promise.all(
     (message.contact || []).map(upgradeWithContext)
   );
-  return Object.assign({}, message, { contact });
+  return { ...message, contact };
 };
 
 //      _mapQuotedAttachments :: (QuotedAttachment -> Promise QuotedAttachment) ->
 //                               (Message, Context) ->
 //                               Promise Message
-exports._mapQuotedAttachments = upgradeAttachment => async (
+exports._mapQuotedAttachments = (upgradeAttachment) => async (
   message,
   context
 ) => {
@@ -203,16 +202,14 @@ exports._mapQuotedAttachments = upgradeAttachment => async (
     throw new Error('_mapQuotedAttachments: context must have logger object');
   }
 
-  const upgradeWithContext = async attachment => {
+  const upgradeWithContext = async (attachment) => {
     const { thumbnail } = attachment;
     if (!thumbnail) {
       return attachment;
     }
 
     const upgradedThumbnail = await upgradeAttachment(thumbnail, context);
-    return Object.assign({}, attachment, {
-      thumbnail: upgradedThumbnail,
-    });
+    return { ...attachment, thumbnail: upgradedThumbnail };
   };
 
   const quotedAttachments = (message.quote && message.quote.attachments) || [];
@@ -220,17 +217,13 @@ exports._mapQuotedAttachments = upgradeAttachment => async (
   const attachments = await Promise.all(
     quotedAttachments.map(upgradeWithContext)
   );
-  return Object.assign({}, message, {
-    quote: Object.assign({}, message.quote, {
-      attachments,
-    }),
-  });
+  return { ...message, quote: { ...message.quote, attachments } };
 };
 
 //      _mapPreviewAttachments :: (PreviewAttachment -> Promise PreviewAttachment) ->
 //                               (Message, Context) ->
 //                               Promise Message
-exports._mapPreviewAttachments = upgradeAttachment => async (
+exports._mapPreviewAttachments = (upgradeAttachment) => async (
   message,
   context
 ) => {
@@ -241,24 +234,20 @@ exports._mapPreviewAttachments = upgradeAttachment => async (
     throw new Error('_mapPreviewAttachments: context must have logger object');
   }
 
-  const upgradeWithContext = async preview => {
+  const upgradeWithContext = async (preview) => {
     const { image } = preview;
     if (!image) {
       return preview;
     }
 
     const upgradedImage = await upgradeAttachment(image, context);
-    return Object.assign({}, preview, {
-      image: upgradedImage,
-    });
+    return { ...preview, image: upgradedImage };
   };
 
   const preview = await Promise.all(
     (message.preview || []).map(upgradeWithContext)
   );
-  return Object.assign({}, message, {
-    preview,
-  });
+  return { ...message, preview };
 };
 
 const toVersion0 = async (message, context) =>
@@ -462,27 +451,25 @@ exports.processNewAttachment = async (
   return finalAttachment;
 };
 
-exports.createAttachmentLoader = loadAttachmentData => {
+exports.createAttachmentLoader = (loadAttachmentData) => {
   if (!isFunction(loadAttachmentData)) {
     throw new TypeError(
       'createAttachmentLoader: loadAttachmentData is required'
     );
   }
 
-  return async message =>
-    Object.assign({}, message, {
-      attachments: await Promise.all(
-        message.attachments.map(loadAttachmentData)
-      ),
-    });
+  return async (message) => ({
+    ...message,
+    attachments: await Promise.all(message.attachments.map(loadAttachmentData)),
+  });
 };
 
-exports.loadQuoteData = loadAttachmentData => {
+exports.loadQuoteData = (loadAttachmentData) => {
   if (!isFunction(loadAttachmentData)) {
     throw new TypeError('loadQuoteData: loadAttachmentData is required');
   }
 
-  return async quote => {
+  return async (quote) => {
     if (!quote) {
       return null;
     }
@@ -490,7 +477,7 @@ exports.loadQuoteData = loadAttachmentData => {
     return {
       ...quote,
       attachments: await Promise.all(
-        (quote.attachments || []).map(async attachment => {
+        (quote.attachments || []).map(async (attachment) => {
           const { thumbnail } = attachment;
 
           if (!thumbnail || !thumbnail.path) {
@@ -507,18 +494,18 @@ exports.loadQuoteData = loadAttachmentData => {
   };
 };
 
-exports.loadPreviewData = loadAttachmentData => {
+exports.loadPreviewData = (loadAttachmentData) => {
   if (!isFunction(loadAttachmentData)) {
     throw new TypeError('loadPreviewData: loadAttachmentData is required');
   }
 
-  return async preview => {
+  return async (preview) => {
     if (!preview || !preview.length) {
       return [];
     }
 
     return Promise.all(
-      preview.map(async item => {
+      preview.map(async (item) => {
         if (!item.image) {
           return item;
         }
@@ -545,7 +532,7 @@ exports.deleteAllExternalFiles = ({ deleteAttachmentData, deleteOnDisk }) => {
     );
   }
 
-  return async message => {
+  return async (message) => {
     const { attachments, quote, contact, preview } = message;
 
     if (attachments && attachments.length) {
@@ -554,7 +541,7 @@ exports.deleteAllExternalFiles = ({ deleteAttachmentData, deleteOnDisk }) => {
 
     if (quote && quote.attachments && quote.attachments.length) {
       await Promise.all(
-        quote.attachments.map(async attachment => {
+        quote.attachments.map(async (attachment) => {
           const { thumbnail } = attachment;
 
           // To prevent spoofing, we copy the original image from the quoted message.
@@ -569,7 +556,7 @@ exports.deleteAllExternalFiles = ({ deleteAttachmentData, deleteOnDisk }) => {
 
     if (contact && contact.length) {
       await Promise.all(
-        contact.map(async item => {
+        contact.map(async (item) => {
           const { avatar } = item;
 
           if (avatar && avatar.avatar && avatar.avatar.path) {
@@ -581,7 +568,7 @@ exports.deleteAllExternalFiles = ({ deleteAttachmentData, deleteOnDisk }) => {
 
     if (preview && preview.length) {
       await Promise.all(
-        preview.map(async item => {
+        preview.map(async (item) => {
           const { image } = item;
 
           if (image && image.path) {
@@ -609,7 +596,7 @@ exports.createAttachmentDataWriter = ({
     throw new TypeError('createAttachmentDataWriter: logger must be an object');
   }
 
-  return async rawMessage => {
+  return async (rawMessage) => {
     if (!exports.isValid(rawMessage)) {
       throw new TypeError("'rawMessage' is not valid");
     }
@@ -637,7 +624,7 @@ exports.createAttachmentDataWriter = ({
       return message;
     }
 
-    (attachments || []).forEach(attachment => {
+    (attachments || []).forEach((attachment) => {
       if (!Attachment.hasData(attachment)) {
         throw new TypeError(
           "'attachment.data' is required during message import"
@@ -651,7 +638,7 @@ exports.createAttachmentDataWriter = ({
       }
     });
 
-    const writeThumbnails = exports._mapQuotedAttachments(async thumbnail => {
+    const writeThumbnails = exports._mapQuotedAttachments(async (thumbnail) => {
       const { data, path } = thumbnail;
 
       // we want to be bulletproof to thumbnails without data
@@ -670,7 +657,7 @@ exports.createAttachmentDataWriter = ({
       return omit(thumbnail, ['data']);
     });
 
-    const writeContactAvatar = async messageContact => {
+    const writeContactAvatar = async (messageContact) => {
       const { avatar } = messageContact;
       if (avatar && !avatar.avatar) {
         return omit(messageContact, ['avatar']);
@@ -678,14 +665,13 @@ exports.createAttachmentDataWriter = ({
 
       await writeExistingAttachmentData(avatar.avatar);
 
-      return Object.assign({}, messageContact, {
-        avatar: Object.assign({}, avatar, {
-          avatar: omit(avatar.avatar, ['data']),
-        }),
-      });
+      return {
+        ...messageContact,
+        avatar: { ...avatar, avatar: omit(avatar.avatar, ['data']) },
+      };
     };
 
-    const writePreviewImage = async item => {
+    const writePreviewImage = async (item) => {
       const { image } = item;
       if (!image) {
         return omit(item, ['image']);
@@ -693,41 +679,36 @@ exports.createAttachmentDataWriter = ({
 
       await writeExistingAttachmentData(image);
 
-      return Object.assign({}, item, {
-        image: omit(image, ['data']),
-      });
+      return { ...item, image: omit(image, ['data']) };
     };
 
-    const messageWithoutAttachmentData = Object.assign(
-      {},
-      await writeThumbnails(message, { logger }),
-      {
-        contact: await Promise.all((contact || []).map(writeContactAvatar)),
-        preview: await Promise.all((preview || []).map(writePreviewImage)),
-        attachments: await Promise.all(
-          (attachments || []).map(async attachment => {
-            await writeExistingAttachmentData(attachment);
+    const messageWithoutAttachmentData = {
+      ...(await writeThumbnails(message, { logger })),
+      contact: await Promise.all((contact || []).map(writeContactAvatar)),
+      preview: await Promise.all((preview || []).map(writePreviewImage)),
+      attachments: await Promise.all(
+        (attachments || []).map(async (attachment) => {
+          await writeExistingAttachmentData(attachment);
 
-            if (attachment.screenshot && attachment.screenshot.data) {
-              await writeExistingAttachmentData(attachment.screenshot);
-            }
-            if (attachment.thumbnail && attachment.thumbnail.data) {
-              await writeExistingAttachmentData(attachment.thumbnail);
-            }
+          if (attachment.screenshot && attachment.screenshot.data) {
+            await writeExistingAttachmentData(attachment.screenshot);
+          }
+          if (attachment.thumbnail && attachment.thumbnail.data) {
+            await writeExistingAttachmentData(attachment.thumbnail);
+          }
 
-            return {
-              ...omit(attachment, ['data']),
-              ...(attachment.thumbnail
-                ? { thumbnail: omit(attachment.thumbnail, ['data']) }
-                : null),
-              ...(attachment.screenshot
-                ? { screenshot: omit(attachment.screenshot, ['data']) }
-                : null),
-            };
-          })
-        ),
-      }
-    );
+          return {
+            ...omit(attachment, ['data']),
+            ...(attachment.thumbnail
+              ? { thumbnail: omit(attachment.thumbnail, ['data']) }
+              : null),
+            ...(attachment.screenshot
+              ? { screenshot: omit(attachment.screenshot, ['data']) }
+              : null),
+          };
+        })
+      ),
+    };
 
     return messageWithoutAttachmentData;
   };

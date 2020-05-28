@@ -97,12 +97,12 @@ export class LeftPaneSettingSection extends React.Component<Props, State> {
   }
 
   public renderCategories(): JSX.Element {
-    const categories = this.getCategories().filter(item => !item.hidden);
+    const categories = this.getCategories().filter((item) => !item.hidden);
 
     return (
       <div className="module-left-pane__list" key={0}>
         <div className="left-pane-setting-category-list">
-          {categories.map(item => this.renderRow(item))}
+          {categories.map((item) => this.renderRow(item))}
         </div>
       </div>
     );

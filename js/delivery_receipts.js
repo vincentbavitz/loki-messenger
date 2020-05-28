@@ -10,7 +10,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -24,7 +24,7 @@
         recipients = conversation.get('members') || [];
       }
       const receipts = this.filter(
-        receipt =>
+        (receipt) =>
           receipt.get('timestamp') === message.get('sent_at') &&
           recipients.indexOf(receipt.get('source')) > -1
       );
@@ -45,7 +45,7 @@
       }
 
       const message = messages.find(
-        item => !item.isIncoming() && source === item.get('conversationId')
+        (item) => !item.isIncoming() && source === item.get('conversationId')
       );
       if (message) {
         return message;
@@ -59,7 +59,7 @@
       ids.push(source);
 
       const target = messages.find(
-        item =>
+        (item) =>
           !item.isIncoming() && _.contains(ids, item.get('conversationId'))
       );
       if (!target) {

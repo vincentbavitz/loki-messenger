@@ -15,13 +15,11 @@ const Colors = {
   ICON_SECONDARY: '#ccc',
 };
 
-const colorSVG = (url: string, color: string) => {
-  return {
-    WebkitMask: `url(${url}) no-repeat center`,
-    WebkitMaskSize: '100%',
-    backgroundColor: color,
-  };
-};
+const colorSVG = (url: string, color: string) => ({
+  WebkitMask: `url(${url}) no-repeat center`,
+  WebkitMaskSize: '100%',
+  backgroundColor: color,
+});
 
 interface Props {
   close: () => void;
@@ -165,7 +163,9 @@ const Icon = ({
 
 export class Lightbox extends React.Component<Props> {
   private readonly containerRef: React.RefObject<HTMLDivElement>;
+
   private readonly videoRef: React.RefObject<HTMLVideoElement>;
+
   private readonly playVideoBound: () => void;
 
   constructor(props: Props) {

@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -163,8 +163,8 @@
       this.selectStep(Steps.ENTER_NAME);
       this.setDeviceNameDefault();
 
-      return new Promise(resolve => {
-        this.$('#link-phone').submit(e => {
+      return new Promise((resolve) => {
+        this.$('#link-phone').submit((e) => {
           e.stopPropagation();
           e.preventDefault();
 
@@ -188,7 +188,7 @@
             return finish();
           }
 
-          return tsp.removeAllData().then(finish, error => {
+          return tsp.removeAllData().then(finish, (error) => {
             window.log.error(
               'confirmNumber: error clearing database',
               error && error.stack ? error.stack : error

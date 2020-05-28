@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Props, SessionIcon } from '../icon';
+import { Props, SessionIcon } from '.';
 
 import { SessionNotificationCount } from '../SessionNotificationCount';
 
@@ -16,6 +16,7 @@ export class SessionIconButton extends React.PureComponent<SProps> {
     notificationCount: undefined,
     isSelected: false,
   };
+
   public static readonly defaultProps = {
     ...SessionIcon.defaultProps,
     ...SessionIconButton.extendedDefaults,
@@ -47,7 +48,7 @@ export class SessionIconButton extends React.PureComponent<SProps> {
           isSelected ? 'no-opacity' : ''
         )}
         role="button"
-        onClick={e => {
+        onClick={(e) => {
           this.clickHandler(e);
         }}
       >

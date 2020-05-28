@@ -10,8 +10,8 @@ interface Props {
   profileName?: string;
   i18n: LocalizerType;
   module?: string;
-  boldProfileName?: Boolean;
-  compact?: Boolean;
+  boldProfileName?: boolean;
+  compact?: boolean;
 }
 
 export class ContactName extends React.Component<Props> {
@@ -25,9 +25,9 @@ export class ContactName extends React.Component<Props> {
       boldProfileName,
       compact,
     } = this.props;
-    const prefix = module ? module : 'module-contact-name';
+    const prefix = module || 'module-contact-name';
 
-    const title = name ? name : phoneNumber;
+    const title = name || phoneNumber;
     const shouldShowProfile = Boolean(profileName && !name);
     const styles = (boldProfileName
       ? {

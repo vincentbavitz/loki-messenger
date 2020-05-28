@@ -1,7 +1,7 @@
 /* global window, dcodeIO, textsecure */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   let server;
   const EXHAUSTED_SNODES_RETRY_DELAY = 5000;
   const NUM_CONCURRENT_CONNECTIONS = 3;
@@ -46,12 +46,12 @@
     server = _server;
     let { handleRequest } = opts;
     if (typeof handleRequest !== 'function') {
-      handleRequest = request => request.respond(404, 'Not found');
+      handleRequest = (request) => request.respond(404, 'Not found');
     }
     let connected = true;
     this.calledStop = false;
     let resolveStopPolling;
-    const stopPolling = new Promise(res => {
+    const stopPolling = new Promise((res) => {
       resolveStopPolling = res;
     });
 
@@ -83,9 +83,9 @@
       }
     };
 
-    this.pollForAdditionalId = async groupId => {
-      await server.pollForGroupId(groupId, messages => {
-        messages.forEach(m => {
+    this.pollForAdditionalId = async (groupId) => {
+      await server.pollForGroupId(groupId, (messages) => {
+        messages.forEach((m) => {
           this.handleMessage(m.data, { conversationId: m.conversationId });
         });
       });
@@ -100,9 +100,9 @@
         await server.startLongPolling(
           NUM_CONCURRENT_CONNECTIONS,
           stopPolling,
-          messages => {
+          (messages) => {
             connected = true;
-            messages.forEach(message => {
+            messages.forEach((message) => {
               this.handleMessage(message.data, {
                 conversationId: message.conversationId,
               });
@@ -128,8 +128,9 @@
       // Exhausted all our snodes urls, trying again later from scratch
       setTimeout(() => {
         window.log.info(
-          `http-resource: Exhausted all our snodes urls, trying again in ${EXHAUSTED_SNODES_RETRY_DELAY /
-            1000}s from scratch`
+          `http-resource: Exhausted all our snodes urls, trying again in ${
+            EXHAUSTED_SNODES_RETRY_DELAY / 1000
+          }s from scratch`
         );
         this.pollServer();
       }, EXHAUSTED_SNODES_RETRY_DELAY);

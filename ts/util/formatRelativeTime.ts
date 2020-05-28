@@ -32,7 +32,8 @@ export function formatRelativeTime(
 
   if (diff.years() >= 1 || !isYear(timestamp)) {
     return timestamp.format(formats.y);
-  } else if (diff.months() >= 1 || diff.days() > 6) {
+  }
+  if (diff.months() >= 1 || diff.days() > 6) {
     return timestamp.format(formats.M);
   }
 

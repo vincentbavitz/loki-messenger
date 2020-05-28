@@ -14,6 +14,7 @@ export class SessionQRModal extends React.Component<Props> {
   constructor(props: any) {
     super(props);
   }
+
   public render() {
     const { value, onClose } = this.props;
 

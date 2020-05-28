@@ -17,7 +17,7 @@ export class GroupInvitation extends React.Component<Props> {
     }
 
     return (
-      <div className={'group-invitation-container'}>
+      <div className="group-invitation-container">
         <div className={classNames(classes)}>
           <div className="title">Group invitation</div>
           <div className="contents">

@@ -1,7 +1,7 @@
 /* global window */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.textsecure = window.textsecure || {};
 
   function inherit(Parent, Child) {

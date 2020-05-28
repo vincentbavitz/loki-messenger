@@ -43,7 +43,7 @@ export class SessionSeedModal extends React.Component<Props, State> {
   }
 
   public render() {
-    const i18n = window.i18n;
+    const { i18n } = window;
 
     this.checkHasPassword();
     this.getSeed().ignore();
@@ -75,8 +75,8 @@ export class SessionSeedModal extends React.Component<Props, State> {
 
   private renderPasswordView() {
     const maxPasswordLen = 64;
-    const error = this.state.error;
-    const i18n = window.i18n;
+    const { error } = this.state;
+    const { i18n } = window;
     const { onClose } = this.props;
 
     return (
@@ -112,7 +112,7 @@ export class SessionSeedModal extends React.Component<Props, State> {
   }
 
   private renderSeedView() {
-    const i18n = window.i18n;
+    const { i18n } = window;
     const { onClose } = this.props;
 
     return (
@@ -144,7 +144,7 @@ export class SessionSeedModal extends React.Component<Props, State> {
   }
 
   private confirmPassword() {
-    const passwordHash = this.state.passwordHash;
+    const { passwordHash } = this.state;
     const passwordValue = $('#seed-input-password').val();
     const isPasswordValid = window.passwordUtil.matchesHash(
       passwordValue,

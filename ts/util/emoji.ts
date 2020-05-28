@@ -25,7 +25,7 @@ export function findImage(value: string, variation?: string) {
 }
 
 export function replaceColons(str: string) {
-  return str.replace(instance.rx_colons, m => {
+  return str.replace(instance.rx_colons, (m) => {
     const name = m.substr(1, m.length - 2).toLowerCase();
     const code = instance.map.colons[name];
     if (code) {
@@ -66,15 +66,17 @@ export function getSizeClass(str: string): SizeClassType {
   const emojiCount = getCountOfAllMatches(str, instance.rx_unified);
   if (emojiCount > 8) {
     return '';
-  } else if (emojiCount > 6) {
-    return 'small';
-  } else if (emojiCount > 4) {
-    return 'medium';
-  } else if (emojiCount > 2) {
-    return 'large';
-  } else {
-    return 'jumbo';
   }
+  if (emojiCount > 6) {
+    return 'small';
+  }
+  if (emojiCount > 4) {
+    return 'medium';
+  }
+  if (emojiCount > 2) {
+    return 'large';
+  }
+  return 'jumbo';
 }
 
 const VARIATION_LOOKUP: { [index: string]: string } = {

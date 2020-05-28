@@ -55,17 +55,17 @@ export class SessionInput extends React.PureComponent<Props, State> {
           placeholder={placeholder}
           value={value}
           maxLength={maxLength}
-          onChange={e => {
+          onChange={(e) => {
             this.updateInputValue(e);
           }}
           className={classNames(
             enableShowHide ? 'session-input-floating-label-show-hide' : ''
           )}
           // just incase onChange isn't triggered
-          onBlur={e => {
+          onBlur={(e) => {
             this.updateInputValue(e);
           }}
-          onKeyPress={event => {
+          onKeyPress={(event) => {
             event.persist();
             if (event.key === 'Enter' && this.props.onEnterPressed) {
               this.props.onEnterPressed();

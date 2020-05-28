@@ -10,9 +10,9 @@
 
 /* eslint-disable more/no-then */
 
-const toHex = buffer => StringView.arrayBufferToHex(buffer);
+const toHex = (buffer) => StringView.arrayBufferToHex(buffer);
 
-const fromHex = hex => dcodeIO.ByteBuffer.wrap(hex, 'hex').toArrayBuffer();
+const fromHex = (hex) => dcodeIO.ByteBuffer.wrap(hex, 'hex').toArrayBuffer();
 
 async function saveSenderKeysInner(
   groupId,

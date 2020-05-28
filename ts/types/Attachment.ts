@@ -71,8 +71,6 @@ export function getExtensionForDisplay({
   if (slash >= 0) {
     return contentType.slice(slash + 1);
   }
-
-  return;
 }
 
 export function isAudio(attachments?: Array<AttachmentType>) {

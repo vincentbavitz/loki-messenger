@@ -24,7 +24,7 @@ async function initialize({ configDir, cleanupOrphanedAttachments }) {
 
   const attachmentsDir = Attachments.getPath(configDir);
 
-  ipcMain.on(ERASE_ATTACHMENTS_KEY, async event => {
+  ipcMain.on(ERASE_ATTACHMENTS_KEY, async (event) => {
     try {
       rimraf.sync(attachmentsDir);
       event.sender.send(`${ERASE_ATTACHMENTS_KEY}-done`);
@@ -35,7 +35,7 @@ async function initialize({ configDir, cleanupOrphanedAttachments }) {
     }
   });
 
-  ipcMain.on(CLEANUP_ORPHANED_ATTACHMENTS_KEY, async event => {
+  ipcMain.on(CLEANUP_ORPHANED_ATTACHMENTS_KEY, async (event) => {
     try {
       await cleanupOrphanedAttachments();
       event.sender.send(`${CLEANUP_ORPHANED_ATTACHMENTS_KEY}-done`);

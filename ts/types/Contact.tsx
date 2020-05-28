@@ -1,6 +1,6 @@
 // @ts-ignore
 import Attachments from '../../app/attachments';
-import { format as formatPhoneNumber } from '../types/PhoneNumber';
+import { format as formatPhoneNumber } from './PhoneNumber';
 
 export interface Contact {
   name?: Name;
@@ -111,7 +111,7 @@ export function contactSelector(
     avatar,
     number:
       contact.number &&
-      contact.number.map(item => ({
+      contact.number.map((item) => ({
         ...item,
         value: formatPhoneNumber(item.value, {
           ourRegionCode: regionCode,

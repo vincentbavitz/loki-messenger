@@ -264,13 +264,13 @@ describe('Backup', () => {
       const CONTACT_ONE_NUMBER = '+12025550001';
       const CONTACT_TWO_NUMBER = '+12025550002';
 
-      const toArrayBuffer = nodeBuffer =>
+      const toArrayBuffer = (nodeBuffer) =>
         nodeBuffer.buffer.slice(
           nodeBuffer.byteOffset,
           nodeBuffer.byteOffset + nodeBuffer.byteLength
         );
 
-      const getFixture = target => toArrayBuffer(fse.readFileSync(target));
+      const getFixture = (target) => toArrayBuffer(fse.readFileSync(target));
 
       const FIXTURES = {
         gif: getFixture('fixtures/giphy-7GFfijngKbeNy.gif'),
@@ -296,11 +296,11 @@ describe('Backup', () => {
         return _.omit(model, ['id']);
       }
 
-      const getUndefinedKeys = object =>
+      const getUndefinedKeys = (object) =>
         Object.entries(object)
           .filter(([, value]) => value === undefined)
           .map(([name]) => name);
-      const omitUndefinedKeys = object =>
+      const omitUndefinedKeys = (object) =>
         _.omit(object, getUndefinedKeys(object));
 
       // We want to know which paths have two slashes, since that tells us which files
@@ -310,7 +310,7 @@ describe('Backup', () => {
       //   glob returns only /. We normalize to / separators for our manipulations.
       const normalizedBase = attachmentsPath.replace(/\\/g, '/');
       function removeDirs(dirs) {
-        return _.filter(dirs, fullDir => {
+        return _.filter(dirs, (fullDir) => {
           const dir = fullDir.replace(normalizedBase, '');
           return TWO_SLASHES.test(dir);
         });
@@ -322,31 +322,34 @@ describe('Backup', () => {
             return message;
           }
 
-          const wrappedMapper = async attachment => {
+          const wrappedMapper = async (attachment) => {
             if (!attachment || !attachment.thumbnail) {
               return attachment;
             }
 
-            return Object.assign({}, attachment, {
+            return {
+              ...attachment,
               thumbnail: await mapper(attachment.thumbnail, context),
-            });
+            };
           };
 
           const quotedAttachments =
             (message.quote && message.quote.attachments) || [];
 
-          return Object.assign({}, message, {
-            quote: Object.assign({}, message.quote, {
+          return {
+            ...message,
+            quote: {
+              ...message.quote,
               attachments: await Promise.all(
                 quotedAttachments.map(wrappedMapper)
               ),
-            }),
-          });
+            },
+          };
         };
       }
 
       async function loadAllFilesFromDisk(message) {
-        const loadThumbnails = _mapQuotedAttachments(thumbnail => {
+        const loadThumbnails = _mapQuotedAttachments((thumbnail) => {
           // we want to be bulletproof to thumbnails without data
           if (!thumbnail.path) {
             return thumbnail;
@@ -355,22 +358,25 @@ describe('Backup', () => {
           return wrappedLoadAttachment(thumbnail);
         });
 
-        return Object.assign({}, await loadThumbnails(message), {
+        return {
+          ...(await loadThumbnails(message)),
           contact: await Promise.all(
-            (message.contact || []).map(async contact => {
+            (message.contact || []).map(async (contact) => {
               return contact && contact.avatar && contact.avatar.avatar
-                ? Object.assign({}, contact, {
-                    avatar: Object.assign({}, contact.avatar, {
+                ? {
+                    ...contact,
+                    avatar: {
+                      ...contact.avatar,
                       avatar: await wrappedLoadAttachment(
                         contact.avatar.avatar
                       ),
-                    }),
-                  })
+                    },
+                  }
                 : contact;
             })
           ),
           attachments: await Promise.all(
-            (message.attachments || []).map(async attachment => {
+            (message.attachments || []).map(async (attachment) => {
               await wrappedLoadAttachment(attachment);
 
               if (attachment.thumbnail) {
@@ -385,7 +391,7 @@ describe('Backup', () => {
             })
           ),
           preview: await Promise.all(
-            (message.preview || []).map(async item => {
+            (message.preview || []).map(async (item) => {
               if (item.image) {
                 await wrappedLoadAttachment(item.image);
               }
@@ -393,7 +399,7 @@ describe('Backup', () => {
               return item;
             })
           ),
-        });
+        };
       }
 
       let backupDir;

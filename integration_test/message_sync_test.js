@@ -4,7 +4,7 @@ const { afterEach, beforeEach, describe, it } = require('mocha');
 
 const common = require('./common');
 
-describe('Message Syncing', function() {
+describe('Message Syncing', function () {
   let app;
   let app2;
   this.timeout(60000);

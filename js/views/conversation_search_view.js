@@ -1,12 +1,12 @@
 /* global ConversationController, i18n, textsecure, Whisper */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
 
-  const isSearchable = conversation => conversation.isSearchable();
+  const isSearchable = (conversation) => conversation.isSearchable();
 
   Whisper.NewContactView = Whisper.View.extend({
     templateName: 'new-contact',
@@ -50,7 +50,7 @@
           return m.getTitle().toLowerCase();
         },
       });
-      this.listenTo(this.collection, 'select', conversation => {
+      this.listenTo(this.collection, 'select', (conversation) => {
         this.resetTypeahead();
         this.trigger('open', conversation);
       });
@@ -89,7 +89,7 @@
               const conversation = ConversationController.get(ourNumber);
               if (conversation) {
                 // ensure that we don't have duplicates in our results
-                results = results.filter(item => item.id !== ourNumber);
+                results = results.filter((item) => item.id !== ourNumber);
                 results.unshift(conversation);
               }
             }
@@ -97,7 +97,9 @@
             this.typeahead_view.collection.reset(results);
 
             // This will allow us to show the last message when searching
-            this.typeahead_view.collection.forEach(c => c.updateLastMessage());
+            this.typeahead_view.collection.forEach((c) =>
+              c.updateLastMessage()
+            );
 
             // Show the new contact view if we already have results
             if (this.typeahead_view.collection.length === 0) {

@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -92,7 +92,7 @@
       this.recorder.onError = this.onError.bind(this);
       navigator.webkitGetUserMedia(
         { audio: true },
-        stream => {
+        (stream) => {
           this.source = this.context.createMediaStreamSource(stream);
           this.source.connect(this.input);
         },

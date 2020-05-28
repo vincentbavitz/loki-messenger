@@ -18,9 +18,10 @@ const byRuleThenByCategory = fromPairs(
     return [
       ruleName,
       fromPairs(
-        map(byCategory, (innerList, categoryName) => {
-          return [categoryName, innerList.length];
-        })
+        map(byCategory, (innerList, categoryName) => [
+          categoryName,
+          innerList.length,
+        ])
       ),
     ];
   })

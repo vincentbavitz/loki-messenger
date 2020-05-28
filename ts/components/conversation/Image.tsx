@@ -93,7 +93,6 @@ export class Image extends React.Component<Props> {
               lineHeight: `${height}px`,
               textAlign: 'center',
             }}
-            // alt={i18n('loading')}
           >
             <Spinner size="normal" />
           </div>

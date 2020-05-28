@@ -24,11 +24,15 @@ export class CaptionEditor extends React.Component<Props, State> {
   private readonly handleKeyUpBound: (
     event: React.KeyboardEvent<HTMLInputElement>
   ) => void;
+
   private readonly setFocusBound: () => void;
+
   private readonly onChangeBound: (
     event: React.FormEvent<HTMLInputElement>
   ) => void;
+
   private readonly onSaveBound: () => void;
+
   private readonly inputRef: React.RefObject<HTMLInputElement>;
 
   constructor(props: Props) {

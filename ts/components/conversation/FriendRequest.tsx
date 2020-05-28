@@ -86,7 +86,8 @@ export class FriendRequest extends React.Component<Props> {
             <button onClick={onDecline}>Decline</button>
           </div>
         );
-      } else if (friendStatus === 'declined') {
+      }
+      if (friendStatus === 'declined') {
         const blockTitle = isBlocked ? i18n('unblockUser') : i18n('blockUser');
         const blockHandler = isBlocked ? onUnblockUser : onBlockUser;
 
@@ -176,7 +177,7 @@ export class FriendRequest extends React.Component<Props> {
     const { direction } = this.props;
 
     return (
-      <div className={'loki-message-wrapper'}>
+      <div className="loki-message-wrapper">
         <div
           className={classNames(
             `module-message module-message--${direction}`,

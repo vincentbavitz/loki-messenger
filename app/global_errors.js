@@ -36,17 +36,17 @@ function handleError(prefix, error) {
   app.exit(1);
 }
 
-exports.updateLocale = messages => {
+exports.updateLocale = (messages) => {
   quitText = messages.quit.message;
   copyErrorAndQuitText = messages.copyErrorAndQuit.message;
 };
 
 exports.addHandler = () => {
-  process.on('uncaughtException', error => {
+  process.on('uncaughtException', (error) => {
     handleError('Unhandled Error', error);
   });
 
-  process.on('unhandledRejection', error => {
+  process.on('unhandledRejection', (error) => {
     handleError('Unhandled Promise Rejection', error);
   });
 };

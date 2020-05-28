@@ -24,6 +24,7 @@ interface MentionState {
 
 class Mention extends React.Component<MentionProps, MentionState> {
   private intervalHandle: any = null;
+
   constructor(props: any) {
     super(props);
 
@@ -58,13 +59,12 @@ class Mention extends React.Component<MentionProps, MentionState> {
         profileName && profileName.length > 0 ? profileName : 'Anonymous';
 
       return <span className={className}>{displayedName}</span>;
-    } else {
-      return (
-        <span className="mention-profile-name">
-          {window.shortenPubkey(this.props.text)}
-        </span>
-      );
     }
+    return (
+      <span className="mention-profile-name">
+        {window.shortenPubkey(this.props.text)}
+      </span>
+    );
   }
 
   private clearOurInterval() {
@@ -79,15 +79,13 @@ class Mention extends React.Component<MentionProps, MentionState> {
     }
   }
 
-  private async findMember(pubkey: String) {
+  private async findMember(pubkey: string) {
     let groupMembers;
 
-    const groupConvos = window.getConversations().models.filter((d: any) => {
-      return !d.isPrivate();
-    });
-    const thisConvo = groupConvos.find((d: any) => {
-      return d.id === this.props.convoId;
-    });
+    const groupConvos = window
+      .getConversations()
+      .models.filter((d: any) => !d.isPrivate());
+    const thisConvo = groupConvos.find((d: any) => d.id === this.props.convoId);
 
     if (!thisConvo) {
       // If this gets triggered, is is likely because we deleted the conversation
@@ -103,7 +101,7 @@ class Mention extends React.Component<MentionProps, MentionState> {
       const privateConvos = window
         .getConversations()
         .models.filter((d: any) => d.isPrivate());
-      const members = thisConvo.attributes.members;
+      const { members } = thisConvo.attributes;
       if (!members) {
         return null;
       }

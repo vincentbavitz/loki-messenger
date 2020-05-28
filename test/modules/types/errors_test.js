@@ -31,7 +31,7 @@ describe('Errors', () => {
       assert.strictEqual(formattedError, 'Error: boom');
     });
 
-    [0, false, null, undefined].forEach(value => {
+    [0, false, null, undefined].forEach((value) => {
       it(`should return \`${value}\` argument`, () => {
         const formattedNonError = Errors.toLogFormat(value);
         assert.strictEqual(formattedNonError, value);

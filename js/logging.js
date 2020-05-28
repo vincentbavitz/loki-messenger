@@ -31,7 +31,7 @@ function now() {
 
 // To avoid [Object object] in our log since console.log handles non-strings smoothly
 function cleanArgsForIPC(args) {
-  const str = args.map(item => {
+  const str = args.map((item) => {
     if (typeof item !== 'string') {
       try {
         return JSON.stringify(item);
@@ -90,7 +90,7 @@ function format(entries) {
 }
 
 function fetch() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     ipc.send('fetch-log');
 
     ipc.on('fetched-log', (event, text) => {
@@ -135,7 +135,7 @@ window.onerror = (message, script, line, col, error) => {
   window.log.error(`Top-level unhandled error: ${errorInfo}`);
 };
 
-window.addEventListener('unhandledrejection', rejectionEvent => {
+window.addEventListener('unhandledrejection', (rejectionEvent) => {
   window.log.error(
     `Top-level unhandled promise rejection: ${rejectionEvent.reason}`
   );

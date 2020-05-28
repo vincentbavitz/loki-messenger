@@ -10,12 +10,10 @@ const SettingsPage = require('./page-objects/settings.page');
 const CommonPage = require('./page-objects/common.page');
 
 // Generate random password
-const password = Math.random()
-  .toString(36)
-  .substr(2, 8);
+const password = Math.random().toString(36).substr(2, 8);
 const passwordInputID = 'password-modal-input';
 
-describe('Settings', function() {
+describe('Settings', function () {
   let app;
   this.timeout(60000);
   this.slow(15000);

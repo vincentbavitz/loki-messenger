@@ -132,8 +132,8 @@ export class MessageBody extends React.Component<Props> {
       <Linkify
         text={textWithPending}
         isRss={isRss}
-        renderNonLink={({ key, text: nonLinkText }) => {
-          return renderEmoji({
+        renderNonLink={({ key, text: nonLinkText }) =>
+          renderEmoji({
             i18n,
             text: nonLinkText,
             sizeClass,
@@ -141,8 +141,8 @@ export class MessageBody extends React.Component<Props> {
             renderNonEmoji: renderNewLines,
             isGroup,
             convoId,
-          });
-        }}
+          })
+        }
       />
     );
   }

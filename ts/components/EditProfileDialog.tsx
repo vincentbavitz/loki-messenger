@@ -68,7 +68,7 @@ export class EditProfileDialog extends React.Component<Props, State> {
   }
 
   public render() {
-    const i18n = this.props.i18n;
+    const { i18n } = this.props;
 
     const viewDefault = this.state.mode === 'default';
     const viewEdit = this.state.mode === 'edit';
@@ -167,7 +167,7 @@ export class EditProfileDialog extends React.Component<Props, State> {
               <SessionIconButton
                 iconType={SessionIconType.QR}
                 iconSize={SessionIconSize.Small}
-                iconColor={'#000000'}
+                iconColor="#000000"
                 onClick={() => {
                   this.setState({ mode: 'qr' });
                 }}
@@ -278,12 +278,10 @@ export class EditProfileDialog extends React.Component<Props, State> {
 
     const newName = event.target.value.replace(window.displayNameRegex, '');
 
-    this.setState(state => {
-      return {
-        ...state,
-        profileName: newName,
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      profileName: newName,
+    }));
   }
 
   private onKeyUp(event: any) {

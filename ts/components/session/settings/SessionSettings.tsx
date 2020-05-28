@@ -61,7 +61,7 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
       hasPassword: null,
       pwdLockError: null,
       shouldLockSettings: true,
-      linkedPubKeys: new Array(),
+      linkedPubKeys: [],
     };
 
     this.settingsViewRef = React.createRef();
@@ -110,7 +110,7 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
     return (
       <>
         {this.state.hasPassword !== null &&
-          settings.map(setting => {
+          settings.map((setting) => {
             const content = setting.content || undefined;
             const shouldRenderSettings = setting.category === category;
             const description = setting.description || '';
@@ -139,21 +139,18 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
 
             return (
               <div key={setting.id}>
-                {shouldRenderSettings &&
-                  !setting.hidden && (
-                    <SessionSettingListItem
-                      title={setting.title}
-                      description={description}
-                      type={setting.type}
-                      value={value}
-                      onClick={onClickFn}
-                      onSliderChange={sliderFn}
-                      content={content}
-                      confirmationDialogParams={
-                        setting.confirmationDialogParams
-                      }
-                    />
-                  )}
+                {shouldRenderSettings && !setting.hidden && (
+                  <SessionSettingListItem
+                    title={setting.title}
+                    description={description}
+                    type={setting.type}
+                    value={value}
+                    onClick={onClickFn}
+                    onSliderChange={sliderFn}
+                    content={content}
+                    confirmationDialogParams={setting.confirmationDialogParams}
+                  />
+                )}
               </div>
             );
           })}
@@ -283,14 +280,12 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
 
     if (item.setFn) {
       item.setFn();
-    } else {
-      if (item.type === SessionSettingType.Toggle) {
-        // If no custom afterClick function given, alter values in storage here
+    } else if (item.type === SessionSettingType.Toggle) {
+      // If no custom afterClick function given, alter values in storage here
 
-        // Switch to opposite state
-        const newValue = !window.getSettingValue(item.id);
-        window.setSettingValue(item.id, newValue);
-      }
+      // Switch to opposite state
+      const newValue = !window.getSettingValue(item.id);
+      window.setSettingValue(item.id, newValue);
     }
   }
 
@@ -595,7 +590,7 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
           return {
             id: pubkey,
             title: deviceAlias,
-            description: description,
+            description,
             type: SessionSettingType.Button,
             category: SessionSettingCategory.Devices,
             content: {
@@ -612,39 +607,37 @@ export class SettingsView extends React.Component<SettingsViewProps, State> {
             onClick: undefined,
             confirmationDialogParams: undefined,
           };
-        } else {
-          return {
-            id: pubkey,
-            title: deviceAlias,
-            description: description,
-            type: undefined,
-            category: SessionSettingCategory.Devices,
-            content: {},
-            comparisonValue: undefined,
-            setFn: undefined,
-            hidden: undefined,
-            onClick: undefined,
-            confirmationDialogParams: undefined,
-          };
         }
-      });
-    } else {
-      return [
-        {
-          id: 'no-linked-device',
-          title: noPairedDeviceText,
+        return {
+          id: pubkey,
+          title: deviceAlias,
+          description,
           type: undefined,
-          description: '',
           category: SessionSettingCategory.Devices,
           content: {},
           comparisonValue: undefined,
-          onClick: undefined,
           setFn: undefined,
           hidden: undefined,
+          onClick: undefined,
           confirmationDialogParams: undefined,
-        },
-      ];
+        };
+      });
     }
+    return [
+      {
+        id: 'no-linked-device',
+        title: noPairedDeviceText,
+        type: undefined,
+        description: '',
+        category: SessionSettingCategory.Devices,
+        content: {},
+        comparisonValue: undefined,
+        onClick: undefined,
+        setFn: undefined,
+        hidden: undefined,
+        confirmationDialogParams: undefined,
+      },
+    ];
   }
 
   private refreshLinkedDevice() {

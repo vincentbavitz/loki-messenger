@@ -1,3 +1,5 @@
+/* eslint camelcase: 0 */
+
 import { Attachment } from './Attachment';
 import { Contact } from './Contact';
 import { IndexableBoolean, IndexablePresence } from './IndexedDB';

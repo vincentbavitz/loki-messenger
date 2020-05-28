@@ -9,7 +9,7 @@ const VERSION = window.getVersion();
 const USER_AGENT = `Session ${VERSION}`;
 
 //      upload :: String -> Promise URL
-exports.upload = async content => {
+exports.upload = async (content) => {
   const signedForm = await fetch(BASE_URL, {
     headers: {
       'user-agent': USER_AGENT,

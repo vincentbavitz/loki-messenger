@@ -14,7 +14,7 @@
 /* eslint-disable no-unreachable */
 const NUM_SEND_CONNECTIONS = 3;
 
-const getTTLForType = type => {
+const getTTLForType = (type) => {
   switch (type) {
     case 'friend-request':
       return 4 * 24 * 60 * 60 * 1000; // 4 days for friend request message
@@ -85,19 +85,19 @@ function wrapInWebsocketMessage(outgoingObject, timestamp) {
 }
 
 function getStaleDeviceIdsForNumber(number) {
-  return textsecure.storage.protocol.getDeviceIds(number).then(deviceIds => {
+  return textsecure.storage.protocol.getDeviceIds(number).then((deviceIds) => {
     if (deviceIds.length === 0) {
       return [1];
     }
     const updateDevices = [];
     return Promise.all(
-      deviceIds.map(deviceId => {
+      deviceIds.map((deviceId) => {
         const address = new libsignal.SignalProtocolAddress(number, deviceId);
         const sessionCipher = new libsignal.SessionCipher(
           textsecure.storage.protocol,
           address
         );
-        return sessionCipher.hasOpenSession().then(hasSession => {
+        return sessionCipher.hasOpenSession().then((hasSession) => {
           if (!hasSession) {
             updateDevices.push(deviceId);
           }
@@ -167,8 +167,7 @@ function OutgoingMessage(
     isMediumGroup,
     publicSendData,
     debugMessageType,
-  } =
-    options || {};
+  } = options || {};
   this.numberInfo = numberInfo;
   this.isPublic = isPublic;
   this.isMediumGroup = !!isMediumGroup;
@@ -223,10 +222,10 @@ OutgoingMessage.prototype = {
       libloki.storage
         .getAllDevicePubKeysForPrimaryPubKey(primaryPubKey)
         // Don't send to ourselves
-        .then(devicesPubKeys =>
-          devicesPubKeys.filter(pubKey => pubKey !== ourNumber)
+        .then((devicesPubKeys) =>
+          devicesPubKeys.filter((pubKey) => pubKey !== ourNumber)
         )
-        .then(devicesPubKeys => {
+        .then((devicesPubKeys) => {
           if (devicesPubKeys.length === 0) {
             // No need to start the sending of message without a recipient
             return Promise.resolve();
@@ -237,9 +236,9 @@ OutgoingMessage.prototype = {
   },
 
   getKeysForNumber(number, updateDevices) {
-    const handleResult = response =>
+    const handleResult = (response) =>
       Promise.all(
-        response.devices.map(device => {
+        response.devices.map((device) => {
           // eslint-disable-next-line no-param-reassign
           device.identityKey = response.identityKey;
           if (
@@ -264,7 +263,7 @@ OutgoingMessage.prototype = {
                 await libloki.storage.removeContactPreKeyBundle(number);
                 return true;
               })
-              .catch(error => {
+              .catch((error) => {
                 if (error.message === 'Identity key changed') {
                   // eslint-disable-next-line no-param-reassign
                   error.timestamp = this.timestamp;
@@ -281,13 +280,13 @@ OutgoingMessage.prototype = {
         })
       );
     let promise = Promise.resolve(true);
-    updateDevices.forEach(device => {
+    updateDevices.forEach((device) => {
       promise = promise.then(() =>
         Promise.all([
           textsecure.storage.protocol.loadContactPreKey(number),
           textsecure.storage.protocol.loadContactSignedPreKey(number),
         ])
-          .then(keys => {
+          .then((keys) => {
             const [preKey, signedPreKey] = keys;
             if (preKey === undefined || signedPreKey === undefined) {
               return false;
@@ -298,9 +297,9 @@ OutgoingMessage.prototype = {
               devices: [
                 { deviceId: device, preKey, signedPreKey, registrationId: 0 },
               ],
-            }).then(results => results.every(value => value === true));
+            }).then((results) => results.every((value) => value === true));
           })
-          .catch(e => {
+          .catch((e) => {
             if (e.name === 'HTTPError' && e.code === 404) {
               if (device !== 1) {
                 return this.removeDeviceIdsForNumber(number, [device]);
@@ -330,7 +329,7 @@ OutgoingMessage.prototype = {
       }
       await lokiMessageAPI.sendMessage(pubKey, data, timestamp, ttl, options);
     } catch (e) {
-      if (e.name === 'HTTPError' && (e.code !== 409 && e.code !== 410)) {
+      if (e.name === 'HTTPError' && e.code !== 409 && e.code !== 410) {
         // 409 and 410 should bubble and be handled by doSendMessage
         // 404 should throw UnregisteredUserError
         // all other network errors can be retried later.
@@ -448,9 +447,7 @@ OutgoingMessage.prototype = {
       aliasedPubkey = 'OUR SECONDARY PUBKEY';
     }
     libloki.api.debug.logSessionMessageSending(
-      `Sending ${messageTypeStr}:${
-        this.messageType
-      } message to ${aliasedPubkey} details:`,
+      `Sending ${messageTypeStr}:${this.messageType} message to ${aliasedPubkey} details:`,
       logDetails
     );
 
@@ -625,7 +622,7 @@ OutgoingMessage.prototype = {
   // Send a message to a private group member or a session chat (one to one)
   async sendSessionMessage(outgoingObjects) {
     // TODO: handle multiple devices/messages per transmit
-    const promises = outgoingObjects.map(async outgoingObject => {
+    const promises = outgoingObjects.map(async (outgoingObject) => {
       if (!outgoingObject) {
         return;
       }
@@ -690,7 +687,7 @@ OutgoingMessage.prototype = {
     }
 
     const outgoingObjects = await Promise.all(
-      devicesPubKeys.map(pk => this.buildAndEncrypt(pk, primaryPubKey))
+      devicesPubKeys.map((pk) => this.buildAndEncrypt(pk, primaryPubKey))
     );
 
     this.sendSessionMessage(outgoingObjects);
@@ -715,7 +712,7 @@ OutgoingMessage.prototype = {
     } catch (e) {
       // do nothing
     }
-    return this.reloadDevicesAndSend(number).catch(error => {
+    return this.reloadDevicesAndSend(number).catch((error) => {
       conversation.resetPendingSend();
       if (error.message === 'Identity key changed') {
         // eslint-disable-next-line no-param-reassign
@@ -791,7 +788,7 @@ OutgoingMessage.buildSessionRequestMessage = function buildSessionRequestMessage
   );
 };
 
-OutgoingMessage.buildSessionEstablishedMessage = pubKey => {
+OutgoingMessage.buildSessionEstablishedMessage = (pubKey) => {
   const nullMessage = new textsecure.protobuf.NullMessage();
   const content = new textsecure.protobuf.Content({
     nullMessage,

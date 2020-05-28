@@ -65,7 +65,7 @@ export class SearchResults extends React.Component<Props> {
             <div className="module-search-results__conversations-header">
               {i18n('conversationsHeader')}
             </div>
-            {conversations.map(conversation => (
+            {conversations.map((conversation) => (
               <ConversationListItem
                 key={conversation.phoneNumber}
                 {...conversation}
@@ -86,7 +86,7 @@ export class SearchResults extends React.Component<Props> {
                 {i18n('messages')}
               </div>
             )}
-            {messages.map(message => (
+            {messages.map((message) => (
               <MessageSearchResult
                 key={message.id}
                 {...message}
@@ -99,6 +99,7 @@ export class SearchResults extends React.Component<Props> {
       </div>
     );
   }
+
   private renderContacts(
     header: string,
     items: Array<ConversationListItemPropsType>,
@@ -109,7 +110,7 @@ export class SearchResults extends React.Component<Props> {
     return (
       <div className="module-search-results__contacts">
         <div className="module-search-results__contacts-header">{header}</div>
-        {items.map(contact => (
+        {items.map((contact) => (
           <ConversationListItem
             key={contact.phoneNumber}
             isFriend={friends}

@@ -1,28 +1,28 @@
 /* global window, dcodeIO, Event, textsecure, FileReader, WebSocketResource */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   /*
-     * WebSocket-Resources
-     *
-     * Create a request-response interface over websockets using the
-     * WebSocket-Resources sub-protocol[1].
-     *
-     * var client = new WebSocketResource(socket, function(request) {
-     *    request.respond(200, 'OK');
-     * });
-     *
-     * client.sendRequest({
-     *    verb: 'PUT',
-     *    path: '/v1/messages',
-     *    body: '{ some: "json" }',
-     *    success: function(message, status, request) {...},
-     *    error: function(message, status, request) {...}
-     * });
-     *
-     * 1. https://github.com/signalapp/WebSocket-Resources
-     *
-     */
+   * WebSocket-Resources
+   *
+   * Create a request-response interface over websockets using the
+   * WebSocket-Resources sub-protocol[1].
+   *
+   * var client = new WebSocketResource(socket, function(request) {
+   *    request.respond(200, 'OK');
+   * });
+   *
+   * client.sendRequest({
+   *    verb: 'PUT',
+   *    path: '/v1/messages',
+   *    body: '{ some: "json" }',
+   *    success: function(message, status, request) {...},
+   *    error: function(message, status, request) {...}
+   * });
+   *
+   * 1. https://github.com/signalapp/WebSocket-Resources
+   *
+   */
 
   const Request = function Request(options) {
     this.verb = options.verb || options.type;
@@ -91,14 +91,15 @@
   window.WebSocketResource = function WebSocketResource(socket, opts = {}) {
     let { handleRequest } = opts;
     if (typeof handleRequest !== 'function') {
-      handleRequest = request => request.respond(404, 'Not found');
+      handleRequest = (request) => request.respond(404, 'Not found');
     }
-    this.sendRequest = options => new OutgoingWebSocketRequest(options, socket);
+    this.sendRequest = (options) =>
+      new OutgoingWebSocketRequest(options, socket);
 
     // eslint-disable-next-line no-param-reassign
-    socket.onmessage = socketMessage => {
+    socket.onmessage = (socketMessage) => {
       const blob = socketMessage.data;
-      const handleArrayBuffer = buffer => {
+      const handleArrayBuffer = (buffer) => {
         const message = textsecure.protobuf.WebSocketMessage.decode(buffer);
         if (
           message.type === textsecure.protobuf.WebSocketMessage.Type.REQUEST

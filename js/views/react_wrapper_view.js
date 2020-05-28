@@ -4,7 +4,7 @@
 /* global ReactDOM: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -55,12 +55,13 @@
       });
     },
     augmentProps(props) {
-      return Object.assign({}, props, {
+      return {
+        ...props,
         close: () => {
           this.remove();
         },
         i18n,
-      });
+      };
     },
     remove() {
       if (this.onClose) {

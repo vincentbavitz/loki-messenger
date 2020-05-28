@@ -12,7 +12,7 @@ export function getInitials(name?: string): string | undefined {
 
   const cleaned = removeNonInitials(name);
   const parts = cleaned.split(' ');
-  const initials = parts.map(part => part.trim()[0]);
+  const initials = parts.map((part) => part.trim()[0]);
   if (!initials.length) {
     return;
   }

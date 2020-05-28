@@ -24,6 +24,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
   private readonly updateSearchBound: (
     event: React.FormEvent<HTMLInputElement>
   ) => void;
+
   private readonly inputRef: React.RefObject<HTMLInputElement>;
 
   constructor(props: any) {
@@ -38,7 +39,7 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
     this.inputRef = React.createRef();
 
     let friends = this.props.friendList;
-    friends = friends.map(d => {
+    friends = friends.map((d) => {
       const lokiProfile = d.getLokiProfile();
       const name = lokiProfile ? lokiProfile.displayName : 'Anonymous';
 
@@ -72,18 +73,17 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
       return;
     }
 
-    this.setState(state => {
-      return {
-        ...state,
-        inputBoxValue: searchTerm,
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      inputBoxValue: searchTerm,
+    }));
   }
+
   public add() {
     // if we have valid data
     if (this.state.inputBoxValue.length > 64) {
       const weHave = this.state.friendList.some(
-        user => user.authorPhoneNumber === this.state.inputBoxValue
+        (user) => user.authorPhoneNumber === this.state.inputBoxValue
       );
       if (!weHave) {
         // lookup to verify it's registered?
@@ -101,12 +101,10 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
           checkmarked: true,
           existingMember: false,
         });
-        this.setState(state => {
-          return {
-            ...state,
-            friendList: friends,
-          };
-        });
+        this.setState((state) => ({
+          ...state,
+          friendList: friends,
+        }));
       }
       //
     }
@@ -114,16 +112,14 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
     if (this.inputRef.current) {
       this.inputRef.current.value = '';
     }
-    this.setState(state => {
-      return {
-        ...state,
-        inputBoxValue: '',
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      inputBoxValue: '',
+    }));
   }
 
   public render() {
-    const i18n = window.i18n;
+    const { i18n } = window;
 
     const hasFriends = this.state.friendList.length !== 0;
 
@@ -175,8 +171,8 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
   private onClickOK() {
     this.add(); // process inputBox
     const selectedFriends = this.state.friendList
-      .filter(d => d.checkmarked)
-      .map(d => d.id);
+      .filter((d) => d.checkmarked)
+      .map((d) => d.id);
     if (selectedFriends.length > 0) {
       this.props.onSubmit(selectedFriends);
     }
@@ -204,19 +200,16 @@ export class AddModeratorsDialog extends React.Component<Props, State> {
   }
 
   private onMemberClicked(selected: any) {
-    const updatedFriends = this.state.friendList.map(member => {
+    const updatedFriends = this.state.friendList.map((member) => {
       if (member.id === selected.id) {
         return { ...member, checkmarked: !member.checkmarked };
-      } else {
-        return member;
       }
+      return member;
     });
 
-    this.setState(state => {
-      return {
-        ...state,
-        friendList: updatedFriends,
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      friendList: updatedFriends,
+    }));
   }
 }

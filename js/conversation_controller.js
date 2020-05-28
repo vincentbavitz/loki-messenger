@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -31,7 +31,7 @@
     },
     updateUnreadCount() {
       const newUnreadCount = _.reduce(
-        this.map(m => m.get('unreadCount')),
+        this.map((m) => m.get('unreadCount')),
         (item, memo) => item + memo,
         0
       );
@@ -49,7 +49,7 @@
     startPruning() {
       const halfHour = 30 * 60 * 1000;
       this.interval = setInterval(() => {
-        this.forEach(conversation => {
+        this.forEach((conversation) => {
           conversation.trigger('prune');
         });
       }, halfHour);
@@ -175,7 +175,7 @@
       } else if (conversation.isPrivate()) {
         const deviceIds = await textsecure.storage.protocol.getDeviceIds(id);
         await Promise.all(
-          deviceIds.map(deviceId => {
+          deviceIds.map((deviceId) => {
             const address = new libsignal.SignalProtocolAddress(id, deviceId);
             const sessionCipher = new libsignal.SessionCipher(
               textsecure.storage.protocol,
@@ -214,7 +214,7 @@
         : null;
       const wrap = conversation
         ? conversation.wrapSend.bind(conversation)
-        : promise => promise;
+        : (promise) => promise;
 
       return { wrap, sendOptions };
     },
@@ -222,7 +222,7 @@
       const groups = await window.Signal.Data.getAllGroupsInvolvingId(id, {
         ConversationCollection: Whisper.ConversationCollection,
       });
-      return groups.map(group => conversations.add(group));
+      return groups.map((group) => conversations.add(group));
     },
     loadPromise() {
       return this._initialPromise;
@@ -249,7 +249,7 @@
 
           this._initialFetchComplete = true;
           const promises = [];
-          conversations.forEach(conversation => {
+          conversations.forEach((conversation) => {
             if (!conversation.get('lastMessage')) {
               promises.push(conversation.updateLastMessage());
             }
@@ -265,7 +265,7 @@
 
           // Remove any unused images
           window.profileImages.removeImagesNotInArray(
-            conversations.map(c => c.id)
+            conversations.map((c) => c.id)
           );
 
           window.log.info('ConversationController: done with initial fetch');
@@ -282,13 +282,13 @@
 
       return this._initialPromise;
     },
-    _handleOnline: pubKey => {
+    _handleOnline: (pubKey) => {
       try {
         const conversation = this.get(pubKey);
         conversation.set({ isOnline: true });
       } catch (e) {} // eslint-disable-line
     },
-    _handleOffline: pubKey => {
+    _handleOffline: (pubKey) => {
       try {
         const conversation = this.get(pubKey);
         conversation.set({ isOnline: false });

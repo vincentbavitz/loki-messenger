@@ -193,7 +193,7 @@ function jsonToObject(json) {
 
 async function openDatabase(filePath) {
   return new Promise((resolve, reject) => {
-    const instance = new sql.Database(filePath, error => {
+    const instance = new sql.Database(filePath, (error) => {
       if (error) {
         return reject(error);
       }
@@ -835,7 +835,7 @@ async function updateToLokiSchemaVersion1(currentVersion, instance) {
     );`
   );
 
-  const initConversation = async data => {
+  const initConversation = async (data) => {
     // eslint-disable-next-line camelcase
     const { id, active_at, type, name, friendRequestStatus } = data;
     await instance.run(
@@ -1042,7 +1042,7 @@ async function updateToLokiSchemaVersion4(currentVersion, instance) {
 
   // We don't bother migrating values, any old messages that
   // we might receive as a result will we filtered out anyway
-  await instance.run(`DROP TABLE lastHashes;`);
+  await instance.run('DROP TABLE lastHashes;');
 
   await instance.run(
     `CREATE TABLE lastHashes(
@@ -1066,7 +1066,7 @@ async function updateToLokiSchemaVersion4(currentVersion, instance) {
 
   // Add senderIdentity field to `unprocessed` needed
   // for medium size groups
-  await instance.run(`ALTER TABLE unprocessed ADD senderIdentity TEXT`);
+  await instance.run('ALTER TABLE unprocessed ADD senderIdentity TEXT');
 
   await instance.run(
     `INSERT INTO loki_schema (
@@ -1400,7 +1400,7 @@ async function getContactPreKeys(keyId, identityKeyString) {
     $keyId: keyId,
     $identityKeyString: identityKeyString,
   });
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function bulkAddContactPreKeys(array) {
@@ -1462,7 +1462,7 @@ async function getContactSignedPreKeys(keyId, identityKeyString) {
     $keyId: keyId,
     $identityKeyString: identityKeyString,
   });
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 async function bulkAddContactSignedPreKeys(array) {
   return bulkAdd(CONTACT_SIGNED_PRE_KEYS_TABLE, array);
@@ -1488,11 +1488,11 @@ async function getSignedPreKeyById(id) {
 }
 async function getAllSignedPreKeys() {
   const rows = await db.all('SELECT json FROM signedPreKeys ORDER BY id ASC;');
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 async function getAllContactPreKeys() {
   const rows = await db.all('SELECT json FROM contactPreKeys ORDER BY id ASC;');
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 async function bulkAddSignedPreKeys(array) {
   return bulkAdd(SIGNED_PRE_KEYS_TABLE, array);
@@ -1535,7 +1535,7 @@ async function getGrantAuthorisationsForPrimaryPubKey(primaryDevicePubKey) {
       $primaryDevicePubKey: primaryDevicePubKey,
     }
   );
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function createOrUpdatePairingAuthorisation(data) {
@@ -1575,7 +1575,7 @@ async function getSecondaryDevicesFor(primaryDevicePubKey) {
   const authorisations = await getGrantAuthorisationsForPrimaryPubKey(
     primaryDevicePubKey
   );
-  return map(authorisations, row => row.secondaryDevicePubKey);
+  return map(authorisations, (row) => row.secondaryDevicePubKey);
 }
 
 async function getGuardNodes() {
@@ -1594,7 +1594,7 @@ async function updateGuardNodes(nodes) {
   await db.run(`DELETE FROM ${GUARD_NODE_TABLE}`);
 
   await Promise.all(
-    nodes.map(edkey =>
+    nodes.map((edkey) =>
       db.run(
         `INSERT INTO ${GUARD_NODE_TABLE} (
         ed25519PubKey
@@ -1641,7 +1641,7 @@ async function getPairedDevicesFor(pubKey) {
   results = results.concat(secondaryPubKeys);
 
   // ensure the input pubkey is not in the results
-  results = results.filter(x => x !== pubKey);
+  results = results.filter((x) => x !== pubKey);
 
   return results;
 }
@@ -1655,7 +1655,7 @@ async function getItemById(id) {
 }
 async function getAllItems() {
   const rows = await db.all('SELECT json FROM items ORDER BY id ASC;');
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 async function bulkAddItems(array) {
   return bulkAdd(ITEMS_TABLE, array);
@@ -1705,7 +1705,7 @@ async function getSessionsByNumber(number) {
   const rows = await db.all('SELECT * FROM sessions WHERE number = $number;', {
     $number: number,
   });
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 async function bulkAddSessions(array) {
   return bulkAdd(SESSIONS_TABLE, array);
@@ -1752,7 +1752,7 @@ async function bulkAdd(table, array) {
   db.serialize(() => {
     promise = Promise.all([
       db.run('BEGIN TRANSACTION;'),
-      ...map(array, data => createOrUpdate(table, data)),
+      ...map(array, (data) => createOrUpdate(table, data)),
       db.run('COMMIT TRANSACTION;'),
     ]);
   });
@@ -1811,7 +1811,7 @@ async function removeAllFromTable(table) {
 
 async function getAllFromTable(table) {
   const rows = await db.all(`SELECT json FROM ${table};`);
-  return rows.map(row => jsonToObject(row.json));
+  return rows.map((row) => jsonToObject(row.json));
 }
 
 // Conversations
@@ -1895,7 +1895,7 @@ async function saveConversations(arrayOfConversations) {
   db.serialize(() => {
     promise = Promise.all([
       db.run('BEGIN TRANSACTION;'),
-      ...map(arrayOfConversations, conversation =>
+      ...map(arrayOfConversations, (conversation) =>
         saveConversation(conversation)
       ),
       db.run('COMMIT TRANSACTION;'),
@@ -2014,7 +2014,7 @@ async function getAllConversations() {
   const rows = await db.all(
     `SELECT json FROM ${CONVERSATIONS_TABLE} ORDER BY id ASC;`
   );
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getPubKeysWithFriendStatus(status) {
@@ -2027,7 +2027,7 @@ async function getPubKeysWithFriendStatus(status) {
       $status: status,
     }
   );
-  return map(rows, row => row.id);
+  return map(rows, (row) => row.id);
 }
 
 async function getConversationsWithFriendStatus(status) {
@@ -2040,14 +2040,14 @@ async function getConversationsWithFriendStatus(status) {
       $status: status,
     }
   );
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getAllConversationIds() {
   const rows = await db.all(
     `SELECT id FROM ${CONVERSATIONS_TABLE} ORDER BY id ASC;`
   );
-  return map(rows, row => row.id);
+  return map(rows, (row) => row.id);
 }
 
 async function getAllPrivateConversations() {
@@ -2057,7 +2057,7 @@ async function getAllPrivateConversations() {
      ORDER BY id ASC;`
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getAllRssFeedConversations() {
@@ -2068,7 +2068,7 @@ async function getAllRssFeedConversations() {
      ORDER BY id ASC;`
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getAllPublicConversations() {
@@ -2079,7 +2079,7 @@ async function getAllPublicConversations() {
      ORDER BY id ASC;`
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getPublicConversationsByServer(server) {
@@ -2092,7 +2092,7 @@ async function getPublicConversationsByServer(server) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getPubkeysInPublicConversation(id) {
@@ -2105,7 +2105,7 @@ async function getPubkeysInPublicConversation(id) {
     }
   );
 
-  return map(rows, row => row.source);
+  return map(rows, (row) => row.source);
 }
 
 async function getAllGroupsInvolvingId(id) {
@@ -2119,7 +2119,7 @@ async function getAllGroupsInvolvingId(id) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function searchConversations(query, { limit } = {}) {
@@ -2140,7 +2140,7 @@ async function searchConversations(query, { limit } = {}) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function searchMessages(query, { limit } = {}) {
@@ -2160,7 +2160,7 @@ async function searchMessages(query, { limit } = {}) {
     }
   );
 
-  return map(rows, row => ({
+  return map(rows, (row) => ({
     ...jsonToObject(row.json),
     snippet: row.snippet,
   }));
@@ -2189,7 +2189,7 @@ async function searchMessagesInConversation(
     }
   );
 
-  return map(rows, row => ({
+  return map(rows, (row) => ({
     ...jsonToObject(row.json),
     snippet: row.snippet,
   }));
@@ -2347,7 +2347,7 @@ async function saveSeenMessageHashes(arrayOfHashes) {
   db.serialize(() => {
     promise = Promise.all([
       db.run('BEGIN TRANSACTION;'),
-      ...map(arrayOfHashes, hashData => saveSeenMessageHash(hashData)),
+      ...map(arrayOfHashes, (hashData) => saveSeenMessageHash(hashData)),
       db.run('COMMIT TRANSACTION;'),
     ]);
   });
@@ -2416,7 +2416,7 @@ async function saveMessages(arrayOfMessages, { forceSave } = {}) {
   db.serialize(() => {
     promise = Promise.all([
       db.run('BEGIN TRANSACTION;'),
-      ...map(arrayOfMessages, message => saveMessage(message, { forceSave })),
+      ...map(arrayOfMessages, (message) => saveMessage(message, { forceSave })),
       db.run('COMMIT TRANSACTION;'),
     ]);
   });
@@ -2448,8 +2448,8 @@ async function getMessageIdsFromServerIds(serverIds, conversationId) {
 
   // Sanitize the input as we're going to use it directly in the query
   const validIds = serverIds
-    .map(id => Number(id))
-    .filter(n => !Number.isNaN(n));
+    .map((id) => Number(id))
+    .filter((n) => !Number.isNaN(n));
 
   /*
     Sqlite3 doesn't have a good way to have `IN` query with another query.
@@ -2465,7 +2465,7 @@ async function getMessageIdsFromServerIds(serverIds, conversationId) {
       $conversationId: conversationId,
     }
   );
-  return rows.map(row => row.id);
+  return rows.map((row) => row.id);
 }
 
 async function getMessageById(id) {
@@ -2482,12 +2482,12 @@ async function getMessageById(id) {
 
 async function getAllMessages() {
   const rows = await db.all('SELECT json FROM messages ORDER BY id ASC;');
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getAllMessageIds() {
   const rows = await db.all('SELECT id FROM messages ORDER BY id ASC;');
-  return map(rows, row => row.id);
+  return map(rows, (row) => row.id);
 }
 
 // eslint-disable-next-line camelcase
@@ -2504,7 +2504,7 @@ async function getMessageBySender({ source, sourceDevice, sent_at }) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getAllUnsentMessages() {
@@ -2514,7 +2514,7 @@ async function getAllUnsentMessages() {
       NOT sent
     ORDER BY sent_at DESC;
   `);
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getUnreadByConversation(conversationId) {
@@ -2529,7 +2529,7 @@ async function getUnreadByConversation(conversationId) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 // Note: Sorting here is necessary for getting the last message (with limit 1)
@@ -2553,7 +2553,7 @@ async function getMessagesByConversation(
       $type: type,
     }
   );
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getMessagesBySentAt(sentAt) {
@@ -2566,7 +2566,7 @@ async function getMessagesBySentAt(sentAt) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getLastHashBySnode(convoId, snode) {
@@ -2593,7 +2593,7 @@ async function getSeenMessagesByHashList(hashes) {
     hashes
   );
 
-  return map(rows, row => row.hash);
+  return map(rows, (row) => row.hash);
 }
 
 async function getExpiredMessages() {
@@ -2609,7 +2609,7 @@ async function getExpiredMessages() {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getOutgoingWithoutExpiresAt() {
@@ -2622,7 +2622,7 @@ async function getOutgoingWithoutExpiresAt() {
     ORDER BY expires_at ASC;
   `);
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getNextExpiringMessage() {
@@ -2633,7 +2633,7 @@ async function getNextExpiringMessage() {
     LIMIT 1;
   `);
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function saveUnprocessed(data, { forceSave } = {}) {
@@ -2699,7 +2699,7 @@ async function saveUnprocesseds(arrayOfUnprocessed, { forceSave } = {}) {
   db.serialize(() => {
     promise = Promise.all([
       db.run('BEGIN TRANSACTION;'),
-      ...map(arrayOfUnprocessed, unprocessed =>
+      ...map(arrayOfUnprocessed, (unprocessed) =>
         saveUnprocessed(unprocessed, { forceSave })
       ),
       db.run('COMMIT TRANSACTION;'),
@@ -2805,7 +2805,7 @@ async function getNextAttachmentDownloadJobs(limit, options = {}) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 async function saveAttachmentDownloadJob(job) {
   const { id, pending, timestamp } = job;
@@ -2926,7 +2926,7 @@ async function getMessagesNeedingUpgrade(limit, { maxVersion }) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getMessagesWithVisualMediaAttachments(
@@ -2945,7 +2945,7 @@ async function getMessagesWithVisualMediaAttachments(
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 async function getMessagesWithFileAttachments(conversationId, { limit }) {
@@ -2961,14 +2961,14 @@ async function getMessagesWithFileAttachments(conversationId, { limit }) {
     }
   );
 
-  return map(rows, row => jsonToObject(row.json));
+  return map(rows, (row) => jsonToObject(row.json));
 }
 
 function getExternalFilesForMessage(message) {
   const { attachments, contact, quote, preview } = message;
   const files = [];
 
-  forEach(attachments, attachment => {
+  forEach(attachments, (attachment) => {
     const { path: file, thumbnail, screenshot } = attachment;
     if (file) {
       files.push(file);
@@ -2984,7 +2984,7 @@ function getExternalFilesForMessage(message) {
   });
 
   if (quote && quote.attachments && quote.attachments.length) {
-    forEach(quote.attachments, attachment => {
+    forEach(quote.attachments, (attachment) => {
       const { thumbnail } = attachment;
 
       if (thumbnail && thumbnail.path) {
@@ -2994,7 +2994,7 @@ function getExternalFilesForMessage(message) {
   }
 
   if (contact && contact.length) {
-    forEach(contact, item => {
+    forEach(contact, (item) => {
       const { avatar } = item;
 
       if (avatar && avatar.avatar && avatar.avatar.path) {
@@ -3004,7 +3004,7 @@ function getExternalFilesForMessage(message) {
   }
 
   if (preview && preview.length) {
-    forEach(preview, item => {
+    forEach(preview, (item) => {
       const { image } = item;
 
       if (image && image.path) {
@@ -3032,7 +3032,7 @@ function getExternalFilesForConversation(conversation) {
 }
 
 async function removeKnownAttachments(allAttachments) {
-  const lookup = fromPairs(map(allAttachments, file => [file, true]));
+  const lookup = fromPairs(map(allAttachments, (file) => [file, true]));
   const chunkSize = 50;
 
   const total = await getMessageCount();
@@ -3057,10 +3057,10 @@ async function removeKnownAttachments(allAttachments) {
       }
     );
 
-    const messages = map(rows, row => jsonToObject(row.json));
-    forEach(messages, message => {
+    const messages = map(rows, (row) => jsonToObject(row.json));
+    forEach(messages, (message) => {
       const externalFiles = getExternalFilesForMessage(message);
-      forEach(externalFiles, file => {
+      forEach(externalFiles, (file) => {
         delete lookup[file];
       });
     });
@@ -3099,10 +3099,10 @@ async function removeKnownAttachments(allAttachments) {
       }
     );
 
-    const conversations = map(rows, row => jsonToObject(row.json));
-    forEach(conversations, conversation => {
+    const conversations = map(rows, (row) => jsonToObject(row.json));
+    forEach(conversations, (conversation) => {
       const externalFiles = getExternalFilesForConversation(conversation);
-      forEach(externalFiles, file => {
+      forEach(externalFiles, (file) => {
         delete lookup[file];
       });
     });

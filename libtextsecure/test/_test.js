@@ -1,9 +1,6 @@
 /* global mocha, chai, assert */
 
-mocha
-  .setup('bdd')
-  .fullTrace()
-  .timeout(10000);
+mocha.setup('bdd').fullTrace().timeout(10000);
 window.assert = chai.assert;
 window.PROTO_ROOT = '../../protos';
 
@@ -18,7 +15,7 @@ const SauceReporter = function Constructor(runner) {
   });
 
   runner.on('fail', (test, err) => {
-    const flattenTitles = item => {
+    const flattenTitles = (item) => {
       const titles = [];
       while (item.parent.title) {
         titles.push(item.parent.title);
@@ -51,7 +48,7 @@ window.assertEqualArrayBuffers = (ab1, ab2) => {
   assert.deepEqual(new Uint8Array(ab1), new Uint8Array(ab2));
 };
 
-window.hexToArrayBuffer = str => {
+window.hexToArrayBuffer = (str) => {
   const ret = new ArrayBuffer(str.length / 2);
   const array = new Uint8Array(ret);
   for (let i = 0; i < str.length / 2; i += 1) {

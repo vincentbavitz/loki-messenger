@@ -63,14 +63,14 @@ function MessageReceiver(username, password, signalingKey, options = {}) {
   }
 }
 
-MessageReceiver.stringToArrayBuffer = string =>
+MessageReceiver.stringToArrayBuffer = (string) =>
   Promise.resolve(dcodeIO.ByteBuffer.wrap(string, 'binary').toArrayBuffer());
-MessageReceiver.arrayBufferToString = arrayBuffer =>
+MessageReceiver.arrayBufferToString = (arrayBuffer) =>
   Promise.resolve(dcodeIO.ByteBuffer.wrap(arrayBuffer).toString('binary'));
 
-MessageReceiver.stringToArrayBufferBase64 = string =>
+MessageReceiver.stringToArrayBufferBase64 = (string) =>
   callWorker('stringToArrayBufferBase64', string);
-MessageReceiver.arrayBufferToStringBase64 = arrayBuffer =>
+MessageReceiver.arrayBufferToStringBase64 = (arrayBuffer) =>
   callWorker('arrayBufferToStringBase64', arrayBuffer);
 
 MessageReceiver.prototype = new textsecure.EventTarget();
@@ -99,7 +99,7 @@ MessageReceiver.prototype.extend({
       lokiPublicChatAPI.open();
     }
     // set up pollers for any RSS feeds
-    feeds.forEach(feed => {
+    feeds.forEach((feed) => {
       feed.on('rssMessage', this.handleUnencryptedMessage.bind(this));
     });
 
@@ -211,7 +211,7 @@ MessageReceiver.prototype.extend({
     }
 
     const promise = Promise.resolve(request.body.toArrayBuffer()) // textsecure.crypto
-      .then(plaintextImmutable => {
+      .then((plaintextImmutable) => {
         let plaintext = plaintextImmutable;
 
         const envelope = textsecure.protobuf.Envelope.decode(plaintext);
@@ -255,7 +255,7 @@ MessageReceiver.prototype.extend({
             await lastPromise;
             this.queueEnvelope(envelope, onSuccess, onFailure);
           },
-          error => {
+          (error) => {
             request.respond(500, 'Failed to cache message');
             window.log.error(
               'handleRequest error trying to add message to cache:',
@@ -264,7 +264,7 @@ MessageReceiver.prototype.extend({
           }
         );
       })
-      .catch(e => {
+      .catch((e) => {
         request.respond(500, 'Bad encrypted websocket message');
         window.log.error(
           'Error handling incoming message:',
@@ -455,7 +455,7 @@ MessageReceiver.prototype.extend({
     window.log.info('getAllFromCache loaded', items.length, 'saved envelopes');
 
     return Promise.all(
-      _.map(items, async item => {
+      _.map(items, async (item) => {
         const attempts = 1 + (item.attempts || 0);
 
         try {
@@ -542,7 +542,7 @@ MessageReceiver.prototype.extend({
     );
     const promise = this.addToQueue(taskWithTimeout);
 
-    return promise.catch(error => {
+    return promise.catch((error) => {
       window.log.error(
         `queueDecryptedEnvelope error handling envelope ${id}:`,
         error && error.stack ? error.stack : error
@@ -565,7 +565,7 @@ MessageReceiver.prototype.extend({
       }
     });
 
-    return promise.catch(error => {
+    return promise.catch((error) => {
       window.log.error(
         'queueEnvelope error handling envelope',
         id,
@@ -589,7 +589,8 @@ MessageReceiver.prototype.extend({
 
     if (envelope.content) {
       return this.innerHandleContentMessage(envelope, plaintext);
-    } else if (envelope.legacyMessage) {
+    }
+    if (envelope.legacyMessage) {
       return this.innerHandleLegacyMessage(envelope, plaintext);
     }
     this.removeFromCache(envelope);
@@ -660,7 +661,7 @@ MessageReceiver.prototype.extend({
       return null;
     }
 
-    this.updateCache(envelope, plaintext).catch(error => {
+    this.updateCache(envelope, plaintext).catch((error) => {
       window.log.error(
         'decrypt failed to save decrypted message contents to cache:',
         error && error.stack ? error.stack : error
@@ -773,7 +774,7 @@ MessageReceiver.prototype.extend({
         promise = secretSessionCipher
           .decrypt(ciphertext.toArrayBuffer(), me)
           .then(
-            result => {
+            (result) => {
               const { isMe, sender, content, type } = result;
 
               // We need to drop incoming messages from ourself since server can't
@@ -812,7 +813,7 @@ MessageReceiver.prototype.extend({
               // decrypt methods used above.
               return this.unpad(content);
             },
-            error => {
+            (error) => {
               const { sender } = error || {};
 
               if (sender) {
@@ -847,8 +848,8 @@ MessageReceiver.prototype.extend({
     }
 
     return promise
-      .then(plaintext => this.postDecrypt(envelope, plaintext))
-      .catch(error => {
+      .then((plaintext) => this.postDecrypt(envelope, plaintext))
+      .catch((error) => {
         let errorToThrow = error;
 
         const noSession =
@@ -914,7 +915,7 @@ MessageReceiver.prototype.extend({
       p = this.handleEndSession(destination);
     }
     return p.then(() =>
-      this.processDecrypted(envelope, msg).then(message => {
+      this.processDecrypted(envelope, msg).then((message) => {
         const primaryDevicePubKey = window.storage.get('primaryDevicePubKey');
 
         // handle profileKey and avatar updates
@@ -1120,7 +1121,7 @@ MessageReceiver.prototype.extend({
     // We expect the primary device to have updated its mapping
     // before sending the unpairing request
     const found = primaryMapping.authorisations.find(
-      authorisation => authorisation.secondaryDevicePubKey === ourPubKey
+      (authorisation) => authorisation.secondaryDevicePubKey === ourPubKey
     );
 
     // our pubkey should NOT be in the primary device mapping
@@ -1344,7 +1345,7 @@ MessageReceiver.prototype.extend({
     );
   },
   handleLegacyMessage(envelope) {
-    return this.decrypt(envelope, envelope.legacyMessage).then(plaintext => {
+    return this.decrypt(envelope, envelope.legacyMessage).then((plaintext) => {
       if (!plaintext) {
         window.log.warn('handleLegacyMessage: plaintext was falsey');
         return null;
@@ -1362,7 +1363,8 @@ MessageReceiver.prototype.extend({
     if (!plaintext) {
       window.log.warn('handleContentMessage: plaintext was falsey');
       return null;
-    } else if (plaintext instanceof ArrayBuffer && plaintext.byteLength === 0) {
+    }
+    if (plaintext instanceof ArrayBuffer && plaintext.byteLength === 0) {
       return null;
     }
     return this.innerHandleContentMessage(envelope, plaintext);
@@ -1551,23 +1553,31 @@ MessageReceiver.prototype.extend({
         this.getEnvelopeId(envelope)
       );
       return this.handleSentMessage(envelope, sentMessage, sentMessage.message);
-    } else if (syncMessage.contacts) {
+    }
+    if (syncMessage.contacts) {
       return this.handleContacts(envelope, syncMessage.contacts);
-    } else if (syncMessage.groups) {
+    }
+    if (syncMessage.groups) {
       return this.handleGroups(envelope, syncMessage.groups);
-    } else if (syncMessage.openGroups) {
+    }
+    if (syncMessage.openGroups) {
       return this.handleOpenGroups(envelope, syncMessage.openGroups);
-    } else if (syncMessage.blocked) {
+    }
+    if (syncMessage.blocked) {
       return this.handleBlocked(envelope, syncMessage.blocked);
-    } else if (syncMessage.request) {
+    }
+    if (syncMessage.request) {
       window.log.info('Got SyncMessage Request');
       return this.removeFromCache(envelope);
-    } else if (syncMessage.read && syncMessage.read.length) {
+    }
+    if (syncMessage.read && syncMessage.read.length) {
       window.log.info('read messages from', this.getEnvelopeId(envelope));
       return this.handleRead(envelope, syncMessage.read);
-    } else if (syncMessage.verified) {
+    }
+    if (syncMessage.verified) {
       return this.handleVerified(envelope, syncMessage.verified);
-    } else if (syncMessage.configuration) {
+    }
+    if (syncMessage.configuration) {
       return this.handleConfiguration(envelope, syncMessage.configuration);
     }
     throw new Error('Got empty SyncMessage');
@@ -1609,7 +1619,7 @@ MessageReceiver.prototype.extend({
 
     // Note: we do not return here because we don't want to block the next message on
     //   this attachment download and a lot of processing of that attachment.
-    this.handleAttachment(contacts).then(attachmentPointer => {
+    this.handleAttachment(contacts).then((attachmentPointer) => {
       const results = [];
       const contactBuffer = new ContactBuffer(attachmentPointer.data);
       let contactDetails = contactBuffer.next();
@@ -1635,7 +1645,7 @@ MessageReceiver.prototype.extend({
 
     // Note: we do not return here because we don't want to block the next message on
     //   this attachment download and a lot of processing of that attachment.
-    this.handleAttachment(groups).then(attachmentPointer => {
+    this.handleAttachment(groups).then((attachmentPointer) => {
       const groupBuffer = new GroupBuffer(attachmentPointer.data);
       let groupDetails = groupBuffer.next();
       const promises = [];
@@ -1644,7 +1654,7 @@ MessageReceiver.prototype.extend({
         const ev = new Event('group');
         ev.confirm = this.removeFromCache.bind(this, envelope);
         ev.groupDetails = groupDetails;
-        const promise = this.dispatchAndWait(ev).catch(e => {
+        const promise = this.dispatchAndWait(ev).catch((e) => {
           window.log.error('error processing group', e);
         });
         groupDetails = groupBuffer.next();
@@ -1659,7 +1669,7 @@ MessageReceiver.prototype.extend({
     });
   },
   handleOpenGroups(envelope, openGroups) {
-    const groupsArray = openGroups.map(openGroup => openGroup.url);
+    const groupsArray = openGroups.map((openGroup) => openGroup.url);
     libloki.api.debug.logGroupSync(
       `Received GROUP_SYNC with open groups: [${groupsArray}]`
     );
@@ -1672,10 +1682,10 @@ MessageReceiver.prototype.extend({
     window.log.info('Setting these numbers as blocked:', blocked.numbers);
     textsecure.storage.put('blocked', blocked.numbers);
 
-    const groupIds = _.map(blocked.groupIds, groupId => groupId.toBinary());
+    const groupIds = _.map(blocked.groupIds, (groupId) => groupId.toBinary());
     window.log.info(
       'Setting these groups as blocked:',
-      groupIds.map(groupId => `group(${groupId})`)
+      groupIds.map((groupId) => `group(${groupId})`)
     );
     textsecure.storage.put('blocked-groups', groupIds);
 
@@ -1687,7 +1697,7 @@ MessageReceiver.prototype.extend({
       preKeyBundleMessage.preKey,
       preKeyBundleMessage.signedKey,
       preKeyBundleMessage.signature,
-    ].map(k => dcodeIO.ByteBuffer.wrap(k).toArrayBuffer());
+    ].map((k) => dcodeIO.ByteBuffer.wrap(k).toArrayBuffer());
 
     const { preKeyId, signedKeyId } = preKeyBundleMessage;
 
@@ -1731,9 +1741,7 @@ MessageReceiver.prototype.extend({
 
       if (!size || size !== data.byteLength) {
         throw new Error(
-          `downloadAttachment: Size ${size} did not match downloaded attachment size ${
-            data.byteLength
-          }`
+          `downloadAttachment: Size ${size} did not match downloaded attachment size ${data.byteLength}`
         );
       }
     }
@@ -1762,7 +1770,7 @@ MessageReceiver.prototype.extend({
     }
 
     await Promise.all(
-      deviceIds.map(async deviceId => {
+      deviceIds.map(async (deviceId) => {
         const address = new libsignal.SignalProtocolAddress(number, deviceId);
         // Instead of deleting the sessions now,
         // we process the new prekeys and initiate a new session.
@@ -1812,7 +1820,8 @@ MessageReceiver.prototype.extend({
       decrypted.attachments = [];
       decrypted.group = null;
       return Promise.resolve(decrypted);
-    } else if (decrypted.flags & FLAGS.EXPIRATION_TIMER_UPDATE) {
+    }
+    if (decrypted.flags & FLAGS.EXPIRATION_TIMER_UPDATE) {
       decrypted.body = null;
       decrypted.attachments = [];
     } else if (decrypted.flags & FLAGS.PROFILE_KEY_UPDATE) {
@@ -1879,7 +1888,7 @@ MessageReceiver.prototype.extend({
     decrypted.attachments = (decrypted.attachments || []).map(
       this.cleanAttachment.bind(this)
     );
-    decrypted.preview = (decrypted.preview || []).map(item => {
+    decrypted.preview = (decrypted.preview || []).map((item) => {
       const { image } = item;
 
       if (!image) {
@@ -1891,7 +1900,7 @@ MessageReceiver.prototype.extend({
         image: this.cleanAttachment(image),
       };
     });
-    decrypted.contact = (decrypted.contact || []).map(item => {
+    decrypted.contact = (decrypted.contact || []).map((item) => {
       const { avatar } = item;
 
       if (!avatar || !avatar.avatar) {
@@ -1913,7 +1922,7 @@ MessageReceiver.prototype.extend({
 
     if (decrypted.quote) {
       decrypted.quote.attachments = (decrypted.quote.attachments || []).map(
-        item => {
+        (item) => {
           const { thumbnail } = item;
 
           if (!thumbnail) {

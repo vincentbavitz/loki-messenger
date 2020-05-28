@@ -40,10 +40,10 @@ export class ImageGrid extends React.Component<Props> {
       withContentBelow,
     } = this.props;
 
-    const curveTopLeft = !Boolean(withContentAbove);
+    const curveTopLeft = !withContentAbove;
     const curveTopRight = curveTopLeft;
 
-    const curveBottom = !Boolean(withContentBelow);
+    const curveBottom = !withContentBelow;
     const curveBottomLeft = curveBottom;
     const curveBottomRight = curveBottom;
 

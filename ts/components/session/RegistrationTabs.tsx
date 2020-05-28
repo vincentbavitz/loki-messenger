@@ -279,7 +279,7 @@ export class RegistrationTabs extends React.Component<{}, State> {
         } = this.state;
 
         let enableCompleteSignUp = true;
-        const displayNameOK = !displayNameError && !!displayName; //display name required
+        const displayNameOK = !displayNameError && !!displayName; // display name required
         const passwordsOK =
           !password || (!passwordErrorString && passwordFieldsMatch); // password is valid if empty, or if no error and fields are matching
 
@@ -312,11 +312,10 @@ export class RegistrationTabs extends React.Component<{}, State> {
       return signUpMode !== SignUpMode.Default
         ? this.renderTermsConditionAgreement()
         : null;
-    } else {
-      return signInMode !== SignInMode.Default
-        ? this.renderTermsConditionAgreement()
-        : null;
     }
+    return signInMode !== SignInMode.Default
+      ? this.renderTermsConditionAgreement()
+      : null;
   }
 
   private renderSignUpHeader() {
@@ -583,8 +582,8 @@ export class RegistrationTabs extends React.Component<{}, State> {
 
     let enableContinue = true;
     let text = window.i18n('continueYourSession');
-    const displayNameOK = !displayNameError && !!displayName; //display name required
-    const mnemonicOK = !mnemonicError && !!mnemonicSeed; //Mnemonic required
+    const displayNameOK = !displayNameError && !!displayName; // display name required
+    const mnemonicOK = !mnemonicError && !!mnemonicSeed; // Mnemonic required
     const passwordsOK =
       !password || (!passwordErrorString && passwordFieldsMatch); // password is valid if empty, or if no error and fields are matching
     if (signInMode === SignInMode.UsingSeed) {
@@ -660,8 +659,6 @@ export class RegistrationTabs extends React.Component<{}, State> {
 
     if (signInMode === SignInMode.UsingSeed) {
       this.handleContinueYourSessionClick();
-
-      return;
     }
   }
 
@@ -773,7 +770,8 @@ export class RegistrationTabs extends React.Component<{}, State> {
       window.log.warn('empty mnemonic seed passed in seed restoration mode');
 
       return;
-    } else if (!generatedMnemonicSeed) {
+    }
+    if (!generatedMnemonicSeed) {
       window.log.warn('empty generated seed');
 
       return;

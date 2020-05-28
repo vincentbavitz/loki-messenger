@@ -26,6 +26,7 @@ interface State {
 
 export class Avatar extends React.PureComponent<Props, State> {
   public handleImageErrorBound: () => void;
+
   public onAvatarClickBound: (e: any) => void;
 
   public constructor(props: Props) {
@@ -179,7 +180,7 @@ export class Avatar extends React.PureComponent<Props, State> {
           hasImage ? 'module-avatar--with-image' : 'module-avatar--no-image',
           !hasImage ? `module-avatar--${color}` : null
         )}
-        onClick={e => {
+        onClick={(e) => {
           this.onAvatarClickBound(e);
         }}
         role="button"
@@ -208,7 +209,7 @@ export class Avatar extends React.PureComponent<Props, State> {
   }
 
   private getBorderStyle(_color?: string, _width?: number) {
-    //const borderWidth = typeof width === 'number' ? width : 3;
+    // const borderWidth = typeof width === 'number' ? width : 3;
 
     // no border at all for now
     return undefined;

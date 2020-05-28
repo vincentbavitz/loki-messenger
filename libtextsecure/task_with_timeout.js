@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.textsecure = window.textsecure || {};
 
   window.textsecure.createTaskWithTimeout = (task, id, options = {}) => {
@@ -15,8 +15,9 @@
         let complete = false;
         let timer = setTimeout(() => {
           if (!complete) {
-            const message = `${id ||
-              ''} task did not complete in time. Calling stack: ${
+            const message = `${
+              id || ''
+            } task did not complete in time. Calling stack: ${
               errorForStack.stack
             }`;
 
@@ -42,12 +43,12 @@
           }
         };
 
-        const success = result => {
+        const success = (result) => {
           clearTimer();
           complete = true;
           return resolve(result);
         };
-        const failure = error => {
+        const failure = (error) => {
           clearTimer();
           complete = true;
           return reject(error);

@@ -70,7 +70,7 @@ export class LeftPaneSectionHeader extends React.Component<Props, State> {
     } = this.props;
 
     const children = [];
-    //loop to create children
+    // loop to create children
     for (let i = 0; i < labels.length; i++) {
       children.push(
         <Tab
@@ -118,7 +118,7 @@ export class LeftPaneSectionHeader extends React.Component<Props, State> {
       );
     }
 
-    //Create the parent and add the children
+    // Create the parent and add the children
     return <div className="module-left-pane__header">{children}</div>;
   }
 

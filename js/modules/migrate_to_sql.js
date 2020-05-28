@@ -105,9 +105,9 @@ async function migrateToSQL({
     // eslint-disable-next-line no-await-in-loop
     const status = await migrateStoreToSQLite({
       db,
-      save: async array => {
+      save: async (array) => {
         await Promise.all(
-          map(array, async item => {
+          map(array, async (item) => {
             // In the new database, we can't store ArrayBuffers, so we turn these two
             //   fields into strings like MessageReceiver now does before save.
 
@@ -153,9 +153,9 @@ async function migrateToSQL({
     const status = await migrateStoreToSQLite({
       db,
       // eslint-disable-next-line no-loop-func
-      save: async array => {
+      save: async (array) => {
         const conversations = await Promise.all(
-          map(array, async conversation =>
+          map(array, async (conversation) =>
             migrateConversation(conversation, { writeNewAttachmentData })
           )
         );
@@ -361,7 +361,7 @@ async function migrateStoreToSQLite({
         reject
       );
     };
-    request.onsuccess = event => {
+    request.onsuccess = (event) => {
       const cursor = event.target.result;
 
       if (!cursor || !cursor.value) {
@@ -390,7 +390,7 @@ async function migrateStoreToSQLite({
   if (items.length) {
     // Because of the force save and some failed imports, we're going to delete before
     //   we attempt to insert.
-    const ids = items.map(item => item.id);
+    const ids = items.map((item) => item.id);
     await remove(ids);
 
     // We need to pass forceSave parameter, because these items already have an

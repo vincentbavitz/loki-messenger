@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.textsecure = window.textsecure || {};
 
   function SyncRequest(sender, receiver) {
@@ -24,10 +24,10 @@
     receiver.addEventListener('groupsync', this.ongroup);
 
     const ourNumber = textsecure.storage.user.getNumber();
-    const { wrap, sendOptions } = ConversationController.prepareForSend(
-      ourNumber,
-      { syncMessage: true }
-    );
+    const {
+      wrap,
+      sendOptions,
+    } = ConversationController.prepareForSend(ourNumber, { syncMessage: true });
 
     window.log.info('SyncRequest created. Sending config sync request...');
     wrap(sender.sendRequestConfigurationSyncMessage(sendOptions));
@@ -38,7 +38,7 @@
         window.log.info('SyncRequest now sending group sync messsage...');
         return wrap(sender.sendRequestGroupSyncMessage(sendOptions));
       })
-      .catch(error => {
+      .catch((error) => {
         window.log.error(
           'SyncRequest error:',
           error && error.stack ? error.stack : error

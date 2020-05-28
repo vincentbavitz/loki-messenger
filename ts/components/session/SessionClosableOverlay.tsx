@@ -55,14 +55,13 @@ export class SessionClosableOverlay extends React.Component<Props, State> {
   public getContacts() {
     const conversations = window.getConversations() || [];
 
-    const conversationList = conversations.filter((conversation: any) => {
-      return (
+    const conversationList = conversations.filter(
+      (conversation: any) =>
         !conversation.isMe() &&
         conversation.isPrivate() &&
         !conversation.isSecondaryDevice() &&
         conversation.isFriend()
-      );
-    });
+    );
 
     return conversationList.map((d: any) => {
       const lokiProfile = d.getLokiProfile();
@@ -275,9 +274,9 @@ export class SessionClosableOverlay extends React.Component<Props, State> {
 
   private handleUnselectMember(member: ContactType) {
     this.setState({
-      selectedMembers: this.state.selectedMembers.filter(selectedMember => {
-        return selectedMember.id !== member.id;
-      }),
+      selectedMembers: this.state.selectedMembers.filter(
+        (selectedMember) => selectedMember.id !== member.id
+      ),
     });
   }
 

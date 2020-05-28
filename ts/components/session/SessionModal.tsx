@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { SessionIconButton, SessionIconSize, SessionIconType } from './icon/';
+import { SessionIconButton, SessionIconSize, SessionIconType } from './icon';
 import { SessionButtonColor, SessionButtonType } from './SessionButton';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
   showExitIcon?: boolean;
   showHeader?: boolean;
   headerReverse?: boolean;
-  //Maximum of two icons or buttons in header
+  // Maximum of two icons or buttons in header
   headerIconButtons?: Array<{
     iconType: SessionIconType;
     iconRotation: number;
@@ -78,7 +78,7 @@ export class SessionModal extends React.PureComponent<Props, State> {
     const { isVisible } = this.state;
 
     return isVisible ? (
-      <div ref={node => (this.node = node)} className={'session-modal'}>
+      <div ref={(node) => (this.node = node)} className="session-modal">
         {showHeader ? (
           <>
             <div
@@ -99,17 +99,15 @@ export class SessionModal extends React.PureComponent<Props, State> {
               <div className="session-modal__header__title">{title}</div>
               <div className="session-modal__header__icons">
                 {headerIconButtons
-                  ? headerIconButtons.map((iconItem: any) => {
-                      return (
-                        <SessionIconButton
-                          key={iconItem.iconType}
-                          iconType={iconItem.iconType}
-                          iconSize={SessionIconSize.Large}
-                          iconRotation={iconItem.iconRotation}
-                          onClick={iconItem.onClick}
-                        />
-                      );
-                    })
+                  ? headerIconButtons.map((iconItem: any) => (
+                      <SessionIconButton
+                        key={iconItem.iconType}
+                        iconType={iconItem.iconType}
+                        iconSize={SessionIconSize.Large}
+                        iconRotation={iconItem.iconRotation}
+                        onClick={iconItem.onClick}
+                      />
+                    ))
                   : null}
               </div>
             </div>

@@ -1,6 +1,6 @@
 /* global clearTimeout */
 // was timeoutDelay
-const sleepFor = ms => new Promise(resolve => setTimeout(resolve, ms));
+const sleepFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let log;
 function configure(options = {}) {
@@ -10,12 +10,12 @@ function configure(options = {}) {
 // Taken from https://stackoverflow.com/questions/51160260/clean-way-to-wait-for-first-true-returned-by-promise
 // The promise returned by this function will resolve true when the first promise
 // in ps resolves true *or* it will resolve false when all of ps resolve false
-const firstTrue = ps => {
+const firstTrue = (ps) => {
   const newPs = ps.map(
-    p =>
+    (p) =>
       new Promise(
         // eslint-disable-next-line more/no-then
-        (resolve, reject) => p.then(v => v && resolve(v), reject)
+        (resolve, reject) => p.then((v) => v && resolve(v), reject)
       )
   );
   // eslint-disable-next-line more/no-then
@@ -92,7 +92,7 @@ function abortableIterator(array, iterator) {
 
   // for the control promise
   let controlResolveFunctor;
-  const stopPolling = new Promise(res => {
+  const stopPolling = new Promise((res) => {
     // store resolve functor
     controlResolveFunctor = res;
   });
@@ -106,7 +106,7 @@ function abortableIterator(array, iterator) {
   const accum = [];
 
   return {
-    start: async serially => {
+    start: async (serially) => {
       let item = destructableList.pop();
       while (item && !abortIteration) {
         if (serially) {
@@ -115,9 +115,7 @@ function abortableIterator(array, iterator) {
             accum.push(await iterator(item));
           } catch (e) {
             log.error(
-              `loki_primitives:::abortableIterator - error ${e.code} ${
-                e.message
-              }`
+              `loki_primitives:::abortableIterator - error ${e.code} ${e.message}`
             );
             throw e;
           }

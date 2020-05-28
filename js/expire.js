@@ -1,6 +1,6 @@
 /* global LokiAppDotNetServerAPI, LokiFileServerAPI, semver, log */
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   // hold last result
@@ -80,7 +80,7 @@
   window.extension.expiredStatus = () => expiredVersion;
   // actually wait until we know for sure
   window.extension.expiredPromise = () => new Promise(resolveWhenReady);
-  window.extension.expired = cb => {
+  window.extension.expired = (cb) => {
     if (expiredVersion === null) {
       // just give it another second
       log.info(`Delaying expire banner determination for ${nextWaitSeconds}s`);

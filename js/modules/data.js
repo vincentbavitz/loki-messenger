@@ -230,7 +230,7 @@ function _cleanData(data) {
       data[key] = value.toNumber();
     } else if (Array.isArray(value)) {
       // eslint-disable-next-line no-param-reassign
-      data[key] = value.map(item => _cleanData(item));
+      data[key] = value.map((item) => _cleanData(item));
     } else if (isObject(value)) {
       // eslint-disable-next-line no-param-reassign
       data[key] = _cleanData(value);
@@ -264,7 +264,7 @@ async function _shutdown() {
 
   // Outstanding jobs; we need to wait until the last one is done
   _shutdownPromise = new Promise((resolve, reject) => {
-    _shutdownCallback = error => {
+    _shutdownCallback = (error) => {
       window.log.info('data.shutdown: process complete');
       if (error) {
         return reject(error);
@@ -305,7 +305,7 @@ function _updateJob(id, data) {
   _jobs[id] = {
     ..._jobs[id],
     ...data,
-    resolve: value => {
+    resolve: (value) => {
       _removeJob(id);
       // const end = Date.now();
       // const delta = end - start;
@@ -316,7 +316,7 @@ function _updateJob(id, data) {
       // }
       return resolve(value);
     },
-    reject: error => {
+    reject: (error) => {
       _removeJob(id);
       const end = Date.now();
       window.log.warn(
@@ -398,7 +398,7 @@ function makeChannel(fnName) {
   };
 }
 
-forEach(module.exports, fn => {
+forEach(module.exports, (fn) => {
   if (isFunction(fn)) {
     makeChannel(fn.name);
   }
@@ -474,7 +474,7 @@ async function getIdentityKeyById(id) {
   return keysToArrayBuffer(IDENTITY_KEY_KEYS, data);
 }
 async function bulkAddIdentityKeys(array) {
-  const updated = map(array, data =>
+  const updated = map(array, (data) =>
     keysFromArrayBuffer(IDENTITY_KEY_KEYS, data)
   );
   await channels.bulkAddIdentityKeys(updated);
@@ -487,7 +487,7 @@ async function removeAllIdentityKeys() {
 }
 async function getAllIdentityKeys() {
   const keys = await channels.getAllIdentityKeys();
-  return keys.map(key => keysToArrayBuffer(IDENTITY_KEY_KEYS, key));
+  return keys.map((key) => keysToArrayBuffer(IDENTITY_KEY_KEYS, key));
 }
 
 // Pre Keys
@@ -505,7 +505,7 @@ async function getPreKeyByRecipient(recipient) {
   return keysToArrayBuffer(PRE_KEY_KEYS, data);
 }
 async function bulkAddPreKeys(array) {
-  const updated = map(array, data => keysFromArrayBuffer(PRE_KEY_KEYS, data));
+  const updated = map(array, (data) => keysFromArrayBuffer(PRE_KEY_KEYS, data));
   await channels.bulkAddPreKeys(updated);
 }
 async function removePreKeyById(id) {
@@ -516,7 +516,7 @@ async function removeAllPreKeys() {
 }
 async function getAllPreKeys() {
   const keys = await channels.getAllPreKeys();
-  return keys.map(key => keysToArrayBuffer(PRE_KEY_KEYS, key));
+  return keys.map((key) => keysToArrayBuffer(PRE_KEY_KEYS, key));
 }
 
 // Signed Pre Keys
@@ -532,10 +532,10 @@ async function getSignedPreKeyById(id) {
 }
 async function getAllSignedPreKeys() {
   const keys = await channels.getAllSignedPreKeys();
-  return keys.map(key => keysToArrayBuffer(PRE_KEY_KEYS, key));
+  return keys.map((key) => keysToArrayBuffer(PRE_KEY_KEYS, key));
 }
 async function bulkAddSignedPreKeys(array) {
-  const updated = map(array, data => keysFromArrayBuffer(PRE_KEY_KEYS, data));
+  const updated = map(array, (data) => keysFromArrayBuffer(PRE_KEY_KEYS, data));
   await channels.bulkAddSignedPreKeys(updated);
 }
 async function removeSignedPreKeyById(id) {
@@ -560,14 +560,14 @@ async function getContactPreKeyByIdentityKey(key) {
 }
 async function getContactPreKeys(keyId, identityKeyString) {
   const keys = await channels.getContactPreKeys(keyId, identityKeyString);
-  return keys.map(k => keysToArrayBuffer(PRE_KEY_KEYS, k));
+  return keys.map((k) => keysToArrayBuffer(PRE_KEY_KEYS, k));
 }
 async function getAllContactPreKeys() {
   const keys = await channels.getAllContactPreKeys();
   return keys;
 }
 async function bulkAddContactPreKeys(array) {
-  const updated = map(array, data => keysFromArrayBuffer(PRE_KEY_KEYS, data));
+  const updated = map(array, (data) => keysFromArrayBuffer(PRE_KEY_KEYS, data));
   await channels.bulkAddContactPreKeys(updated);
 }
 async function removeContactPreKeyByIdentityKey(id) {
@@ -592,10 +592,10 @@ async function getContactSignedPreKeyByIdentityKey(key) {
 }
 async function getContactSignedPreKeys(keyId, identityKeyString) {
   const keys = await channels.getContactSignedPreKeys(keyId, identityKeyString);
-  return keys.map(k => keysToArrayBuffer(PRE_KEY_KEYS, k));
+  return keys.map((k) => keysToArrayBuffer(PRE_KEY_KEYS, k));
 }
 async function bulkAddContactSignedPreKeys(array) {
-  const updated = map(array, data => keysFromArrayBuffer(PRE_KEY_KEYS, data));
+  const updated = map(array, (data) => keysFromArrayBuffer(PRE_KEY_KEYS, data));
   await channels.bulkAddContactSignedPreKeys(updated);
 }
 async function removeContactSignedPreKeyByIdentityKey(id) {
@@ -608,9 +608,11 @@ async function removeAllContactSignedPreKeys() {
 function signatureToBase64(signature) {
   if (signature.constructor === dcodeIO.ByteBuffer) {
     return dcodeIO.ByteBuffer.wrap(signature).toString('base64');
-  } else if (isArrayBuffer(signature)) {
+  }
+  if (isArrayBuffer(signature)) {
     return arrayBufferToBase64(signature);
-  } else if (typeof signature === 'string') {
+  }
+  if (typeof signature === 'string') {
     // assume it's already base64
     return signature;
   }
@@ -703,14 +705,14 @@ async function getItemById(id) {
 }
 async function getAllItems() {
   const items = await channels.getAllItems();
-  return map(items, item => {
+  return map(items, (item) => {
     const { id } = item;
     const keys = ITEM_KEYS[id];
     return Array.isArray(keys) ? keysToArrayBuffer(keys, item) : item;
   });
 }
 async function bulkAddItems(array) {
-  const updated = map(array, data => {
+  const updated = map(array, (data) => {
     const { id } = data;
     const keys = ITEM_KEYS[id];
     return Array.isArray(keys) ? keysFromArrayBuffer(keys, data) : data;
@@ -780,7 +782,7 @@ async function saveConversation(data) {
 }
 
 async function saveConversations(data) {
-  const cleaned = data.map(d => omit(d, 'isOnline'));
+  const cleaned = data.map((d) => omit(d, 'isOnline'));
   await channels.saveConversations(cleaned);
 }
 
@@ -837,7 +839,7 @@ async function getConversationsWithFriendStatus(
 
 async function getPubKeysWithFriendStatus(status) {
   const conversations = await getConversationsWithFriendStatus(status);
-  return conversations.map(row => row.id);
+  return conversations.map((row) => row.id);
 }
 
 async function getAllConversations({ ConversationCollection }) {
@@ -1110,12 +1112,12 @@ async function removeAllMessagesInConversation(
       return;
     }
 
-    const ids = messages.map(message => message.id);
+    const ids = messages.map((message) => message.id);
 
     // Note: It's very important that these models are fully hydrated because
     //   we need to delete all associated on-disk files along with the database delete.
     // eslint-disable-next-line no-await-in-loop
-    await Promise.all(messages.map(message => message.cleanup()));
+    await Promise.all(messages.map((message) => message.cleanup()));
 
     // eslint-disable-next-line no-await-in-loop
     await channels.removeMessage(ids);
@@ -1281,7 +1283,7 @@ async function getLegacyMessagesNeedingUpgrade(
       const request = index.openCursor(range);
       let count = 0;
 
-      request.onsuccess = event => {
+      request.onsuccess = (event) => {
         const cursor = event.target.result;
 
         if (cursor) {

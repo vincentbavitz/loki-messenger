@@ -83,7 +83,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
   public renderHeader(): JSX.Element | undefined {
     const { receivedFriendRequestCount } = this.props;
     // The feature "organize your friends as custom list" is not included in the first release
-    const labels = [window.i18n('contactsHeader') /*, window.i18n('lists')*/];
+    const labels = [window.i18n('contactsHeader') /* , window.i18n('lists') */];
 
     return LeftPane.RENDER_HEADER(
       labels,
@@ -118,7 +118,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
     key,
     style,
   }: RowRendererParamsType): JSX.Element | undefined => {
-    const receivedFriendsRequest = this.props.receivedFriendsRequest;
+    const { receivedFriendsRequest } = this.props;
 
     const item = receivedFriendsRequest[index];
     const onClick = this.props.openConversationInternal;
@@ -295,7 +295,7 @@ export class LeftPaneContactSection extends React.Component<Props, State> {
 
   private renderFriendRequestPopup() {
     const frTitle = window.i18n('youHaveFriendRequestFrom');
-    const length = this.props.receivedFriendsRequest.length;
+    const { length } = this.props.receivedFriendsRequest;
 
     return (
       <div className="module-left-pane__list-popup">

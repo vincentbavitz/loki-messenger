@@ -8,7 +8,7 @@ const { after, before, describe, it } = require('mocha');
 const common = require('./common');
 const ConversationPage = require('./page-objects/conversation.page');
 
-describe('Message Functions', function() {
+describe('Message Functions', function () {
   let app;
   let app2;
   this.timeout(60000);

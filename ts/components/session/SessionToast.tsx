@@ -6,7 +6,7 @@ import {
   SessionIconButton,
   SessionIconSize,
   SessionIconType,
-} from './icon/';
+} from './icon';
 
 export enum SessionToastType {
   Info = 'info',
@@ -32,8 +32,8 @@ export class SessionToast extends React.PureComponent<Props> {
   public render() {
     const { title, description, type, icon } = this.props;
 
-    const toastType = type ? type : SessionToastType.Info;
-    const toastDesc = description ? description : '';
+    const toastType = type || SessionToastType.Info;
+    const toastDesc = description || '';
     const toastIconSize = toastDesc
       ? SessionIconSize.Huge
       : SessionIconSize.Medium;

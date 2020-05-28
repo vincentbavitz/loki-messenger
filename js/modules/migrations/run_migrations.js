@@ -60,7 +60,7 @@ exports.runMigrations = async ({ Backbone, database, logger } = {}) => {
   await closeDatabaseConnection({ Backbone });
 };
 
-const getMigrationVersions = database => {
+const getMigrationVersions = (database) => {
   if (!isObject(database) || !Array.isArray(database.migrations)) {
     throw new TypeError("'database' is required");
   }

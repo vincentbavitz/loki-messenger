@@ -17,23 +17,19 @@ export const getConversations = (state: StateType): ConversationsStateType =>
 
 export const getConversationLookup = createSelector(
   getConversations,
-  (state: ConversationsStateType): ConversationLookupType => {
-    return state.conversationLookup;
-  }
+  (state: ConversationsStateType): ConversationLookupType =>
+    state.conversationLookup
 );
 
 export const getSelectedConversation = createSelector(
   getConversations,
-  (state: ConversationsStateType): string | undefined => {
-    return state.selectedConversation;
-  }
+  (state: ConversationsStateType): string | undefined =>
+    state.selectedConversation
 );
 
 export const getShowArchived = createSelector(
   getConversations,
-  (state: ConversationsStateType): boolean => {
-    return Boolean(state.showArchived);
-  }
+  (state: ConversationsStateType): boolean => Boolean(state.showArchived)
 );
 
 function getConversationTitle(
@@ -58,31 +54,29 @@ const collator = new Intl.Collator();
 export const _getConversationComparator = (
   i18n: LocalizerType,
   ourRegionCode: string
-) => {
-  return (left: ConversationType, right: ConversationType): number => {
-    const leftTimestamp = left.timestamp;
-    const rightTimestamp = right.timestamp;
-    if (leftTimestamp && !rightTimestamp) {
-      return -1;
-    }
-    if (rightTimestamp && !leftTimestamp) {
-      return 1;
-    }
-    if (leftTimestamp && rightTimestamp && leftTimestamp !== rightTimestamp) {
-      return rightTimestamp - leftTimestamp;
-    }
+) => (left: ConversationType, right: ConversationType): number => {
+  const leftTimestamp = left.timestamp;
+  const rightTimestamp = right.timestamp;
+  if (leftTimestamp && !rightTimestamp) {
+    return -1;
+  }
+  if (rightTimestamp && !leftTimestamp) {
+    return 1;
+  }
+  if (leftTimestamp && rightTimestamp && leftTimestamp !== rightTimestamp) {
+    return rightTimestamp - leftTimestamp;
+  }
 
-    const leftTitle = getConversationTitle(left, {
-      i18n,
-      ourRegionCode,
-    }).toLowerCase();
-    const rightTitle = getConversationTitle(right, {
-      i18n,
-      ourRegionCode,
-    }).toLowerCase();
+  const leftTitle = getConversationTitle(left, {
+    i18n,
+    ourRegionCode,
+  }).toLowerCase();
+  const rightTitle = getConversationTitle(right, {
+    i18n,
+    ourRegionCode,
+  }).toLowerCase();
 
-    return collator.compare(leftTitle, rightTitle);
-  };
+  return collator.compare(leftTitle, rightTitle);
 };
 export const getConversationComparator = createSelector(
   getIntl,
@@ -160,33 +154,33 @@ export const _getLeftPaneLists = (
     group: Array<ConversationType | ConversationListItemPropsType>
   ): T => {
     const secondariesToRemove: Array<string> = [];
-    group.forEach(device => {
+    group.forEach((device) => {
       if (!device.isSecondary) {
         return;
       }
 
-      const devicePrimary = group.find(c => c.id === device.primaryDevice);
+      const devicePrimary = group.find((c) => c.id === device.primaryDevice);
       // Remove secondary where primary already exists in group
-      if (group.some(c => c === devicePrimary)) {
+      if (group.some((c) => c === devicePrimary)) {
         secondariesToRemove.push(device.id);
       }
     });
 
     // tslint:disable-next-line: no-unnecessary-local-variable
     const filteredGroup = group.filter(
-      c => !secondariesToRemove.find(s => s === c.id)
+      (c) => !secondariesToRemove.find((s) => s === c.id)
     );
 
     return filteredGroup as T;
   };
 
   const friends: Array<ConversationType> = filterToPrimary(allFriends);
-  const receivedFriendsRequest: Array<
-    ConversationListItemPropsType
-  > = filterToPrimary(allReceivedFriendsRequest);
-  const sentFriendsRequest: Array<
-    ConversationListItemPropsType
-  > = filterToPrimary(allSentFriendsRequest);
+  const receivedFriendsRequest: Array<ConversationListItemPropsType> = filterToPrimary(
+    allReceivedFriendsRequest
+  );
+  const sentFriendsRequest: Array<ConversationListItemPropsType> = filterToPrimary(
+    allSentFriendsRequest
+  );
 
   return {
     conversations,
@@ -207,7 +201,6 @@ export const getLeftPaneLists = createSelector(
 
 export const getMe = createSelector(
   [getConversationLookup, getUserNumber],
-  (lookup: ConversationLookupType, ourNumber: string): ConversationType => {
-    return lookup[ourNumber];
-  }
+  (lookup: ConversationLookupType, ourNumber: string): ConversationType =>
+    lookup[ourNumber]
 );

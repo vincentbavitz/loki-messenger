@@ -43,6 +43,7 @@ export interface Props {
 
 export class LeftPaneMessageSection extends React.Component<Props, any> {
   private readonly updateSearchBound: (searchedString: string) => void;
+
   private readonly debouncedSearch: (searchTerm: string) => void;
 
   public constructor(props: Props) {
@@ -55,7 +56,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
 
     const realConversations: Array<ConversationListItemPropsType> = [];
     if (conversations) {
-      conversations.forEach(conversation => {
+      conversations.forEach((conversation) => {
         const isRSS =
           conversation.id &&
           !!(conversation.id && conversation.id.match(/^rss:/));
@@ -64,7 +65,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
       });
     }
 
-    const length = realConversations.length;
+    const { length } = realConversations;
 
     this.state = {
       showComposeView: false,
@@ -96,7 +97,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
     let conversationList = conversations;
     if (conversationList !== undefined) {
       conversationList = conversationList.filter(
-        conversation =>
+        (conversation) =>
           !conversation.isSecondary && !conversation.isPendingFriendRequest
       );
     }
@@ -134,7 +135,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
     const { openConversationInternal, searchResults } = this.props;
     const friends =
       (searchResults &&
-        searchResults.contacts.filter(contact => contact.isFriend)) ||
+        searchResults.contacts.filter((contact) => contact.isFriend)) ||
       [];
 
     if (searchResults) {
@@ -155,7 +156,7 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
       );
     }
 
-    const length = conversations.length;
+    const { length } = conversations;
     const listKey = 0;
 
     // Note: conversations is not a known prop for List, but it is required to ensure that
@@ -362,9 +363,9 @@ export class LeftPaneMessageSection extends React.Component<Props, any> {
   }
 
   private handleToggleOverlay() {
-    this.setState((state: any) => {
-      return { showComposeView: !state.showComposeView };
-    });
+    this.setState((state: any) => ({
+      showComposeView: !state.showComposeView,
+    }));
     // empty our generalized searchedString (one for the whole app)
     this.updateSearch('');
   }

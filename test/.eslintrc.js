@@ -37,5 +37,8 @@ module.exports = {
 
     strict: 'off',
     'more/no-then': 'off',
+    'no-mixed-operators': 'off',
+
+    '@typescript-eslint/no-var-requires': 'off',
   },
 };

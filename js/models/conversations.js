@@ -19,7 +19,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -158,7 +158,7 @@
       this.on('expiration-change', this.updateAndMerge);
       this.on('expired', this.onExpired);
 
-      this.on('ourAvatarChanged', avatar =>
+      this.on('ourAvatarChanged', (avatar) =>
         this.updateAvatarOnPublicChat(avatar)
       );
 
@@ -237,12 +237,12 @@
     block() {
       BlockedNumberController.block(this.id);
       this.trigger('change');
-      this.messageCollection.forEach(m => m.trigger('change'));
+      this.messageCollection.forEach((m) => m.trigger('change'));
     },
     unblock() {
       BlockedNumberController.unblock(this.id);
       this.trigger('change');
-      this.messageCollection.forEach(m => m.trigger('change'));
+      this.messageCollection.forEach((m) => m.trigger('change'));
     },
     async acceptFriendRequest() {
       const messages = await window.Signal.Data.getMessagesByConversation(
@@ -313,7 +313,7 @@
       this.selectedMessages.add(id);
 
       if (modeChanged) {
-        this.messageCollection.forEach(m => m.trigger('change'));
+        this.messageCollection.forEach((m) => m.trigger('change'));
       }
 
       this.trigger('message-selection-changed');
@@ -327,7 +327,7 @@
       const modeChanged = this.selectedMessages.size === 0;
 
       if (modeChanged) {
-        this.messageCollection.forEach(m => m.trigger('change'));
+        this.messageCollection.forEach((m) => m.trigger('change'));
       }
 
       this.trigger('message-selection-changed');
@@ -336,7 +336,7 @@
 
     resetMessageSelection() {
       this.selectedMessages.clear();
-      this.messageCollection.forEach(m => {
+      this.messageCollection.forEach((m) => {
         // on change for ALL messages without real changes is a really costly operation
         // -> cause refresh of the whole conversation view even if not a single message was selected
         if (m.selected) {
@@ -509,19 +509,19 @@
 
       // Go through our messages and find the one that we need to update
       return this.messageCollection.models.filter(
-        m => m.get('sent_at') === timestamp
+        (m) => m.get('sent_at') === timestamp
       );
     },
 
     async onCalculatingPoW(pubKey, timestamp) {
       const messages = this._getMessagesWithTimestamp(pubKey, timestamp);
-      await Promise.all(messages.map(m => m.setCalculatingPoW()));
+      await Promise.all(messages.map((m) => m.setCalculatingPoW()));
     },
 
     async onPublicMessageSent(pubKey, timestamp, serverId) {
       const messages = this._getMessagesWithTimestamp(pubKey, timestamp);
       await Promise.all(
-        messages.map(message => [
+        messages.map((message) => [
           message.setIsPublic(true),
           message.setServerId(serverId),
         ])
@@ -555,7 +555,7 @@
       }
       // Get the pending friend requests that match the direction
       // If no direction is supplied then return all pending friend requests
-      return messages.models.filter(m => {
+      return messages.models.filter((m) => {
         if (!status.includes(m.get('friendStatus'))) {
           return false;
         }
@@ -666,7 +666,7 @@
 
       await this.fetchContacts();
       await Promise.all(
-        this.contactCollection.map(async contact => {
+        this.contactCollection.map(async (contact) => {
           if (!contact.isMe()) {
             await contact.updateVerified();
           }
@@ -756,10 +756,10 @@
         { syncMessage: true }
       );
       const contactSendOptions = this.getSendOptions();
-      const options = Object.assign({}, sendOptions, contactSendOptions);
+      const options = { ...sendOptions, ...contactSendOptions };
 
       const promise = textsecure.storage.protocol.loadIdentityKey(number);
-      return promise.then(key =>
+      return promise.then((key) =>
         this.wrapSend(
           textsecure.messaging.syncVerification(number, state, key, options)
         )
@@ -773,7 +773,7 @@
         return false;
       }
 
-      return this.contactCollection.every(contact => {
+      return this.contactCollection.every((contact) => {
         if (contact.isMe()) {
           return true;
         }
@@ -822,7 +822,7 @@
       );
       const allDeviceStatus = secondaryDevices
         // Get all the secondary device friend status'
-        .map(pubKey => {
+        .map((pubKey) => {
           const conversation = ConversationController.get(pubKey);
           if (!conversation) {
             return FriendRequestStatusEnum.none;
@@ -988,7 +988,7 @@
         status
       );
       await Promise.all(
-        pending.map(async request => {
+        pending.map(async (request) => {
           if (request.hasErrors()) {
             return;
           }
@@ -1113,7 +1113,7 @@
       // Delete stale incoming friend requests
       const incoming = await this.getPendingFriendRequests('incoming');
       await Promise.all(
-        incoming.map(request => this._removeMessage(request.id))
+        incoming.map((request) => this._removeMessage(request.id))
       );
       this.trigger('change');
     },
@@ -1164,7 +1164,7 @@
         return true;
       }
 
-      return this.contactCollection.any(contact => {
+      return this.contactCollection.any((contact) => {
         if (contact.isMe()) {
           return false;
         }
@@ -1178,7 +1178,7 @@
           : new Backbone.Collection();
       }
       return new Backbone.Collection(
-        this.contactCollection.filter(contact => {
+        this.contactCollection.filter((contact) => {
           if (contact.isMe()) {
             return false;
           }
@@ -1210,19 +1210,19 @@
       }
 
       return Promise.all(
-        this.contactCollection.map(contact => {
+        this.contactCollection.map((contact) => {
           if (contact.isMe()) {
             return false;
           }
           return contact.safeIsUntrusted();
         })
-      ).then(results => _.any(results, result => result));
+      ).then((results) => _.any(results, (result) => result));
     },
     getUntrusted() {
       // This is a bit ugly because isUntrusted() is async. Could do the work to cache
       //   it locally, but we really only need it for this call.
       if (this.isPrivate()) {
-        return this.isUntrusted().then(untrusted => {
+        return this.isUntrusted().then((untrusted) => {
           if (untrusted) {
             return new Backbone.Collection([this]);
           }
@@ -1231,19 +1231,19 @@
         });
       }
       return Promise.all(
-        this.contactCollection.map(contact => {
+        this.contactCollection.map((contact) => {
           if (contact.isMe()) {
             return [false, contact];
           }
           return Promise.all([contact.isUntrusted(), contact]);
         })
-      ).then(results => {
-        const filtered = _.filter(results, result => {
+      ).then((results) => {
+        const filtered = _.filter(results, (result) => {
           const untrusted = result[0];
           return untrusted;
         });
         return new Backbone.Collection(
-          _.map(filtered, result => {
+          _.map(filtered, (result) => {
             const contact = result[1];
             return contact;
           })
@@ -1347,11 +1347,13 @@
       );
 
       if (this.isPrivate()) {
-        ConversationController.getAllGroupsInvolvingId(this.id).then(groups => {
-          _.forEach(groups, group => {
-            group.addVerifiedChange(this.id, verified, options);
-          });
-        });
+        ConversationController.getAllGroupsInvolvingId(this.id).then(
+          (groups) => {
+            _.forEach(groups, (group) => {
+              group.addVerifiedChange(this.id, verified, options);
+            });
+          }
+        );
       }
     },
 
@@ -1383,7 +1385,7 @@
 
     validate(attributes) {
       const required = ['id', 'type'];
-      const missing = _.filter(required, attr => !attributes[attr]);
+      const missing = _.filter(required, (attr) => !attributes[attr]);
       if (missing.length) {
         return `Conversation must have ${missing}`;
       }
@@ -1466,14 +1468,14 @@
         return Promise.all(
           attachments
             .filter(
-              attachment =>
+              (attachment) =>
                 attachment &&
                 attachment.contentType &&
                 !attachment.pending &&
                 !attachment.error
             )
             .slice(0, 1)
-            .map(async attachment => {
+            .map(async (attachment) => {
               const { fileName, thumbnail, contentType } = attachment;
 
               return {
@@ -1495,9 +1497,9 @@
       if (preview && preview.length) {
         return Promise.all(
           preview
-            .filter(item => item && item.image)
+            .filter((item) => item && item.image)
             .slice(0, 1)
-            .map(async attachment => {
+            .map(async (attachment) => {
               const { image } = attachment;
               const { contentType } = image;
 
@@ -1600,7 +1602,7 @@
             // and send the new request if possible
             let friendRequestSent = false;
             const promises = [];
-            outgoingRequests.forEach(outgoing => {
+            outgoingRequests.forEach((outgoing) => {
               if (outgoing.hasErrors()) {
                 promises.push(this._removeMessage(outgoing.id));
               } else {
@@ -1685,7 +1687,7 @@
 
         // We're offline!
         if (!textsecure.messaging) {
-          const errors = this.contactCollection.map(contact => {
+          const errors = this.contactCollection.map((contact) => {
             const error = new Error('Network is not available');
             error.name = 'SendMessageNetworkError';
             error.number = contact.id;
@@ -1789,7 +1791,7 @@
     },
     wrapSend(promise) {
       return promise.then(
-        async result => {
+        async (result) => {
           // success
           if (result) {
             await this.handleMessageSendResult({
@@ -1799,7 +1801,7 @@
           }
           return result;
         },
-        async result => {
+        async (result) => {
           // failure
           if (result) {
             await this.handleMessageSendResult({
@@ -1843,7 +1845,7 @@
         await this.onFriendRequestSent();
       }
       await Promise.all(
-        (failoverNumbers || []).map(async number => {
+        (failoverNumbers || []).map(async (number) => {
           const conversation = ConversationController.get(number);
 
           if (
@@ -1866,7 +1868,7 @@
       );
 
       await Promise.all(
-        (unidentifiedDeliveries || []).map(async number => {
+        (unidentifiedDeliveries || []).map(async (number) => {
           const conversation = ConversationController.get(number);
 
           if (
@@ -1928,7 +1930,7 @@
       // END
 
       if (!this.isPrivate()) {
-        const infoArray = this.contactCollection.map(conversation =>
+        const infoArray = this.contactCollection.map((conversation) =>
           conversation.getNumberInfo(options)
         );
         return Object.assign({}, ...infoArray);
@@ -2343,11 +2345,11 @@
 
       let unreadMessages = await this.getUnread();
       const oldUnread = unreadMessages.filter(
-        message => message.get('received_at') <= newestUnreadDate
+        (message) => message.get('received_at') <= newestUnreadDate
       );
 
       let read = await Promise.all(
-        _.map(oldUnread, async providedM => {
+        _.map(oldUnread, async (providedM) => {
           const m = MessageController.register(providedM.id, providedM);
 
           if (!this.messageCollection.get(m.id)) {
@@ -2368,19 +2370,19 @@
       );
 
       // Some messages we're marking read are local notifications with no sender
-      read = _.filter(read, m => Boolean(m.sender));
-      unreadMessages = unreadMessages.filter(m => Boolean(m.isIncoming()));
+      read = _.filter(read, (m) => Boolean(m.sender));
+      unreadMessages = unreadMessages.filter((m) => Boolean(m.isIncoming()));
 
       const unreadCount = unreadMessages.length - read.length;
       this.set({ unreadCount });
 
       const mentionRead = (() => {
         const stillUnread = unreadMessages.filter(
-          m => m.get('received_at') > newestUnreadDate
+          (m) => m.get('received_at') > newestUnreadDate
         );
         const ourNumber = textsecure.storage.user.getNumber();
         return !stillUnread.some(
-          m =>
+          (m) =>
             m.propsForMessage &&
             m.propsForMessage.text &&
             m.propsForMessage.text.indexOf(`@${ourNumber}`) !== -1
@@ -2400,7 +2402,7 @@
       //      to mark it read. we'll mark our local error read locally, though.
       //   read receipts - here we can run into infinite loops, where each time the
       //      conversation is viewed, another error message shows up for the contact
-      read = read.filter(item => !item.hasErrors);
+      read = read.filter((item) => !item.hasErrors);
 
       // Do not send read receipt if not friends yet
       if (!this.isFriendWithAnyDevice()) {
@@ -2750,12 +2752,12 @@
         return Promise.resolve();
       }
       const members = this.get('members') || [];
-      const promises = members.map(number =>
+      const promises = members.map((number) =>
         ConversationController.getOrCreateAndWait(number, 'private')
       );
 
-      return Promise.all(promises).then(contacts => {
-        _.forEach(contacts, contact => {
+      return Promise.all(promises).then((contacts) => {
+        _.forEach(contacts, (contact) => {
           this.listenTo(
             contact,
             'change:verified',
@@ -2786,7 +2788,7 @@
       window.Whisper.events.trigger('showNicknameDialog', {
         pubKey: this.id,
         nickname: this.getNickname(),
-        onOk: newName => this.setNickname(newName),
+        onOk: (newName) => this.setNickname(newName),
       });
     },
 
@@ -2817,15 +2819,15 @@
         return false;
       }
 
-      const invalidMessages = messages.filter(m => !m.getServerId());
-      const pendingMessages = messages.filter(m => m.getServerId());
+      const invalidMessages = messages.filter((m) => !m.getServerId());
+      const pendingMessages = messages.filter((m) => m.getServerId());
 
       let deletedServerIds = [];
       let ignoredServerIds = [];
 
       if (pendingMessages.length > 0) {
         const result = await channelAPI.deleteMessages(
-          pendingMessages.map(m => m.getServerId())
+          pendingMessages.map((m) => m.getServerId())
         );
         deletedServerIds = result.deletedIds;
         ignoredServerIds = result.ignoredIds;
@@ -2835,19 +2837,19 @@
         deletedServerIds,
         ignoredServerIds
       );
-      let toDeleteLocally = messages.filter(m =>
+      let toDeleteLocally = messages.filter((m) =>
         toDeleteLocallyServerIds.includes(m.getServerId())
       );
       toDeleteLocally = _.union(toDeleteLocally, invalidMessages);
 
-      toDeleteLocally.forEach(m => this.removeMessage(m.id));
+      toDeleteLocally.forEach((m) => this.removeMessage(m.id));
 
       return toDeleteLocally;
     },
 
     removeMessage(messageId) {
       const message = this.messageCollection.models.find(
-        msg => msg.id === messageId
+        (msg) => msg.id === messageId
       );
       if (message) {
         message.trigger('unload');
@@ -2963,7 +2965,7 @@
 
       const cleaned = name.replace(/[^A-Za-z\s]+/g, '').replace(/\s+/g, ' ');
       const parts = cleaned.split(' ');
-      const initials = parts.map(part => part.trim()[0]);
+      const initials = parts.map((part) => part.trim()[0]);
       if (!initials.length) {
         return null;
       }
@@ -3003,7 +3005,8 @@
 
       if (url) {
         return { url, color };
-      } else if (this.isPrivate()) {
+      }
+      if (this.isPrivate()) {
         const symbol = this.isValid() ? '#' : '!';
         return {
           color,
@@ -3014,7 +3017,7 @@
     },
 
     getNotificationIcon() {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         const avatar = this.getAvatar();
         if (avatar.url) {
           resolve(avatar.url);
@@ -3039,8 +3042,8 @@
       return ConversationController.getOrCreateAndWait(
         message.get('source'),
         'private'
-      ).then(sender =>
-        sender.getNotificationIcon().then(iconUrl => {
+      ).then((sender) =>
+        sender.getNotificationIcon().then((iconUrl) => {
           const messageJSON = message.toJSON();
           const messageSentAt = messageJSON.sent_at;
           const messageId = message.id;
@@ -3202,7 +3205,7 @@
 
     async destroyAll() {
       await Promise.all(
-        this.models.map(conversation =>
+        this.models.map((conversation) =>
           window.Signal.Data.removeConversation(conversation.id, {
             Conversation: Whisper.Conversation,
           })

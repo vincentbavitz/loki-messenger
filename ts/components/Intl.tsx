@@ -57,7 +57,7 @@ export class Intl extends React.Component<Props> {
     while (match) {
       if (lastTextIndex < match.index) {
         const textWithNoReplacements = text.slice(lastTextIndex, match.index);
-        results.push(renderText({ text: textWithNoReplacements, key: key }));
+        results.push(renderText({ text: textWithNoReplacements, key }));
         key += 1;
       }
 
@@ -70,7 +70,7 @@ export class Intl extends React.Component<Props> {
     }
 
     if (lastTextIndex < text.length) {
-      results.push(renderText({ text: text.slice(lastTextIndex), key: key }));
+      results.push(renderText({ text: text.slice(lastTextIndex), key }));
       key += 1;
     }
 

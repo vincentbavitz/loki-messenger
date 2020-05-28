@@ -28,7 +28,7 @@ export class RemoveModeratorsDialog extends React.Component<Props, State> {
     this.onKeyUp = this.onKeyUp.bind(this);
 
     let mods = this.props.modList;
-    mods = mods.map(d => {
+    mods = mods.map((d) => {
       let name = '';
       if (d.getLokiProfile) {
         const lokiProfile = d.getLokiProfile();
@@ -57,7 +57,7 @@ export class RemoveModeratorsDialog extends React.Component<Props, State> {
   }
 
   public render() {
-    const i18n = window.i18n;
+    const { i18n } = window;
     const hasMods = this.state.modList.length !== 0;
 
     return (
@@ -93,8 +93,8 @@ export class RemoveModeratorsDialog extends React.Component<Props, State> {
 
   private onClickOK() {
     const removedMods = this.state.modList
-      .filter(d => !d.checkmarked)
-      .map(d => d.id);
+      .filter((d) => !d.checkmarked)
+      .map((d) => d.id);
 
     if (removedMods.length > 0) {
       this.props.onSubmit(removedMods);
@@ -123,19 +123,16 @@ export class RemoveModeratorsDialog extends React.Component<Props, State> {
   }
 
   private onModClicked(selected: any) {
-    const updatedFriends = this.state.modList.map(member => {
+    const updatedFriends = this.state.modList.map((member) => {
       if (member.id === selected.id) {
         return { ...member, checkmarked: !member.checkmarked };
-      } else {
-        return member;
       }
+      return member;
     });
 
-    this.setState(state => {
-      return {
-        ...state,
-        modList: updatedFriends,
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      modList: updatedFriends,
+    }));
   }
 }

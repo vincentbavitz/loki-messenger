@@ -164,7 +164,7 @@ const processOnionResponse = async (reqIdx, response, sharedKey, useAesGcm) => {
     };
     return jsonRes;
   } catch (e) {
-    log.error('[path] parse error', e.code, e.message, `json:`, plaintext);
+    log.error('[path] parse error', e.code, e.message, 'json:', plaintext);
     return false;
   }
 };
@@ -244,11 +244,9 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     const randomPoolRemainingCount = lokiSnodeAPI.getRandomPoolLength();
     const ciphertext = await response.text();
     log.warn(
-      `lokiRpc:::sendToProxy -`,
-      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      }`,
-      `snode is decom or dereg: `,
+      'lokiRpc:::sendToProxy -',
+      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`,
+      'snode is decom or dereg: ',
       ciphertext,
       // `marking random snode bad ${randomPoolRemainingCount} remaining`
       `Try #${retryNumber}`,
@@ -266,7 +264,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
       log.warn(
         `lokiRpc:::sendToProxy - snode ${randSnode.ip}:${randSnode.port}`,
         `can not relay to target node ${targetNode.ip}:${targetNode.port}`,
-        `after 3 retries`
+        'after 3 retries'
       );
       if (options.ourPubKey) {
         lokiSnodeAPI.unreachableNode(options.ourPubKey, targetNode);
@@ -290,10 +288,8 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     const randomPoolRemainingCount = lokiSnodeAPI.getRandomPoolLength();
     const ciphertext = await response.text();
     log.warn(
-      `lokiRpc:::sendToProxy -`,
-      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      }`,
+      'lokiRpc:::sendToProxy -',
+      `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`,
       `code ${response.status} error`,
       ciphertext,
       // `marking random snode bad ${randomPoolRemainingCount} remaining`
@@ -308,9 +304,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
       // lets mark the target node bad for now
       // we'll just rotate it back in if it's a net problem
       log.warn(
-        `lokiRpc:::sendToProxy - Failing ${targetNode.ip}:${
-          targetNode.port
-        } after 5 retries`
+        `lokiRpc:::sendToProxy - Failing ${targetNode.ip}:${targetNode.port} after 5 retries`
       );
       if (options.ourPubKey) {
         lokiSnodeAPI.unreachableNode(options.ourPubKey, targetNode);
@@ -336,9 +330,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     log.warn(
       'lokiRpc:::sendToProxy - fetch non-200 statusCode',
       response.status,
-      `from snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      }`
+      `from snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`
     );
     return false;
   }
@@ -376,9 +368,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
       'lokiRpc:::sendToProxy - decode error',
       e.code,
       e.message,
-      `from ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-        targetNode.port
-      } ciphertext:`,
+      `from ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port} ciphertext:`,
       ciphertext
     );
     if (ciphertextBuffer) {
@@ -394,7 +384,7 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
       try {
         if (jsonRes.body === 'Timestamp error: check your clock') {
           log.error(
-            `lokiRpc:::sendToProxy - Timestamp error: check your clock`,
+            'lokiRpc:::sendToProxy - Timestamp error: check your clock',
             Date.now()
           );
           return false;
@@ -413,10 +403,8 @@ const sendToProxy = async (options = {}, targetNode, retryNumber = 0) => {
     };
     if (retryNumber) {
       log.debug(
-        `lokiRpc:::sendToProxy - request succeeded,`,
-        `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${
-          targetNode.port
-        }`,
+        'lokiRpc:::sendToProxy - request succeeded,',
+        `snode ${randSnode.ip}:${randSnode.port} to ${targetNode.ip}:${targetNode.port}`,
         `on retry #${retryNumber}`
       );
     }
@@ -491,8 +479,8 @@ const lokiFetch = async (url, options = {}, targetNode = null) => {
           fetchOptions.body
         );
 
-        const getPathString = pathObjArr =>
-          pathObjArr.map(node => `${node.ip}:${node.port}`).join(', ');
+        const getPathString = (pathObjArr) =>
+          pathObjArr.map((node) => `${node.ip}:${node.port}`).join(', ');
 
         if (result === BAD_PATH) {
           log.error(
@@ -502,7 +490,8 @@ const lokiFetch = async (url, options = {}, targetNode = null) => {
           );
           lokiSnodeAPI.markPathAsBad(path);
           return false;
-        } else if (result) {
+        }
+        if (result) {
           // not bad_path
           // will throw if there's a problem
           // eslint-disable-next-line no-await-in-loop
@@ -548,7 +537,8 @@ const lokiFetch = async (url, options = {}, targetNode = null) => {
         */
         // pass the false value up
         return false;
-      } else if (result) {
+      }
+      if (result) {
         // will throw if there's a problem
         await checkResponse(result, 'proxy');
       } // result is not truish and not explicitly false

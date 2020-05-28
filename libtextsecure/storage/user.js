@@ -1,7 +1,7 @@
 /* global textsecure, window */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   /** *******************************************
    *** Utilities to store data about the user ***
    ********************************************* */

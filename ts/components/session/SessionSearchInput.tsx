@@ -29,7 +29,7 @@ export class SessionSearchInput extends React.Component<Props> {
             />
             <input
               value={searchString}
-              onChange={e => this.props.onChange(e.target.value)}
+              onChange={(e) => this.props.onChange(e.target.value)}
               onKeyDown={this.handleKeyDown}
               placeholder={this.props.placeholder}
             />

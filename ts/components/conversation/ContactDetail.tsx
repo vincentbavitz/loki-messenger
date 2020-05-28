@@ -112,19 +112,17 @@ export class ContactDetail extends React.Component<Props> {
       return;
     }
 
-    return items.map((item: Email) => {
-      return (
-        <div
-          key={item.value}
-          className="module-contact-detail__additional-contact"
-        >
-          <div className="module-contact-detail__additional-contact__type">
-            {getLabelForEmail(item, i18n)}
-          </div>
-          {item.value}
+    return items.map((item: Email) => (
+      <div
+        key={item.value}
+        className="module-contact-detail__additional-contact"
+      >
+        <div className="module-contact-detail__additional-contact__type">
+          {getLabelForEmail(item, i18n)}
         </div>
-      );
-    });
+        {item.value}
+      </div>
+    ));
   }
 
   public renderPhone(items: Array<Phone> | undefined, i18n: LocalizerType) {
@@ -132,19 +130,17 @@ export class ContactDetail extends React.Component<Props> {
       return;
     }
 
-    return items.map((item: Phone) => {
-      return (
-        <div
-          key={item.value}
-          className="module-contact-detail__additional-contact"
-        >
-          <div className="module-contact-detail__additional-contact__type">
-            {getLabelForPhone(item, i18n)}
-          </div>
-          {item.value}
+    return items.map((item: Phone) => (
+      <div
+        key={item.value}
+        className="module-contact-detail__additional-contact"
+      >
+        <div className="module-contact-detail__additional-contact__type">
+          {getLabelForPhone(item, i18n)}
         </div>
-      );
-    });
+        {item.value}
+      </div>
+    ));
   }
 
   public renderAddressLine(value: string | undefined) {
@@ -187,20 +183,18 @@ export class ContactDetail extends React.Component<Props> {
       return;
     }
 
-    return addresses.map((address: PostalAddress, index: number) => {
-      return (
-        <div key={index} className="module-contact-detail__additional-contact">
-          <div className="module-contact-detail__additional-contact__type">
-            {getLabelForAddress(address, i18n)}
-          </div>
-          {this.renderAddressLine(address.street)}
-          {this.renderPOBox(address.pobox, i18n)}
-          {this.renderAddressLine(address.neighborhood)}
-          {this.renderAddressLineTwo(address)}
-          {this.renderAddressLine(address.country)}
+    return addresses.map((address: PostalAddress, index: number) => (
+      <div key={index} className="module-contact-detail__additional-contact">
+        <div className="module-contact-detail__additional-contact__type">
+          {getLabelForAddress(address, i18n)}
         </div>
-      );
-    });
+        {this.renderAddressLine(address.street)}
+        {this.renderPOBox(address.pobox, i18n)}
+        {this.renderAddressLine(address.neighborhood)}
+        {this.renderAddressLineTwo(address)}
+        {this.renderAddressLine(address.country)}
+      </div>
+    ));
   }
 
   public render() {

@@ -21,7 +21,7 @@ if (window.getAppInstance()) {
 $('.environment').text(states.join(' - '));
 
 // Install the 'dismiss with escape key' handler
-$(document).on('keyup', e => {
+$(document).on('keyup', (e) => {
   'use strict';
 
   if (e.keyCode === 27) {

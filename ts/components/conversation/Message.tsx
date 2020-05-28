@@ -23,7 +23,7 @@ import {
   isImage,
   isImageAttachment,
   isVideo,
-} from '../../../ts/types/Attachment';
+} from '../../types/Attachment';
 import { AttachmentType } from '../../types/Attachment';
 import { Contact } from '../../types/Contact';
 
@@ -130,11 +130,15 @@ const EXPIRED_DELAY = 600;
 
 export class Message extends React.PureComponent<Props, State> {
   public captureMenuTriggerBound: (trigger: any) => void;
+
   public showMenuBound: (event: React.MouseEvent<HTMLDivElement>) => void;
+
   public handleImageErrorBound: () => void;
 
   public menuTriggerRef: Trigger | undefined;
+
   public expirationCheckInterval: any;
+
   public expiredTimeout: any;
 
   public constructor(props: Props) {
@@ -219,7 +223,7 @@ export class Message extends React.PureComponent<Props, State> {
     const badges = [isPublic && 'Public', senderIsModerator && 'Mod'];
 
     return badges
-      .map(badgeText => {
+      .map((badgeText) => {
         if (typeof badgeText !== 'string') {
           return null;
         }
@@ -243,7 +247,7 @@ export class Message extends React.PureComponent<Props, State> {
           </div>
         );
       })
-      .filter(i => !!i);
+      .filter((i) => !!i);
   }
 
   public renderMetadata() {
@@ -381,7 +385,8 @@ export class Message extends React.PureComponent<Props, State> {
           />
         </div>
       );
-    } else if (!firstAttachment.pending && isAudio(attachments)) {
+    }
+    if (!firstAttachment.pending && isAudio(attachments)) {
       return (
         <audio
           role="button"
@@ -403,64 +408,63 @@ export class Message extends React.PureComponent<Props, State> {
           <source src={firstAttachment.url} />
         </audio>
       );
-    } else {
-      const { pending, fileName, fileSize, contentType } = firstAttachment;
-      const extension = getExtensionForDisplay({ contentType, fileName });
-      const isDangerous = isFileDangerous(fileName || '');
+    }
+    const { pending, fileName, fileSize, contentType } = firstAttachment;
+    const extension = getExtensionForDisplay({ contentType, fileName });
+    const isDangerous = isFileDangerous(fileName || '');
 
-      return (
-        <div
-          className={classNames(
-            'module-message__generic-attachment',
-            withContentBelow
-              ? 'module-message__generic-attachment--with-content-below'
-              : null,
-            withContentAbove
-              ? 'module-message__generic-attachment--with-content-above'
-              : null
-          )}
-        >
-          {pending ? (
-            <div className="module-message__generic-attachment__spinner-container">
-              <Spinner size="small" direction={direction} />
-            </div>
-          ) : (
-            <div className="module-message__generic-attachment__icon-container">
-              <div className="module-message__generic-attachment__icon">
-                {extension ? (
-                  <div className="module-message__generic-attachment__icon__extension">
-                    {extension}
-                  </div>
-                ) : null}
-              </div>
-              {isDangerous ? (
-                <div className="module-message__generic-attachment__icon-dangerous-container">
-                  <div className="module-message__generic-attachment__icon-dangerous" />
+    return (
+      <div
+        className={classNames(
+          'module-message__generic-attachment',
+          withContentBelow
+            ? 'module-message__generic-attachment--with-content-below'
+            : null,
+          withContentAbove
+            ? 'module-message__generic-attachment--with-content-above'
+            : null
+        )}
+      >
+        {pending ? (
+          <div className="module-message__generic-attachment__spinner-container">
+            <Spinner size="small" direction={direction} />
+          </div>
+        ) : (
+          <div className="module-message__generic-attachment__icon-container">
+            <div className="module-message__generic-attachment__icon">
+              {extension ? (
+                <div className="module-message__generic-attachment__icon__extension">
+                  {extension}
                 </div>
               ) : null}
             </div>
-          )}
-          <div className="module-message__generic-attachment__text">
-            <div
-              className={classNames(
-                'module-message__generic-attachment__file-name',
-                `module-message__generic-attachment__file-name--${direction}`
-              )}
-            >
-              {fileName}
-            </div>
-            <div
-              className={classNames(
-                'module-message__generic-attachment__file-size',
-                `module-message__generic-attachment__file-size--${direction}`
-              )}
-            >
-              {fileSize}
-            </div>
+            {isDangerous ? (
+              <div className="module-message__generic-attachment__icon-dangerous-container">
+                <div className="module-message__generic-attachment__icon-dangerous" />
+              </div>
+            ) : null}
+          </div>
+        )}
+        <div className="module-message__generic-attachment__text">
+          <div
+            className={classNames(
+              'module-message__generic-attachment__file-name',
+              `module-message__generic-attachment__file-name--${direction}`
+            )}
+          >
+            {fileName}
+          </div>
+          <div
+            className={classNames(
+              'module-message__generic-attachment__file-size',
+              `module-message__generic-attachment__file-size--${direction}`
+            )}
+          >
+            {fileSize}
           </div>
         </div>
-      );
-    }
+      </div>
+    );
   }
 
   // tslint:disable-next-line cyclomatic-complexity
@@ -772,6 +776,7 @@ export class Message extends React.PureComponent<Props, State> {
   public captureMenuTrigger(triggerRef: Trigger) {
     this.menuTriggerRef = triggerRef;
   }
+
   public showMenu(event: React.MouseEvent<HTMLDivElement>) {
     if (this.menuTriggerRef) {
       this.menuTriggerRef.handleContextClick(event);
@@ -1017,8 +1022,6 @@ export class Message extends React.PureComponent<Props, State> {
         }
       }
     }
-
-    return;
   }
 
   public isShowingImage() {
@@ -1093,14 +1096,14 @@ export class Message extends React.PureComponent<Props, State> {
     const mentions = text ? text.match(window.pubkeyPattern) : [];
     const mentionMe =
       mentions &&
-      mentions.some(m => m.slice(1) === window.lokiPublicChatAPI.ourKey);
+      mentions.some((m) => m.slice(1) === window.lokiPublicChatAPI.ourKey);
 
     const isIncoming = direction === 'incoming';
     const shouldHightlight = mentionMe && isIncoming && isPublic;
     const divClasses = ['loki-message-wrapper'];
 
     if (shouldHightlight) {
-      //divClasses.push('message-highlighted');
+      // divClasses.push('message-highlighted');
     }
     if (selected) {
       divClasses.push('message-selected');
@@ -1123,7 +1126,7 @@ export class Message extends React.PureComponent<Props, State> {
               expiring ? 'module-message--expired' : null
             )}
             role="button"
-            onClick={event => {
+            onClick={(event) => {
               const selection = window.getSelection();
               // Text is being selected
               if (selection && selection.type === 'Range') {
@@ -1188,7 +1191,7 @@ export class Message extends React.PureComponent<Props, State> {
       i18n,
     } = this.props;
 
-    const title = authorName ? authorName : authorPhoneNumber;
+    const title = authorName || authorPhoneNumber;
 
     if (direction !== 'incoming' || conversationType !== 'group' || !title) {
       return null;

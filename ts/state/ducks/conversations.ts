@@ -270,8 +270,8 @@ export function reducer(
     const { id, data } = payload;
     const { conversationLookup } = state;
 
-    let showArchived = state.showArchived;
-    let selectedConversation = state.selectedConversation;
+    let { showArchived } = state;
+    let { selectedConversation } = state;
 
     const existing = conversationLookup[id];
     // In the change case we only modify the lookup if we already had that conversation

@@ -1,5 +1,6 @@
 export class RNG {
   private _seed: number;
+
   constructor(seed: number) {
     this._seed = seed % 2147483647;
     if (this._seed <= 0) {

@@ -43,14 +43,14 @@ describe('Password Util', () => {
         'bf^OMnYku*iX;{Piw_0zvz',
         '#'.repeat(50),
       ];
-      valid.forEach(pass => {
+      valid.forEach((pass) => {
         assert.isNull(passwordUtil.validatePassword(pass));
       });
     });
 
     it('should return an error if password is not a string', () => {
       const invalid = [0, 123456, [], {}, null, undefined];
-      invalid.forEach(pass => {
+      invalid.forEach((pass) => {
         assert.strictEqual(
           passwordUtil.validatePassword(pass),
           'Password must be a string'
@@ -60,7 +60,7 @@ describe('Password Util', () => {
 
     it('should return an error if password is not between 6 and 50 characters', () => {
       const invalid = ['a', 'abcde', '#'.repeat(51), '#'.repeat(100)];
-      invalid.forEach(pass => {
+      invalid.forEach((pass) => {
         assert.strictEqual(
           passwordUtil.validatePassword(pass),
           'Password must be between 6 and 50 characters long'
@@ -80,7 +80,7 @@ describe('Password Util', () => {
         '봟㉟ⓓ༭꽫㊡䶷쒨⻯颰',
         '<@ȦƘΉوۉaҋ<',
       ];
-      invalid.forEach(pass => {
+      invalid.forEach((pass) => {
         assert.strictEqual(
           passwordUtil.validatePassword(pass),
           'Password must only contain letters, numbers and symbols'

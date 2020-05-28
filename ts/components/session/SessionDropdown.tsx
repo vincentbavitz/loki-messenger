@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SessionIcon, SessionIconSize, SessionIconType } from './icon/';
+import { SessionIcon, SessionIconSize, SessionIconType } from './icon';
 import {
   SessionDropdownItem,
   SessionDropDownItemType,
@@ -63,20 +63,18 @@ export class SessionDropdown extends React.Component<Props, State> {
 
         {expanded && (
           <div className="session-dropdown__list-container">
-            {options.map((item: any) => {
-              return (
-                <SessionDropdownItem
-                  key={item.content}
-                  content={item.content}
-                  icon={item.icon}
-                  type={item.type}
-                  active={item.active}
-                  onClick={() => {
-                    this.handleItemClick(item.onClick);
-                  }}
-                />
-              );
-            })}
+            {options.map((item: any) => (
+              <SessionDropdownItem
+                key={item.content}
+                content={item.content}
+                icon={item.icon}
+                type={item.type}
+                active={item.active}
+                onClick={() => {
+                  this.handleItemClick(item.onClick);
+                }}
+              />
+            ))}
           </div>
         )}
       </div>

@@ -8,7 +8,7 @@ const common = require('./common');
 const RegistrationPage = require('./page-objects/registration.page');
 const ConversationPage = require('./page-objects/conversation.page');
 
-describe('Window Test and Login', function() {
+describe('Window Test and Login', function () {
   let app;
   this.timeout(20000);
   this.slow(15000);

@@ -153,17 +153,15 @@ export class UpdateGroupNameDialog extends React.Component<Props, State> {
   private onGroupNameChanged(event: any) {
     event.persist();
 
-    this.setState(state => {
-      return {
-        ...state,
-        groupName: event.target.value,
-      };
-    });
+    this.setState((state) => ({
+      ...state,
+      groupName: event.target.value,
+    }));
   }
 
   private renderAvatar() {
     const avatarPath = this.state.avatar;
-    const isPublic = this.props.isPublic;
+    const { isPublic } = this.props;
 
     if (!isPublic) {
       return undefined;

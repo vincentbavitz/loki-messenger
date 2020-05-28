@@ -11,7 +11,7 @@ const sass = require('node-sass');
 
 /* eslint-disable more/no-then, no-console  */
 
-module.exports = grunt => {
+module.exports = (grunt) => {
   const bower = grunt.file.readJSON('bower.json');
   const components = [];
   // eslint-disable-next-line guard-for-in, no-restricted-syntax
@@ -202,22 +202,14 @@ module.exports = grunt => {
     },
     'test-release': {
       osx: {
-        archive: `mac/${
-          packageJson.productName
-        }.app/Contents/Resources/app.asar`,
-        appUpdateYML: `mac/${
-          packageJson.productName
-        }.app/Contents/Resources/app-update.yml`,
-        exe: `mac/${packageJson.productName}.app/Contents/MacOS/${
-          packageJson.productName
-        }`,
+        archive: `mac/${packageJson.productName}.app/Contents/Resources/app.asar`,
+        appUpdateYML: `mac/${packageJson.productName}.app/Contents/Resources/app-update.yml`,
+        exe: `mac/${packageJson.productName}.app/Contents/MacOS/${packageJson.productName}`,
       },
       mas: {
         archive: 'mas/Signal.app/Contents/Resources/app.asar',
         appUpdateYML: 'mac/Signal.app/Contents/Resources/app-update.yml',
-        exe: `mas/${packageJson.productName}.app/Contents/MacOS/${
-          packageJson.productName
-        }`,
+        exe: `mas/${packageJson.productName}.app/Contents/MacOS/${packageJson.productName}`,
       },
       linux: {
         archive: 'linux-unpacked/resources/app.asar',
@@ -232,7 +224,7 @@ module.exports = grunt => {
     gitinfo: {}, // to be populated by grunt gitinfo
   });
 
-  Object.keys(grunt.config.get('pkg').devDependencies).forEach(key => {
+  Object.keys(grunt.config.get('pkg').devDependencies).forEach((key) => {
     if (/^grunt(?!(-cli)?$)/.test(key)) {
       // ignore grunt and grunt-cli
       grunt.loadNpmTasks(key);
@@ -332,13 +324,13 @@ module.exports = grunt => {
           () =>
             app.client
               .execute(getMochaResults)
-              .then(data => Boolean(data.value)),
+              .then((data) => Boolean(data.value)),
           25000,
           'Expected to find window.mochaResults set!'
         )
       )
       .then(() => app.client.execute(getMochaResults))
-      .then(data => {
+      .then((data) => {
         const results = data.value;
         if (results.failures > 0) {
           console.error(results.reports);
@@ -349,14 +341,14 @@ module.exports = grunt => {
         grunt.log.ok(`${results.passes} tests passed.`);
         return null;
       })
-      .then(logs => {
+      .then((logs) => {
         if (logs) {
           console.error();
           console.error('Because tests failed, printing browser logs:');
           console.error(logs);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         failure = () =>
           grunt.fail.fatal(
             `Something went wrong: ${error.message} ${error.stack}`
@@ -369,8 +361,8 @@ module.exports = grunt => {
         if (failure) {
           console.log();
           console.log('Main process logs:');
-          return app.client.getMainProcessLogs().then(logs => {
-            logs.forEach(log => {
+          return app.client.getMainProcessLogs().then((logs) => {
+            logs.forEach((log) => {
               console.log(log);
             });
             try {
@@ -392,7 +384,7 @@ module.exports = grunt => {
         }
         cb();
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Second-level error:', error.message, error.stack);
         if (failure) {
           failure();
@@ -450,7 +442,7 @@ module.exports = grunt => {
 
       console.log(this.target, archive);
       const releaseFiles = files.concat(config.files || []);
-      releaseFiles.forEach(fileName => {
+      releaseFiles.forEach((fileName) => {
         console.log(fileName);
         try {
           asar.statFile(archive, fileName);
@@ -487,7 +479,7 @@ module.exports = grunt => {
       app
         .start()
         .then(() => app.client.getWindowCount())
-        .then(count => {
+        .then((count) => {
           assert.equal(count, 1);
           console.log('window opened');
         })
@@ -495,7 +487,7 @@ module.exports = grunt => {
           // Get the window's title
           app.client.getTitle()
         )
-        .then(title => {
+        .then((title) => {
           // TODO: restore once fixed on win
           if (this.target !== 'win') {
             // Verify the window's title
@@ -513,7 +505,7 @@ module.exports = grunt => {
           () =>
             // Successfully completed test
             app.stop(),
-          error =>
+          (error) =>
             // Test failed!
             app.stop().then(() => {
               grunt.fail.fatal(`Test failed: ${error.message} ${error.stack}`);

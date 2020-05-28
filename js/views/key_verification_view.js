@@ -3,7 +3,7 @@
 /* eslint-disable more/no-then */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -40,21 +40,21 @@
     loadTheirKey() {
       return textsecure.storage.protocol
         .loadIdentityKey(this.model.id)
-        .then(theirKey => {
+        .then((theirKey) => {
           this.theirKey = theirKey;
         });
     },
     loadOurKey() {
       return textsecure.storage.protocol
         .loadIdentityKey(this.ourNumber)
-        .then(ourKey => {
+        .then((ourKey) => {
           this.ourKey = ourKey;
         });
     },
     generateSecurityNumber() {
       return new libsignal.FingerprintGenerator(5200)
         .createFor(this.ourNumber, this.ourKey, this.model.id, this.theirKey)
-        .then(securityNumber => {
+        .then((securityNumber) => {
           this.securityNumber = securityNumber;
         });
     },
@@ -74,7 +74,7 @@
       this.$('button.verify').attr('disabled', true);
       this.model
         .toggleVerified()
-        .catch(result => {
+        .catch((result) => {
           if (result instanceof Error) {
             if (result.name === 'OutgoingIdentityKeyError') {
               this.onSafetyNumberChanged();
@@ -87,12 +87,12 @@
           } else {
             const keyError = _.some(
               result.errors,
-              error => error.name === 'OutgoingIdentityKeyError'
+              (error) => error.name === 'OutgoingIdentityKeyError'
             );
             if (keyError) {
               this.onSafetyNumberChanged();
             } else {
-              _.forEach(result.errors, error => {
+              _.forEach(result.errors, (error) => {
                 window.log.error(
                   'failed to toggle verified:',
                   error && error.stack ? error.stack : error

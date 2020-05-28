@@ -10,8 +10,8 @@ const { notarize } = require('electron-notarize');
   Notarizing: https://kilianvalkhof.com/2019/electron/notarizing-your-electron-application/
 */
 
-const log = msg => console.log(`\n${msg}`);
-const isEmpty = v => !v || v.length === 0;
+const log = (msg) => console.log(`\n${msg}`);
+const isEmpty = (v) => !v || v.length === 0;
 
 exports.default = async function notarizing(context) {
   const { electronPlatformName, appOutDir } = context;

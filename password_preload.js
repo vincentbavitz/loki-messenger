@@ -56,7 +56,7 @@ window.clearLocalData = async () => {
   window.restart();
 };
 
-window.onLogin = passPhrase =>
+window.onLogin = (passPhrase) =>
   new Promise((resolve, reject) => {
     ipcRenderer.once('password-window-login-response', (event, error) => {
       if (error) {

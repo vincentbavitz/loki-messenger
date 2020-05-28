@@ -57,24 +57,24 @@ function initialize() {
       ],
     });
 
-    LEVELS.forEach(level => {
+    LEVELS.forEach((level) => {
       ipc.on(`log-${level}`, (first, ...rest) => {
         logger[level](...rest);
       });
     });
 
-    ipc.on('fetch-log', event => {
+    ipc.on('fetch-log', (event) => {
       fetch(logPath).then(
-        data => {
+        (data) => {
           event.sender.send('fetched-log', data);
         },
-        error => {
+        (error) => {
           logger.error(`Problem loading log from disk: ${error.stack}`);
         }
       );
     });
 
-    ipc.on('delete-all-logs', async event => {
+    ipc.on('delete-all-logs', async (event) => {
       try {
         await deleteAllLogs(logPath);
       } catch (error) {
@@ -93,7 +93,7 @@ async function deleteAllLogs(logPath) {
       {
         disableGlob: true,
       },
-      error => {
+      (error) => {
         if (error) {
           return reject(error);
         }
@@ -112,7 +112,7 @@ async function cleanupLogs(logPath) {
 
   try {
     const remaining = await eliminateOutOfDateFiles(logPath, earliestDate);
-    const files = _.filter(remaining, file => !file.start && file.end);
+    const files = _.filter(remaining, (file) => !file.start && file.end);
 
     if (!files.length) {
       return;
@@ -147,12 +147,12 @@ function isLineAfterDate(line, date) {
 
 function eliminateOutOfDateFiles(logPath, date) {
   const files = fs.readdirSync(logPath);
-  const paths = files.map(file => path.join(logPath, file));
+  const paths = files.map((file) => path.join(logPath, file));
 
   return Promise.all(
-    _.map(paths, target =>
+    _.map(paths, (target) =>
       Promise.all([readFirstLine(target), readLastLines(target, 2)]).then(
-        results => {
+        (results) => {
           const start = results[0];
           const end = results[1].split('\n');
 
@@ -179,13 +179,13 @@ function eliminateOldEntries(files, date) {
   const earliest = date.getTime();
 
   return Promise.all(
-    _.map(files, file =>
-      fetchLog(file.path).then(lines => {
+    _.map(files, (file) =>
+      fetchLog(file.path).then((lines) => {
         const recent = _.filter(
           lines,
-          line => new Date(line.time).getTime() >= earliest
+          (line) => new Date(line.time).getTime() >= earliest
         );
-        const text = _.map(recent, line => JSON.stringify(line)).join('\n');
+        const text = _.map(recent, (line) => JSON.stringify(line)).join('\n');
 
         return fs.writeFileSync(file.path, `${text}\n`);
       })
@@ -210,7 +210,7 @@ function fetchLog(logFile) {
 
       const lines = _.compact(text.split('\n'));
       const data = _.compact(
-        lines.map(line => {
+        lines.map((line) => {
           try {
             return _.pick(JSON.parse(line), ['level', 'time', 'msg']);
           } catch (e) {
@@ -226,7 +226,7 @@ function fetchLog(logFile) {
 
 function fetch(logPath) {
   const files = fs.readdirSync(logPath);
-  const paths = files.map(file => path.join(logPath, file));
+  const paths = files.map((file) => path.join(logPath, file));
 
   // creating a manual log entry for the final log result
   const now = new Date();
@@ -236,7 +236,7 @@ function fetch(logPath) {
     msg: `Loaded this list of log files from logPath: ${files.join(', ')}`,
   };
 
-  return Promise.all(paths.map(fetchLog)).then(results => {
+  return Promise.all(paths.map(fetchLog)).then((results) => {
     const data = _.flatten(results);
 
     data.push(fileListEntry);
@@ -248,7 +248,7 @@ function fetch(logPath) {
 function logAtLevel(level, ...args) {
   if (logger) {
     // To avoid [Object object] in our log since console.log handles non-strings smoothly
-    const str = args.map(item => {
+    const str = args.map((item) => {
       if (typeof item !== 'string') {
         try {
           return JSON.stringify(item);

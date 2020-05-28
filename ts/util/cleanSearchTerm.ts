@@ -7,7 +7,7 @@ export function cleanSearchTerm(searchTerm: string) {
   const whiteSpaceNormalized = withoutSpecialCharacters.replace(/\s+/g, ' ');
   const byToken = whiteSpaceNormalized.split(' ');
   const withoutSpecialTokens = byToken.filter(
-    token =>
+    (token) =>
       token &&
       token !== 'and' &&
       token !== 'or' &&
@@ -18,7 +18,7 @@ export function cleanSearchTerm(searchTerm: string) {
       token !== ',' &&
       token !== 'near'
   );
-  const withWildcards = withoutSpecialTokens.map(token => `${token}*`);
+  const withWildcards = withoutSpecialTokens.map((token) => `${token}*`);
 
   return withWildcards.join(' ').trim();
 }

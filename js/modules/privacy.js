@@ -12,14 +12,14 @@ const GROUP_ID_PATTERN = /(group\()([^)]+)(\))/g;
 const REDACTION_PLACEHOLDER = '[REDACTED]';
 
 //      _redactPath :: Path -> String -> String
-exports._redactPath = filePath => {
+exports._redactPath = (filePath) => {
   if (!is.string(filePath)) {
     throw new TypeError("'filePath' must be a string");
   }
 
   const filePathPattern = exports._pathToRegExp(filePath);
 
-  return text => {
+  return (text) => {
     if (!is.string(text)) {
       throw new TypeError("'text' must be a string");
     }
@@ -33,7 +33,7 @@ exports._redactPath = filePath => {
 };
 
 //      _pathToRegExp :: Path -> Maybe RegExp
-exports._pathToRegExp = filePath => {
+exports._pathToRegExp = (filePath) => {
   try {
     const pathWithNormalizedSlashes = filePath.replace(/\//g, '\\');
     const pathWithEscapedSlashes = filePath.replace(/\\/g, '\\\\');
@@ -56,7 +56,7 @@ exports._pathToRegExp = filePath => {
 
 // Public API
 //      redactSessionID :: String -> String
-exports.redactSessionID = text => {
+exports.redactSessionID = (text) => {
   if (!is.string(text)) {
     throw new TypeError("'text' must be a string");
   }
@@ -65,7 +65,7 @@ exports.redactSessionID = text => {
 };
 
 //      redactGroupIds :: String -> String
-exports.redactGroupIds = text => {
+exports.redactGroupIds = (text) => {
   if (!is.string(text)) {
     throw new TypeError("'text' must be a string");
   }
@@ -87,4 +87,4 @@ exports.redactAll = compose(
   exports.redactSessionID
 );
 
-const removeNewlines = text => text.replace(/\r?\n|\r/g, '');
+const removeNewlines = (text) => text.replace(/\r?\n|\r/g, '');

@@ -143,7 +143,7 @@ function isUpdateAvailable(updateInfo: UpdateInfo): boolean {
   These files won't exist inside certain formats such as a linux deb file.
 */
 async function canAutoUpdate(): Promise<boolean> {
-  const isPackaged = app.isPackaged;
+  const { isPackaged } = app;
 
   // On a production app, we need to use resources path to check for the file
   if (isPackaged && !process.resourcesPath) {
@@ -158,7 +158,7 @@ async function canAutoUpdate(): Promise<boolean> {
       : app.getAppPath();
   const appUpdateConfigPath = path.join(basePath, updateFile);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     try {
       // tslint:disable-next-line: non-literal-fs-path
       const exists = fs.existsSync(appUpdateConfigPath);

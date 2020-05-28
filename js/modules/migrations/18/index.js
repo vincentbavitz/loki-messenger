@@ -8,7 +8,7 @@ exports.run = ({ transaction, logger }) => {
     { unique: false }
   );
 
-  ['hasVisualMediaAttachments', 'hasFileAttachments'].forEach(name => {
+  ['hasVisualMediaAttachments', 'hasFileAttachments'].forEach((name) => {
     logger.info(`Create message attachment metadata index: '${name}'`);
     messagesStore.createIndex(name, ['conversationId', 'received_at', name], {
       unique: false,

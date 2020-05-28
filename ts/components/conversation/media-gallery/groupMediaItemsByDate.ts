@@ -24,7 +24,7 @@ export const groupMediaItemsByDate = (
 ): Array<Section> => {
   const referenceDateTime = moment.utc(timestamp);
 
-  const sortedMediaItem = sortBy(mediaItems, mediaItem => {
+  const sortedMediaItem = sortBy(mediaItems, (mediaItem) => {
     const { message } = mediaItem;
 
     return -message.received_at;
@@ -60,7 +60,7 @@ const toSection = (
   }
 
   const mediaItems = messagesWithSection.map(
-    messageWithSection => messageWithSection.mediaItem
+    (messageWithSection) => messageWithSection.mediaItem
   );
   switch (firstMediaItemWithSection.type) {
     case 'today':
@@ -79,11 +79,10 @@ const toSection = (
         mediaItems,
       };
     default:
-      // NOTE: Investigate why we get the following error:
-      // error TS2345: Argument of type 'any' is not assignable to parameter
-      // of type 'never'.
-      // return missingCaseError(firstMediaItemWithSection.type);
-      return;
+    // NOTE: Investigate why we get the following error:
+    // error TS2345: Argument of type 'any' is not assignable to parameter
+    // of type 'never'.
+    // return missingCaseError(firstMediaItemWithSection.type);
   }
 };
 
@@ -109,9 +108,7 @@ const withSection = (referenceDateTime: moment.Moment) => (
   mediaItem: MediaItemType
 ): MediaItemWithSection => {
   const today = moment(referenceDateTime).startOf('day');
-  const yesterday = moment(referenceDateTime)
-    .subtract(1, 'day')
-    .startOf('day');
+  const yesterday = moment(referenceDateTime).subtract(1, 'day').startOf('day');
   const thisWeek = moment(referenceDateTime).startOf('isoWeek');
   const thisMonth = moment(referenceDateTime).startOf('month');
 

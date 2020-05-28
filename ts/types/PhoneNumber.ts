@@ -26,11 +26,7 @@ export function normalize(
     if (isValidNumber(phoneNumber)) {
       return phoneNumber;
     }
-
-    return;
-  } catch (error) {
-    return;
-  }
+  } catch (error) {}
 }
 
 function validate(number: string) {

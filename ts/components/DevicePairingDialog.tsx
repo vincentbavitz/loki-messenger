@@ -37,7 +37,7 @@ export class DevicePairingDialog extends React.Component<Props, State> {
     this.state = {
       currentPubKey: undefined,
       accepted: false,
-      pubKeyRequests: Array(),
+      pubKeyRequests: [],
       currentView: props.pubKeyToUnpair ? 'unpairDeviceView' : 'qrcodeView',
       loading: false,
       errors: undefined,
@@ -236,7 +236,7 @@ export class DevicePairingDialog extends React.Component<Props, State> {
     this.setState({
       currentPubKey: undefined,
       accepted: false,
-      pubKeyRequests: Array(),
+      pubKeyRequests: [],
       currentView: 'filterRequestView',
       deviceAlias: 'Unnamed Device',
     });
@@ -300,7 +300,7 @@ export class DevicePairingDialog extends React.Component<Props, State> {
     }
 
     this.setState({
-      errors: errors,
+      errors,
     });
   }
 
@@ -363,7 +363,7 @@ export class DevicePairingDialog extends React.Component<Props, State> {
 
   private handleUpdateDeviceAlias(value: ChangeEvent<HTMLInputElement>) {
     const trimmed = value.target.value.trim();
-    if (!!trimmed) {
+    if (trimmed) {
       this.setState({ deviceAlias: trimmed });
     } else {
       this.setState({ deviceAlias: undefined });

@@ -10,11 +10,11 @@ describe('encrypting and decrypting profile data', () => {
 
       return textsecure.crypto
         .encryptProfileName(buffer, key)
-        .then(encrypted => {
+        .then((encrypted) => {
           assert(encrypted.byteLength === NAME_PADDED_LENGTH + 16 + 12);
           return textsecure.crypto
             .decryptProfileName(encrypted, key)
-            .then(decrypted => {
+            .then((decrypted) => {
               assert.strictEqual(
                 dcodeIO.ByteBuffer.wrap(decrypted).toString('utf8'),
                 'Alice'
@@ -28,11 +28,11 @@ describe('encrypting and decrypting profile data', () => {
 
       return textsecure.crypto
         .encryptProfileName(name.buffer, key)
-        .then(encrypted => {
+        .then((encrypted) => {
           assert(encrypted.byteLength === NAME_PADDED_LENGTH + 16 + 12);
           return textsecure.crypto
             .decryptProfileName(encrypted, key)
-            .then(decrypted => {
+            .then((decrypted) => {
               assert.strictEqual(decrypted.byteLength, 0);
               assert.strictEqual(
                 dcodeIO.ByteBuffer.wrap(decrypted).toString('utf8'),
@@ -49,11 +49,11 @@ describe('encrypting and decrypting profile data', () => {
       ).toArrayBuffer();
       const key = libsignal.crypto.getRandomBytes(32);
 
-      return textsecure.crypto.encryptProfile(buffer, key).then(encrypted => {
+      return textsecure.crypto.encryptProfile(buffer, key).then((encrypted) => {
         assert(encrypted.byteLength === buffer.byteLength + 16 + 12);
         return textsecure.crypto
           .decryptProfile(encrypted, key)
-          .then(decrypted => {
+          .then((decrypted) => {
             assertEqualArrayBuffers(buffer, decrypted);
           });
       });
@@ -65,11 +65,11 @@ describe('encrypting and decrypting profile data', () => {
       const key = libsignal.crypto.getRandomBytes(32);
       const badKey = libsignal.crypto.getRandomBytes(32);
 
-      return textsecure.crypto.encryptProfile(buffer, key).then(encrypted => {
+      return textsecure.crypto.encryptProfile(buffer, key).then((encrypted) => {
         assert(encrypted.byteLength === buffer.byteLength + 16 + 12);
         return textsecure.crypto
           .decryptProfile(encrypted, badKey)
-          .catch(error => {
+          .catch((error) => {
             assert.strictEqual(error.name, 'ProfileDecryptError');
           });
       });

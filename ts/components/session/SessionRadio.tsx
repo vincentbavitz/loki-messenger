@@ -27,7 +27,7 @@ export class SessionRadio extends React.PureComponent<Props, State> {
   }
 
   public render() {
-    const active = this.state.active;
+    const { active } = this.state;
     const { label, group, value } = this.props;
 
     return (

@@ -21,6 +21,7 @@ interface State {
 
 export class SessionPasswordModal extends React.Component<Props, State> {
   private readonly passwordInput: React.RefObject<HTMLInputElement>;
+
   private readonly passwordInputConfirm: React.RefObject<HTMLInputElement>;
 
   constructor(props: any) {

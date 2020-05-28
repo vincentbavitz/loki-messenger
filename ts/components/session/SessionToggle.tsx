@@ -32,7 +32,7 @@ export class SessionToggle extends React.PureComponent<Props, State> {
     const { active } = this.props;
 
     this.state = {
-      active: active,
+      active,
     };
   }
 

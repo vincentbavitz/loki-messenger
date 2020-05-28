@@ -2,7 +2,7 @@
 /* eslint-disable no-bitwise */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   window.libloki = window.libloki || {};
 
   const DebugFlagsEnum = {
@@ -163,7 +163,7 @@
   // This is an implementation of the reciprocal of contacts_parser.js
   function serialiseByteBuffers(buffers) {
     const result = new dcodeIO.ByteBuffer();
-    buffers.forEach(buffer => {
+    buffers.forEach((buffer) => {
       // bytebuffer container expands and increments
       // offset automatically
       result.writeInt32(buffer.limit);
@@ -179,7 +179,7 @@
     }
 
     const rawContacts = await Promise.all(
-      sessionContacts.map(async conversation => {
+      sessionContacts.map(async (conversation) => {
         const profile = conversation.getLokiProfile();
         const number = conversation.getNumber();
         const name = profile
@@ -206,9 +206,9 @@
     );
     // Convert raw contacts to an array of buffers
     const contactDetails = rawContacts
-      .filter(x => x.number !== textsecure.storage.user.getNumber())
-      .map(x => new textsecure.protobuf.ContactDetails(x))
-      .map(x => x.encode());
+      .filter((x) => x.number !== textsecure.storage.user.getNumber())
+      .map((x) => new textsecure.protobuf.ContactDetails(x))
+      .map((x) => x.encode());
     // Serialise array of byteBuffers into 1 byteBuffer
     const byteBuffer = serialiseByteBuffers(contactDetails);
     const data = new Uint8Array(byteBuffer.toArrayBuffer());
@@ -248,7 +248,7 @@
   function createOpenGroupsSyncProtoMessage(conversations) {
     // We only want to sync across open groups that we haven't left
     const sessionOpenGroups = conversations.filter(
-      c => c.isPublic() && !c.isRss() && !c.get('left')
+      (c) => c.isPublic() && !c.isRss() && !c.get('left')
     );
 
     if (sessionOpenGroups.length === 0) {
@@ -256,7 +256,7 @@
     }
 
     const openGroups = sessionOpenGroups.map(
-      conversation =>
+      (conversation) =>
         new textsecure.protobuf.SyncMessage.OpenGroupDetails({
           url: conversation.id.split('@').pop(),
           channelId: conversation.get('channelId'),
@@ -279,7 +279,7 @@
     );
     // Send
     const p = new Promise((resolve, reject) => {
-      const callback = result => {
+      const callback = (result) => {
         // callback
         if (result.errors.length > 0) {
           reject(result.errors[0]);
@@ -303,10 +303,10 @@
 
   function sendSessionRequestsToMembers(members = []) {
     // For every member, see if we need to establish a session:
-    members.forEach(memberPubKey => {
+    members.forEach((memberPubKey) => {
       const haveSession = _.some(
         textsecure.storage.protocol.sessions,
-        s => s.number === memberPubKey
+        (s) => s.number === memberPubKey
       );
 
       const ourPubKey = textsecure.storage.user.getNumber();

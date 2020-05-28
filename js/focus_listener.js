@@ -1,5 +1,5 @@
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   let windowFocused = false;

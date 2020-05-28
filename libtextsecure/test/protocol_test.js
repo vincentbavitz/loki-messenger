@@ -3,7 +3,7 @@
 describe('Protocol', () => {
   describe('Unencrypted PushMessageProto "decrypt"', () => {
     // exclusive
-    it('works', done => {
+    it('works', (done) => {
       localStorage.clear();
 
       const textMessage = new textsecure.protobuf.DataMessage();
@@ -22,7 +22,7 @@ describe('Protocol', () => {
           serverMessage.type,
           serverMessage.message
         )
-        .then(message => {
+        .then((message) => {
           assert.equal(message.body, textMessage.body);
           assert.equal(
             message.attachments.length,

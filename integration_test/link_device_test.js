@@ -5,7 +5,7 @@
 const { afterEach, beforeEach, describe, it } = require('mocha');
 const common = require('./common');
 
-describe('Link Device', function() {
+describe('Link Device', function () {
   let app;
   let app2;
   this.timeout(60000);

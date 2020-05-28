@@ -3,8 +3,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import * as MIME from '../../../ts/types/MIME';
-import * as GoogleChrome from '../../../ts/util/GoogleChrome';
+import * as MIME from '../../types/MIME';
+import * as GoogleChrome from '../../util/GoogleChrome';
 
 import { MessageBody } from './MessageBody';
 import { ColorType, LocalizerType } from '../../types/Util';
@@ -63,8 +63,6 @@ function getObjectUrl(thumbnail: Attachment | undefined): string | undefined {
   if (thumbnail && thumbnail.objectUrl) {
     return thumbnail.objectUrl;
   }
-
-  return;
 }
 
 function getTypeLabel({
@@ -88,8 +86,6 @@ function getTypeLabel({
   if (MIME.isAudio(contentType)) {
     return i18n('audio');
   }
-
-  return;
 }
 
 export class Quote extends React.Component<Props, State> {

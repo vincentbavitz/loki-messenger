@@ -15,13 +15,13 @@
 */
 
 // eslint-disable-next-line func-names
-(async function() {
+(async function () {
   'use strict';
 
   // Globally disable drag and drop
   document.body.addEventListener(
     'dragover',
-    e => {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
     },
@@ -29,7 +29,7 @@
   );
   document.body.addEventListener(
     'drop',
-    e => {
+    (e) => {
       e.preventDefault();
       e.stopPropagation();
     },
@@ -149,7 +149,7 @@
 
   // Implicitly used in `indexeddb-backbonejs-adapter`:
   // https://github.com/signalapp/Signal-Desktop/blob/4033a9f8137e62ed286170ed5d4941982b1d3a64/components/indexeddb-backbonejs-adapter/backbone-indexeddb.js#L569
-  window.onInvalidStateError = error =>
+  window.onInvalidStateError = (error) =>
     window.log.error(error && error.stack ? error.stack : error);
 
   window.log.info('background page reloaded');
@@ -177,7 +177,7 @@
     return -1;
   };
   Whisper.events = _.clone(Backbone.Events);
-  Whisper.events.isListenedTo = eventName =>
+  Whisper.events.isListenedTo = (eventName) =>
     Whisper.events._events ? !!Whisper.events._events[eventName] : false;
   let accountManager;
   window.getAccountManager = () => {
@@ -223,7 +223,7 @@
         ConversationCollection: Whisper.ConversationCollection,
       }
     );
-    rssFeedConversations.forEach(conversation => {
+    rssFeedConversations.forEach((conversation) => {
       window.feeds.push(new window.LokiRssAPI(conversation.getRssSettings()));
     });
     const publicConversations = await window.Signal.Data.getAllPublicConversations(
@@ -231,7 +231,7 @@
         ConversationCollection: Whisper.ConversationCollection,
       }
     );
-    publicConversations.forEach(conversation => {
+    publicConversations.forEach((conversation) => {
       // weird but create the object and does everything we need
       conversation.getPublicSendData();
     });
@@ -311,19 +311,19 @@
     // These make key operations available to IPC handlers created in preload.js
     window.Events = {
       getThemeSetting: () => 'dark', // storage.get('theme-setting', 'dark')
-      setThemeSetting: value => {
+      setThemeSetting: (value) => {
         storage.put('theme-setting', value);
         onChangeTheme();
       },
       getHideMenuBar: () => storage.get('hide-menu-bar'),
-      setHideMenuBar: value => {
+      setHideMenuBar: (value) => {
         storage.put('hide-menu-bar', value);
         window.setAutoHideMenuBar(value);
         window.setMenuBarVisibility(!value);
       },
 
       getSpellCheck: () => storage.get('spell-check', true),
-      setSpellCheck: value => {
+      setSpellCheck: (value) => {
         storage.put('spell-check', value);
       },
 
@@ -394,9 +394,7 @@
     idleDetector = new IdleDetector();
     let isMigrationWithIndexComplete = false;
     window.log.info(
-      `Starting background data migration. Target version: ${
-        Message.CURRENT_SCHEMA_VERSION
-      }`
+      `Starting background data migration. Target version: ${Message.CURRENT_SCHEMA_VERSION}`
     );
     idleDetector.on('idle', async () => {
       const NUM_MESSAGES_PER_BATCH = 1;
@@ -465,7 +463,7 @@
       }
 
       const conversation = ConversationController.get(conversationId);
-      messageIds.forEach(id => {
+      messageIds.forEach((id) => {
         if (conversation) {
           conversation.removeMessage(id);
         }
@@ -520,7 +518,7 @@
       `Cleanup: Found ${messagesForCleanup.length} messages for cleanup`
     );
     await Promise.all(
-      messagesForCleanup.map(async message => {
+      messagesForCleanup.map(async (message) => {
         const delivered = message.get('delivered');
         const sentAt = message.get('sent_at');
         const expirationStartTimestamp = message.get(
@@ -665,10 +663,10 @@
 
         if (avatar) {
           // I hate duplicating this...
-          const readFile = attachment =>
+          const readFile = (attachment) =>
             new Promise((resolve, reject) => {
               const fileReader = new FileReader();
-              fileReader.onload = e => {
+              fileReader.onload = (e) => {
                 const data = e.target.result;
                 resolve({
                   ...attachment,
@@ -825,7 +823,7 @@
       appView.openConversation(groupId, {});
     };
 
-    window.confirmationDialog = params => {
+    window.confirmationDialog = (params) => {
       const confirmDialog = new Whisper.SessionConfirmView({
         el: $('body'),
         title: params.title,
@@ -846,17 +844,17 @@
     window.showQRDialog = window.owsDesktopApp.appView.showQRDialog;
     window.showSeedDialog = window.owsDesktopApp.appView.showSeedDialog;
     window.showPasswordDialog = window.owsDesktopApp.appView.showPasswordDialog;
-    window.showEditProfileDialog = async callback => {
+    window.showEditProfileDialog = async (callback) => {
       const ourNumber = window.storage.get('primaryDevicePubKey');
       const conversation = await ConversationController.getOrCreateAndWait(
         ourNumber,
         'private'
       );
 
-      const readFile = attachment =>
+      const readFile = (attachment) =>
         new Promise((resolve, reject) => {
           const fileReader = new FileReader();
-          fileReader.onload = e => {
+          fileReader.onload = (e) => {
             const data = e.target.result;
             resolve({
               ...attachment,
@@ -936,8 +934,8 @@
             window.lokiPublicChatAPI.setProfileName(newName);
             window
               .getConversations()
-              .filter(convo => convo.isPublic() && !convo.isRss())
-              .forEach(convo =>
+              .filter((convo) => convo.isPublic() && !convo.isRss())
+              .forEach((convo) =>
                 convo.trigger('ourAvatarChanged', { url, profileKey })
               );
           },
@@ -962,13 +960,10 @@
     window.setSettingValue('render-message-onboarding', true);
 
     // Generates useful random ID for various purposes
-    window.generateID = () =>
-      Math.random()
-        .toString(36)
-        .substring(3);
+    window.generateID = () => Math.random().toString(36).substring(3);
 
     window.toasts = new Map();
-    window.pushToast = options => {
+    window.pushToast = (options) => {
       // Setting toasts with the same ID can be used to prevent identical
       // toasts from appearing at once (stacking).
       // If toast already exists, it will be reloaded (updated)
@@ -1013,13 +1008,13 @@
       return toastID;
     };
 
-    window.getFriendsFromContacts = contacts => {
+    window.getFriendsFromContacts = (contacts) => {
       // To call from TypeScript, input / output are both
       // of type Array<ConversationType>
       let friendList = contacts;
       if (friendList !== undefined) {
         friendList = friendList.filter(
-          friend =>
+          (friend) =>
             (friend.type === 'direct' && !friend.isMe) ||
             (friend.type === 'group' && !friend.isPublic && !friend.isRss)
         );
@@ -1148,7 +1143,7 @@
     };
 
     window.sendGroupInvitations = (serverInfo, pubkeys) => {
-      pubkeys.forEach(async pubkey => {
+      pubkeys.forEach(async (pubkey) => {
         const convo = await ConversationController.getOrCreateAndWait(
           pubkey,
           'private'
@@ -1170,30 +1165,30 @@
       }
     });
 
-    Whisper.events.on('updateGroupName', async groupConvo => {
+    Whisper.events.on('updateGroupName', async (groupConvo) => {
       if (appView) {
         appView.showUpdateGroupNameDialog(groupConvo);
       }
     });
-    Whisper.events.on('updateGroupMembers', async groupConvo => {
+    Whisper.events.on('updateGroupMembers', async (groupConvo) => {
       if (appView) {
         appView.showUpdateGroupMembersDialog(groupConvo);
       }
     });
 
-    Whisper.events.on('inviteFriends', async groupConvo => {
+    Whisper.events.on('inviteFriends', async (groupConvo) => {
       if (appView) {
         appView.showInviteFriendsDialog(groupConvo);
       }
     });
 
-    Whisper.events.on('addModerators', async groupConvo => {
+    Whisper.events.on('addModerators', async (groupConvo) => {
       if (appView) {
         appView.showAddModeratorsDialog(groupConvo);
       }
     });
 
-    Whisper.events.on('removeModerators', async groupConvo => {
+    Whisper.events.on('removeModerators', async (groupConvo) => {
       if (appView) {
         appView.showRemoveModeratorsDialog(groupConvo);
       }
@@ -1244,13 +1239,13 @@
       }
     );
 
-    Whisper.events.on('leaveGroup', async groupConvo => {
+    Whisper.events.on('leaveGroup', async (groupConvo) => {
       if (appView) {
         appView.showLeaveGroupDialog(groupConvo);
       }
     });
 
-    Whisper.events.on('deleteConversation', async conversation => {
+    Whisper.events.on('deleteConversation', async (conversation) => {
       await conversation.destroyMessages();
       await window.Signal.Data.removeConversation(conversation.id, {
         Conversation: Whisper.Conversation,
@@ -1305,7 +1300,7 @@
       }
     });
 
-    Whisper.events.on('showToast', options => {
+    Whisper.events.on('showToast', (options) => {
       if (
         appView &&
         appView.inboxView &&
@@ -1315,7 +1310,7 @@
       }
     });
 
-    Whisper.events.on('showConfirmationDialog', options => {
+    Whisper.events.on('showConfirmationDialog', (options) => {
       if (
         appView &&
         appView.inboxView &&
@@ -1325,13 +1320,13 @@
       }
     });
 
-    Whisper.events.on('showSessionRestoreConfirmation', options => {
+    Whisper.events.on('showSessionRestoreConfirmation', (options) => {
       if (appView) {
         appView.showSessionRestoreConfirmation(options);
       }
     });
 
-    Whisper.events.on('showNicknameDialog', options => {
+    Whisper.events.on('showNicknameDialog', (options) => {
       if (appView) {
         appView.showNicknameDialog(options);
       }
@@ -1410,7 +1405,7 @@
       }
     });
 
-    Whisper.events.on('devicePairingRequestRejected', async pubKey => {
+    Whisper.events.on('devicePairingRequestRejected', async (pubKey) => {
       await libloki.storage.removeContactPreKeyBundle(pubKey);
       await libloki.storage.removePairingAuthorisationForSecondaryPubKey(
         pubKey
@@ -1581,7 +1576,7 @@
     messageReceiver.addEventListener('configuration', onConfiguration);
     messageReceiver.addEventListener('typing', onTyping);
 
-    Whisper.events.on('endSession', source => {
+    Whisper.events.on('endSession', (source) => {
       messageReceiver.handleEndSession(source);
     });
 
@@ -1630,13 +1625,16 @@
       });
 
       if (Whisper.Import.isComplete()) {
-        const { wrap, sendOptions } = ConversationController.prepareForSend(
+        const {
+          wrap,
+          sendOptions,
+        } = ConversationController.prepareForSend(
           textsecure.storage.user.getNumber(),
           { syncMessage: true }
         );
         wrap(
           textsecure.messaging.sendRequestConfigurationSyncMessage(sendOptions)
-        ).catch(error => {
+        ).catch((error) => {
           window.log.error(
             'Import complete, but failed to send sync message',
             error && error.stack ? error.stack : error
@@ -1808,7 +1806,7 @@
       const isOurSecondaryDevice =
         id !== ourPrimaryKey &&
         ourDevices &&
-        ourDevices.some(devicePubKey => devicePubKey === id);
+        ourDevices.some((devicePubKey) => devicePubKey === id);
 
       if (isOurSecondaryDevice) {
         await conversation.setSecondaryStatus(true, ourPrimaryKey);
@@ -1977,7 +1975,7 @@
   }
 
   // Descriptors
-  const getGroupDescriptor = group => ({
+  const getGroupDescriptor = (group) => ({
     type: Message.GROUP,
     id: group.id,
   });
@@ -1999,7 +1997,7 @@
     getMessageDescriptor,
     handleProfileUpdate,
   }) {
-    return async event => {
+    return async (event) => {
       const { data, confirm } = event;
       if (!data) {
         window.log.warn('Invalid data passed to createMessageHandler.', event);
@@ -2105,12 +2103,14 @@
     let sentTo = [];
 
     if (data.unidentifiedStatus && data.unidentifiedStatus.length) {
-      sentTo = data.unidentifiedStatus.map(item => item.destination);
-      const unidentified = _.filter(data.unidentifiedStatus, item =>
+      sentTo = data.unidentifiedStatus.map((item) => item.destination);
+      const unidentified = _.filter(data.unidentifiedStatus, (item) =>
         Boolean(item.unidentified)
       );
       // eslint-disable-next-line no-param-reassign
-      data.unidentifiedDeliveries = unidentified.map(item => item.destination);
+      data.unidentifiedDeliveries = unidentified.map(
+        (item) => item.destination
+      );
     }
 
     return new Whisper.Message({
@@ -2199,11 +2199,9 @@
           data.timestamp,
           sendOptions
         )
-      ).catch(error => {
+      ).catch((error) => {
         window.log.error(
-          `Failed to send delivery receipt to ${data.source} for message ${
-            data.timestamp
-          }:`,
+          `Failed to send delivery receipt to ${data.source} for message ${data.timestamp}:`,
           error && error.stack ? error.stack : error
         );
       });

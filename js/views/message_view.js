@@ -1,7 +1,7 @@
 /* global Whisper: false */
 
 // eslint-disable-next-line func-names
-(function() {
+(function () {
   'use strict';
 
   window.Whisper = window.Whisper || {};
@@ -49,37 +49,44 @@
           Component: Components.TimerNotification,
           props: this.model.propsForTimerNotification,
         };
-      } else if (this.model.propsForSafetyNumberNotification) {
+      }
+      if (this.model.propsForSafetyNumberNotification) {
         return {
           Component: Components.SafetyNumberNotification,
           props: this.model.propsForSafetyNumberNotification,
         };
-      } else if (this.model.propsForVerificationNotification) {
+      }
+      if (this.model.propsForVerificationNotification) {
         return {
           Component: Components.VerificationNotification,
           props: this.model.propsForVerificationNotification,
         };
-      } else if (this.model.propsForResetSessionNotification) {
+      }
+      if (this.model.propsForResetSessionNotification) {
         return {
           Component: Components.ResetSessionNotification,
           props: this.model.propsForResetSessionNotification,
         };
-      } else if (this.model.propsForGroupNotification) {
+      }
+      if (this.model.propsForGroupNotification) {
         return {
           Component: Components.GroupNotification,
           props: this.model.propsForGroupNotification,
         };
-      } else if (this.model.isSessionRestoration()) {
+      }
+      if (this.model.isSessionRestoration()) {
         return {
           Component: Components.ResetSessionNotification,
           props: this.model.getPropsForResetSessionNotification(),
         };
-      } else if (this.model.propsForFriendRequest) {
+      }
+      if (this.model.propsForFriendRequest) {
         return {
           Component: Components.FriendRequest,
           props: this.model.propsForFriendRequest,
         };
-      } else if (this.model.propsForGroupInvitation) {
+      }
+      if (this.model.propsForGroupInvitation) {
         return {
           Component: Components.GroupInvitation,
           props: this.model.propsForGroupInvitation,

@@ -100,7 +100,9 @@ interface Props {
 
 export class ConversationHeader extends React.Component<Props> {
   public showMenuBound: (event: React.MouseEvent<HTMLDivElement>) => void;
+
   public onAvatarClickBound: (userPubKey: string) => void;
+
   public menuTriggerRef: React.RefObject<any>;
 
   public constructor(props: Props) {
@@ -165,9 +167,8 @@ export class ConversationHeader extends React.Component<Props> {
 
       if (isPublic) {
         return subscriberCount || 0;
-      } else {
-        return members.length;
       }
+      return members.length;
     })();
 
     let text = '';
@@ -188,12 +189,10 @@ export class ConversationHeader extends React.Component<Props> {
     let title;
     if (profileName) {
       title = `${profileName} ${window.shortenPubkey(phoneNumber)}`;
+    } else if (name) {
+      title = `${name}`;
     } else {
-      if (name) {
-        title = `${name}`;
-      } else {
-        title = `User ${window.shortenPubkey(phoneNumber)}`;
-      }
+      title = `User ${window.shortenPubkey(phoneNumber)}`;
     }
 
     return (
@@ -407,7 +406,7 @@ export class ConversationHeader extends React.Component<Props> {
               {this.renderOptions(triggerId)}
               {this.renderTitle()}
               {/* This might be redundant as we show the title in the title: */}
-              {/*isPrivateGroup ? this.renderMemberCount() : null*/}
+              {/* isPrivateGroup ? this.renderMemberCount() : null */}
             </div>
           </div>
           {!isKickedFromGroup && this.renderExpirationLength()}
@@ -468,37 +467,34 @@ export class ConversationHeader extends React.Component<Props> {
     const blockTitle = isBlocked ? i18n('unblockUser') : i18n('blockUser');
     const blockHandler = isBlocked ? onUnblockUser : onBlockUser;
 
-    const disappearingMessagesMenuItem = isFriend &&
-      !isKickedFromGroup && (
-        <SubMenu title={disappearingTitle}>
-          {(timerOptions || []).map(item => (
-            <MenuItem
-              key={item.value}
-              onClick={() => {
-                onSetDisappearingMessages(item.value);
-              }}
-            >
-              {item.name}
-            </MenuItem>
-          ))}
-        </SubMenu>
-      );
+    const disappearingMessagesMenuItem = isFriend && !isKickedFromGroup && (
+      <SubMenu title={disappearingTitle}>
+        {(timerOptions || []).map((item) => (
+          <MenuItem
+            key={item.value}
+            onClick={() => {
+              onSetDisappearingMessages(item.value);
+            }}
+          >
+            {item.name}
+          </MenuItem>
+        ))}
+      </SubMenu>
+    );
     const showMembersMenuItem = isGroup && (
       <MenuItem onClick={onShowGroupMembers}>{i18n('showMembers')}</MenuItem>
     );
-    const showSafetyNumberMenuItem = !isGroup &&
-      !isMe && (
-        <MenuItem onClick={onShowSafetyNumber}>
-          {i18n('showSafetyNumber')}
-        </MenuItem>
-      );
-    const resetSessionMenuItem = isFriend &&
-      !isGroup && (
-        <MenuItem onClick={onResetSession}>{i18n('resetSession')}</MenuItem>
-      );
-    const blockHandlerMenuItem = !isMe &&
-      !isGroup &&
-      !isRss && <MenuItem onClick={blockHandler}>{blockTitle}</MenuItem>;
+    const showSafetyNumberMenuItem = !isGroup && !isMe && (
+      <MenuItem onClick={onShowSafetyNumber}>
+        {i18n('showSafetyNumber')}
+      </MenuItem>
+    );
+    const resetSessionMenuItem = isFriend && !isGroup && (
+      <MenuItem onClick={onResetSession}>{i18n('resetSession')}</MenuItem>
+    );
+    const blockHandlerMenuItem = !isMe && !isGroup && !isRss && (
+      <MenuItem onClick={blockHandler}>{blockTitle}</MenuItem>
+    );
     // const changeNicknameMenuItem = !isMe &&
     //   !isGroup && (
     //     <MenuItem onClick={onChangeNickname}>{i18n('changeNickname')}</MenuItem>
@@ -517,7 +513,7 @@ export class ConversationHeader extends React.Component<Props> {
     );
 
     return (
-      <React.Fragment>
+      <>
         {/* <MenuItem onClick={onShowAllMedia}>{i18n('viewAllMedia')}</MenuItem> */}
         {disappearingMessagesMenuItem}
         {showMembersMenuItem}
@@ -527,7 +523,7 @@ export class ConversationHeader extends React.Component<Props> {
         {/* {changeNicknameMenuItem}
         {clearNicknameMenuItem} */}
         {archiveConversationMenuItem}
-      </React.Fragment>
+      </>
     );
   }
 }

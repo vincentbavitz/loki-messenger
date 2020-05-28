@@ -53,6 +53,7 @@ interface State {
 
 export class LeftPaneChannelSection extends React.Component<Props, State> {
   private readonly updateSearchBound: (searchedString: string) => void;
+
   private readonly debouncedSearch: (searchTerm: string) => void;
 
   public constructor(props: Props) {
@@ -86,7 +87,7 @@ export class LeftPaneChannelSection extends React.Component<Props, State> {
     if (conversationList !== undefined) {
       conversationList = conversationList.filter(
         // a channel is either a public group or a rss group
-        conversation => conversation && conversation.type === 'group'
+        (conversation) => conversation && conversation.type === 'group'
       );
     }
 
@@ -140,7 +141,7 @@ export class LeftPaneChannelSection extends React.Component<Props, State> {
       );
     }
 
-    const length = conversations.length;
+    const { length } = conversations;
 
     // Note: conversations is not a known prop for List, but it is required to ensure that
     //   it re-renders when our conversation data changes. Otherwise it would just render
@@ -429,7 +430,7 @@ export class LeftPaneChannelSection extends React.Component<Props, State> {
       return;
     }
 
-    const groupMemberIds = groupMembers.map(m => m.id);
+    const groupMemberIds = groupMembers.map((m) => m.id);
     await window.doCreateGroup(groupName, groupMemberIds);
     this.handleToggleOverlay(undefined);
 
@@ -464,8 +465,6 @@ export function joinChannelStateManager(
         type: 'error',
         id: 'connectToServerFail',
       });
-
-      return;
     }
   }, window.CONSTANTS.MAX_CONNECTION_DURATION);
 
