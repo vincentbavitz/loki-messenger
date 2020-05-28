@@ -79,16 +79,20 @@ textarea {
 }
 
 .session-verified-check {
-  height: 1rem;
-  width: 1rem;
-  font-size: 0.75rem;
-  margin: 0 0.3rem;
+  height: 1em;
+  width: 1em;
+  margin: 0 0.3em;
   color: $session-color-white;
   background-color: $session-color-verified;
   border-radius: 50%;
   display: inline-flex;
   justify-content: center;
   align-items: center;
+
+  &__bubble {
+    font-size: 0.75em;
+    position: absolute;
+  }
 }
 
 .session-button {

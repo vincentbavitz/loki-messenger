@@ -1333,3 +1333,51 @@ async function getMessagesWithFileAttachments(conversationId, { limit }) {
     limit,
   });
 }
+
+async function hasLnsMapping(pubkey) {
+  // Get LNS status of any pubkey including our own.
+
+}
+
+async function addLnsMapping({ pubkey, lnsName, lastVerified }) {
+  
+}
+
+class LnsMapingCache {
+  constructor() {
+    // Initialize cache from the DB
+    this.load();
+  }
+
+  async get() {
+    // Get mapping from the cache
+
+  const lnsMappingCacheJSON = await getItemById('lnsMappingCache');
+
+  lnsMappingCache = lnsMappingCacheJSON
+    ? JSON.parse(lnsMappingCacheJSON)
+    : [];
+
+  }
+
+  async add() {
+    // Add to cache then sync with DB
+
+    // If lastVerified is too old, make sure you get a valid mapping from 
+    // LokiSnodeAPI.
+    
+  }
+
+  async remove() {
+    // Remove from cache then sync with DB
+  }
+
+  async #load() {
+    // Load mappings from DB into cache (on startup)
+  }
+
+  async #sync() {
+    // # makes this method private
+    // Sync cache with the DB
+  }
+}

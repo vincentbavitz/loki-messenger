@@ -39,8 +39,8 @@ export class SessionVerifiedCheck extends React.PureComponent<Props> {
             // because these don't support TypeScript
             <></>
           )}
+          ✔
         </div>
-        ✔
       </div>
     );
   }

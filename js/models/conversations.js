@@ -609,6 +609,7 @@
         isPendingFriendRequest: this.isPendingFriendRequest(),
         hasReceivedFriendRequest: this.hasReceivedFriendRequest(),
         hasSentFriendRequest: this.hasSentFriendRequest(),
+        isLnsVerified: "YESSS",
         isBlocked: this.isBlocked(),
         isSecondary: !!this.get('secondaryStatus'),
         primaryDevice: this.getPrimaryDevicePubKey(),
