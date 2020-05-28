@@ -1,4 +1,4 @@
-/* global Whisper, i18n, textsecure, _ */
+/* global Whisper, i18n, textsecure, libloki, _ */
 
 // eslint-disable-next-line func-names
 (function() {
@@ -164,7 +164,6 @@
         Component: window.Signal.Components.UpdateGroupMembersDialog,
         props: {
           titleText: this.titleText,
-          groupName: this.groupName,
           okText: i18n('ok'),
           cancelText: i18n('cancel'),
           isPublic: this.isPublic,
@@ -180,14 +179,52 @@
       this.$el.append(this.dialogView.el);
       return this;
     },
-    onSubmit(groupName, newMembers) {
+    async onSubmit(newMembers) {
+      const _ = window.Lodash;
       const ourPK = textsecure.storage.user.getNumber();
       const allMembers = window.Lodash.concat(newMembers, [ourPK]);
 
+      // We need to NOT trigger an group update if the list of member is the same.
+      const notPresentInOld = allMembers.filter(
+        m => !this.existingMembers.includes(m)
+      );
+
+      const notPresentInNew = this.existingMembers.filter(
+        m => !allMembers.includes(m)
+      );
+
+      // Filter out all linked devices for cases in which one device
+      // exists in group, but hasn't yet synced with its other devices.
+      const getDevicesForRemoved = async () => {
+        const promises = notPresentInNew.map(member =>
+          libloki.storage.getPairedDevicesFor(member)
+        );
+        const devices = _.flatten(await Promise.all(promises));
+
+        return devices;
+      };
+
+      // Get all devices for notPresentInNew
+      const allDevicesOfMembersToRemove = await getDevicesForRemoved();
+
+      // If any extra devices of removed exist in newMembers, ensure that you filter them
+      const filteredMemberes = allMembers.filter(
+        member => !_.includes(allDevicesOfMembersToRemove, member)
+      );
+
+      const xor = _.xor(notPresentInNew, notPresentInOld);
+      if (xor.length === 0) {
+        window.console.log(
+          'skipping group update: no detected changes in group member list'
+        );
+
+        return;
+      }
+
       window.doUpdateGroup(
         this.groupId,
-        groupName,
-        allMembers,
+        this.groupName,
+        filteredMemberes,
         this.avatarPath
       );
     },
