@@ -61,6 +61,8 @@ export function getExtensionForDisplay({
     if (extension.length) {
       return extension;
     }
+
+    return;
   }
 
   if (!contentType) {
@@ -302,7 +304,7 @@ export const isFile = (attachment: Attachment): boolean => {
 export const isVoiceMessage = (attachment: Attachment): boolean => {
   const flag = SignalService.AttachmentPointer.Flags.VOICE_MESSAGE;
   const hasFlag =
-    // tslint:disable-next-line no-bitwise
+    // @tslint-ignore
     !is.undefined(attachment.flags) && (attachment.flags & flag) === flag;
   if (hasFlag) {
     return true;

@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-console: 0 */
+
 import { applyMiddleware, createStore as reduxCreateStore } from 'redux';
 
 import promise from 'redux-promise-middleware';
