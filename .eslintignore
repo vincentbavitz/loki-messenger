@@ -26,6 +26,7 @@ test/blanket_mocha.js
 
 # TypeScript generated files
 ts/**/*.js
+ts/protobuf/compiled.d.ts
 
 # Libloki specific files
 libloki/test/components.js
