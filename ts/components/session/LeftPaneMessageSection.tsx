@@ -487,11 +487,9 @@ export class LeftPaneMessageSection extends React.Component<Props, State> {
           this.setState({ loading: true });
         }
       });
-    } catch (e) {
-      this.setState({
-        loading: false,
-      });
 
+      this.handleToggleOverlay(undefined);
+    } catch (e) {
       window.pushToast({
         title: window.i18n('connectToServerFail'),
         id: 'connectToServerFail',
@@ -500,7 +498,7 @@ export class LeftPaneMessageSection extends React.Component<Props, State> {
     } finally {
       this.setState({
         loading: false,
-       });
+      });
     }
   }
 
