@@ -29,7 +29,7 @@ import {
   SessionButtonColor,
   SessionButtonType,
 } from './SessionButton';
-import { OpenGroup } from '../../session/types';
+import { OpenGroup } from '../../session/objects';
 
 export interface Props {
   searchTerm: string;

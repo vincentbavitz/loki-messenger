@@ -641,7 +641,7 @@
         active: true,
         expireTimer: convo.get('expireTimer'),
         avatar,
-        is_medium_group: false,
+        isMediumGroup: false,
       };
 
       const recipients = _.union(convo.get('members'), members);
@@ -712,7 +712,7 @@
         avatar: nullAvatar,
         recipients,
         members,
-        is_medium_group: isMediumGroup,
+        isMediumGroup,
         options,
       };
 

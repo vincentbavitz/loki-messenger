@@ -433,5 +433,5 @@ message GroupDetails {
   optional string color       = 7;
   optional bool   blocked     = 8;
   repeated string admins      = 9;
-  optional bool is_medium_group = 10;
+  optional bool isMediumGroup = 10;
 }

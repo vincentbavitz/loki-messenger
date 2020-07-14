@@ -5,7 +5,7 @@ import {
   OpenGroupMessage,
 } from '../../../session/messages/outgoing';
 import * as MIME from '../../../../ts/types/MIME';
-import { OpenGroup } from '../../../session/types';
+import { OpenGroup } from '../../../session/objects';
 
 describe('OpenGroupMessage', () => {
   const group = new OpenGroup({

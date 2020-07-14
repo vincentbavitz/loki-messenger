@@ -20,9 +20,9 @@ export {
   getChainKey,
 };
 
-async function createSenderKeysForMembers(
+export async function createSenderKeysForMembers(
   groupId: string,
-  members: Array<string>
+  members: Array<PubKey>
 ): Promise<Array<RatchetState>> {
   const allDevices = await Promise.all(
     members.map(async pk => {
@@ -73,7 +73,7 @@ export async function createMediumSizeGroup(
     avatar: '',
     secretKey: new Uint8Array(identityKeys.privKey),
     senderKeys,
-    is_medium_group: true,
+    isMediumGroup: true,
   };
 
   await onGroupReceived(groupDetails);

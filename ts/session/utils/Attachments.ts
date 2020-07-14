@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import { Attachment } from '../../types/Attachment';
-import { OpenGroup } from '../types';
+import { OpenGroup } from '../objects';
 import {
   AttachmentPointer,
   Preview,

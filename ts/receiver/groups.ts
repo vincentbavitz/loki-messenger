@@ -135,14 +135,14 @@ interface GroupInfo {
   id: string;
   name: string;
   members: Array<string>; // Primary keys
-  is_medium_group: boolean;
+  isMediumGroup: boolean;
   active: boolean;
   avatar: any;
   expireTimer: number;
-  secretKey: any;
   color?: any; // what is this???
   blocked?: boolean;
-  senderKeys: Array<RatchetKey>;
+  secretKey?: any;
+  senderKeys?: Array<RatchetKey>;
 }
 
 export async function onGroupReceived(details: GroupInfo) {
@@ -173,7 +173,7 @@ export async function onGroupReceived(details: GroupInfo) {
     members: details.members,
     color: details.color,
     type: 'group',
-    is_medium_group: details.is_medium_group || false,
+    isMediumGroup: details.isMediumGroup || false,
   };
 
   if (details.active) {

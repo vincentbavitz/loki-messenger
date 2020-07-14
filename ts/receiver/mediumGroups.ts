@@ -144,7 +144,7 @@ async function handleNewGroup(
 
     // TODO: Check that we are even a part of this group?
 
-    convo.set('is_medium_group', true);
+    convo.set('isMediumGroup', true);
     convo.set('active_at', Date.now());
     convo.set('name', name);
     convo.set('groupAdmins', admins);

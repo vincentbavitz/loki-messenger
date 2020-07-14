@@ -239,7 +239,7 @@
       return false;
     },
     isMediumGroup() {
-      return this.get('is_medium_group');
+      return this.get('isMediumGroup');
     },
     async block() {
       if (!this.id || this.isPublic() || this.isRss()) {
@@ -1870,7 +1870,7 @@
       // Difference between `recipients` and `members` is that `recipients` includes the members which were removed in this update
       const { id, name, members, avatar, recipients } = groupUpdate;
 
-      if (groupUpdate.is_medium_group) {
+      if (groupUpdate.isMediumGroup) {
         const { secretKey, senderKeys } = groupUpdate;
 
         const membersBin = members.map(

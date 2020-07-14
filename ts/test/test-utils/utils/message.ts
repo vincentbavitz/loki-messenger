@@ -4,7 +4,7 @@ import {
   OpenGroupMessage,
 } from '../../../session/messages/outgoing';
 import { v4 as uuid } from 'uuid';
-import { OpenGroup } from '../../../session/types';
+import { OpenGroup } from '../../../session/objects';
 import { generateFakePubKey, generateFakePubKeys } from './pubkey';
 import { ConversationAttributes } from '../../../../js/models/conversations';
 
