@@ -2615,8 +2615,11 @@
   "devicePairedSuccessfully": {
     "message": "Device linked successfully"
   },
-  "invalidGroupName": {
-    "message": "Group Name length must be between 1 to $maxSize$",
+  "invalidGroupNameToastTitle": {
+    "message": "Invalid Group Name"
+  },
+  "invalidGroupNameToastDescription": {
+    "message": "Group names can not begin or end with hyphens or underscores and must be $maxSize$ characters or less.",
     "description": "Error message displayed on invalid group name",
     "placeholders": {
       "maxSize": {

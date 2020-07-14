@@ -327,7 +327,7 @@ export class LeftPaneMessageSection extends React.Component<Props, State> {
           groupName: string,
           groupMembers: Array<ContactType>,
           senderKeys: boolean
-        ) => this.onCreateClosedGroup(groupName, groupMembers, senderKeys)}
+        ) => this.onCreateClosedGroup(groupName, groupMembers)}
         searchTerm={searchTerm}
         updateSearch={this.updateSearchBound}
         showSpinner={loading}
@@ -519,14 +519,20 @@ export class LeftPaneMessageSection extends React.Component<Props, State> {
 
   private async onCreateClosedGroup(
     groupName: string,
-    groupMembers: Array<ContactType>,
-    senderKeys: boolean
+    groupMembers: Array<ContactType>
   ) {
-    // Validate group name
-    if (!groupName.length) {
+
+    const name = groupName.trim();
+    if (!Constants.CLOSED_GROUP.NAME_REGEX.test(name)) {
+      window.pushToast({
+        title: window.i18n('invalidGroupNameToastTitle'),
+        description: window.i18n('invalidGroupNameToastDescription', Constants.CLOSED_GROUP.MAX_NAME_LENGTH),
+        type: 'warning',
+        id: 'invalidGroupName',
+      });
+
       return;
     }
-    const name = groupName.trim();
 
     const members = groupMembers
       .map(member => {

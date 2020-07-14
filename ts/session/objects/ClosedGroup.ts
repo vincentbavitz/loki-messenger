@@ -9,6 +9,9 @@ import * as Data from '../../../js/modules/data';
 import { createSenderKeysForMembers } from '../medium_group';
 import { StringUtils } from '../utils';
 import { Constants } from '..';
+import { ConversationType } from '../../state/ducks/conversations';
+import { ConversationModel } from '../../../js/models/conversations';
+import { ZERO } from 'long';
 
 interface ClosedGroupParams {
   id: PubKey;
@@ -76,7 +79,8 @@ export class ClosedGroup {
       members.map(m => MultiDeviceProtocol.getPrimaryDevice(m))
     );
 
-    const admins = [primaryDeviceKey];
+    const admins = [PubKey.cast(primaryDeviceKey)];
+    const adminsKeys = admins.map(a => a.key);
     const allMembers = [...refinedMembers, primaryDeviceKey];
     const allMembersKeys = allMembers.map(m => m.key);
 
@@ -113,12 +117,12 @@ export class ClosedGroup {
     await onGroupReceived(groupDetails);
 
     // Set conversation details
-    const convo = await ConversationController.getOrCreateAndWait(id, 'group');
-    convo.updateGroupAdmins([primaryDeviceKey]);
-    convo.updateGroup(groupDetails);
+    const conversation = await ConversationController.getOrCreateAndWait(id, 'group');
+    conversation.updateGroupAdmins(adminsKeys);
+    conversation.updateGroup(groupDetails);
 
-    textsecure.messaging.sendGroupSyncMessage([convo]);
-    owsDesktopApp.openConversation(id, {});
+    textsecure.messaging.sendGroupSyncMessage([conversation]);
+    owsDesktopApp.appView.openConversation(id, {});
 
     // Subscribe to this group id
     if (isMediumGroup) {
@@ -133,10 +137,26 @@ export class ClosedGroup {
     });
   }
 
-  // public static get(id: PubKey): ClosedGroup | undefined {
-  //   // Gets a closed group from its group id
-  //   return;
-  // }
+  public static get(id: PubKey): ClosedGroup | undefined {
+    // Gets a closed group from its group id
+
+    const { ConversationController } = window;
+
+    const conversation = ConversationController.get(id.key) as ConversationModel;
+
+    const type = Boolean(conversation.attributes.isMediumGroup)
+      ? ClosedGroupType.MEDIUM
+      : ClosedGroupType.SMALL;
+
+    const members = conversation.attributes.members;
+
+    // validation
+    // conversation.attributes.type === 'group'
+    // members.length > 0
+    // WHY DOES REGEX NOT ALLOW UPPERCASE NAMES?
+
+    return;
+  }
 
   // public update(): Promise<Array<PubKey>> {
   //   //
@@ -163,9 +183,10 @@ export class ClosedGroup {
   //   // Leave group
   // }
 
-  // public getConversation() {
-
-  // }
+  public getConversation(): ConversationModel | undefined {
+    const { ConversationController } = window;
+    return ConversationController.get(this.id.key);
+  }
 
   //   static from(groupId) {
   //       // Returns a new instance from a groupId if it's valid
