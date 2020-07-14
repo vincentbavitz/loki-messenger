@@ -29,7 +29,9 @@ import {
   SessionButtonColor,
   SessionButtonType,
 } from './SessionButton';
-import { OpenGroup } from '../../session/objects';
+import { ClosedGroup, OpenGroup } from '../../session/objects';
+import { ClosedGroupType, PubKey } from '../../session/types';
+import { Constants } from '../../session';
 
 export interface Props {
   searchTerm: string;
@@ -520,19 +522,46 @@ export class LeftPaneMessageSection extends React.Component<Props, State> {
     groupMembers: Array<ContactType>,
     senderKeys: boolean
   ) {
-    await MainViewController.createClosedGroup(
-      groupName,
-      groupMembers,
-      senderKeys,
-      () => {
-        this.handleToggleOverlay(undefined);
+    // Validate group name
+    if (!groupName.length) {
+      return;
+    }
+    const name = groupName.trim();
 
-        window.pushToast({
-          title: window.i18n('closedGroupCreatedToastTitle'),
-          type: 'success',
-        });
-      }
-    );
+    const members = groupMembers
+      .map(member => {
+        try {
+          return PubKey.cast(member.id);
+        } catch (e) {
+          return undefined;
+        }
+      })
+      .filter(m => m) as Array<PubKey>;
+
+    // TODO - Default to MEDIUM when medium groups have been tested
+    const type =
+      members.length >= Constants.CLOSED_GROUP.MAX_SMALL_GROUP_MEMBERS
+        ? ClosedGroupType.MEDIUM
+        : ClosedGroupType.SMALL;
+
+    // Try to create new closed group
+    try {
+      await ClosedGroup.create(name, type, members);
+
+      window.pushToast({
+        title: window.i18n('closedGroupCreatedToastTitle'),
+        type: 'success',
+      });
+    } catch (e) {
+      console.warn(e);
+
+      window.pushToast({
+        title: window.i18n('closedGroupCreationFailedToastTitle'),
+        type: 'error',
+      });
+    } finally {
+      this.handleToggleOverlay(undefined);
+    }
   }
 
   private handleNewSessionButtonClick() {

@@ -8,6 +8,7 @@ import * as Data from '../../../js/modules/data';
 
 import { createSenderKeysForMembers } from '../medium_group';
 import { StringUtils } from '../utils';
+import { Constants } from '..';
 
 interface ClosedGroupParams {
   id: PubKey;
@@ -32,9 +33,9 @@ export class ClosedGroup {
   public static async create(
     name: string,
     type: ClosedGroupType,
-    members: Array<PubKey>,
-    onSuccess?: any
+    members: Array<PubKey>
   ): Promise<ClosedGroup | undefined> {
+    // Ensure you run in a try / catch / finally to handle errors and success
     const {
       ConversationController,
       StringView,
@@ -44,6 +45,19 @@ export class ClosedGroup {
     } = window;
 
     const isMediumGroup = type === ClosedGroupType.MEDIUM;
+
+    // Handle invalid name
+    if (!Constants.CLOSED_GROUP.NAME_REGEX.test(name)) {
+      throw new Error('Invalid closed group name');
+    }
+
+    // Handle invalid group size
+    if (
+      type === ClosedGroupType.SMALL &&
+      members.length > Constants.CLOSED_GROUP.MAX_SMALL_GROUP_MEMBERS - 1
+    ) {
+      throw new Error('Closed groups are limited to 10 memebers');
+    }
 
     // Create Group Identity
     const identityKeys = await libsignal.KeyHelper.generateIdentityKeyPair();
@@ -105,6 +119,11 @@ export class ClosedGroup {
 
     textsecure.messaging.sendGroupSyncMessage([convo]);
     owsDesktopApp.openConversation(id, {});
+
+    // Subscribe to this group id
+    if (isMediumGroup) {
+      window.SwarmPolling.addGroupId(new PubKey(id));
+    }
 
     return new ClosedGroup({
       id,

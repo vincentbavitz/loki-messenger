@@ -80,11 +80,11 @@
           // Do not trigger an update if there is too many members
           if (
             newMembers.length + existingMembers.length >
-            window.CONSTANTS.SMALL_GROUP_SIZE_LIMIT
+            window.libsession.Constants.CLOSED_GROUP.MAX_SMALL_GROUP_MEMBERS
           ) {
             const msg = window.i18n(
               'maxGroupMembersError',
-              window.CONSTANTS.SMALL_GROUP_SIZE_LIMIT
+              window.libsession.Constants.CLOSED_GROUP.MAX_SMALL_GROUP_MEMBERS
             );
 
             window.pushToast({

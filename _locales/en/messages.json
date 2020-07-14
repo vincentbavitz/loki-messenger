@@ -2576,6 +2576,9 @@
   "closedGroupCreatedToastTitle": {
     "message": "Group created successfully"
   },
+  "closedGroupCreationFailedToastTitle": {
+    "message": "Group creation failed"
+  },
   "enterChannelURL": {
     "message": "Enter Open Group URL"
   },

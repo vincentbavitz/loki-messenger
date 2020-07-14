@@ -755,39 +755,6 @@
       convo.updateGroup(updateObj);
     };
 
-    window.doCreateGroup = async (groupName, members) => {
-      const keypair = await libsignal.KeyHelper.generateIdentityKeyPair();
-      const groupId = StringView.arrayBufferToHex(keypair.pubKey);
-
-      const primaryDeviceKey =
-        window.storage.get('primaryDevicePubKey') ||
-        textsecure.storage.user.getNumber();
-      const allMembers = [primaryDeviceKey, ...members];
-
-      const groupDetails = {
-        id: groupId,
-        name: groupName,
-        members: allMembers,
-        recipients: allMembers,
-        active: true,
-        expireTimer: 0,
-        avatar: undefined,
-      };
-
-      await window.NewReceiver.onGroupReceived(groupDetails);
-
-      const convo = await ConversationController.getOrCreateAndWait(
-        groupId,
-        'group'
-      );
-
-      convo.updateGroupAdmins([primaryDeviceKey]);
-      convo.updateGroup(groupDetails);
-
-      textsecure.messaging.sendGroupSyncMessage([convo]);
-      appView.openConversation(groupId, {});
-    };
-
     window.confirmationDialog = params => {
       const confirmDialog = new Whisper.SessionConfirmView({
         el: $('body'),
