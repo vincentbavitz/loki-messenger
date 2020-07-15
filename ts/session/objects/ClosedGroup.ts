@@ -10,8 +10,7 @@ import { createSenderKeysForMembers } from '../medium_group';
 import { GroupUtils, StringUtils } from '../utils';
 import { Constants, Utils } from '..';
 import { ConversationModel } from '../../../js/models/conversations';
-import { AttachmentPointer } from '../messages/outgoing';
-import { Attachment } from '../../types/Attachment';
+import * as _ from 'lodash';
 
 interface ClosedGroupParams {
   id: PubKey;
@@ -24,6 +23,7 @@ interface ClosedGroupParams {
 
 interface ClosedGroupUpdateParams {
   // Closed groups do not currently support avatars
+  name: string;
   avatar?: string;
   recipients: Array<PubKey>;
   members: Array<PubKey>;
@@ -52,18 +52,61 @@ export class ClosedGroup {
   }
 
   get name() {
-    console.log(`[vince] HERE IS MY NAME!! _name: `, name);
     return this._name;
-  }
-
-  set name(value: string) {
-    this._name = 'dfg';
-
-    // this.update();
   }
 
   get admins() {
     return this._admins;
+  }
+
+  get members() {
+    return this._members;
+  }
+
+  get expireTimer() {
+    return this._expireTimer;
+  }
+
+  get conversation(): ConversationModel | undefined {
+    const { ConversationController } = window;
+    return ConversationController.get(this.id.key);
+  }
+
+  set name(name: string) {
+    // Valid name?
+
+    this._name = name;
+
+    // this.update();
+  }
+
+  set admins(admins: Array<PubKey>) {
+    // Validate: are all the admins given in the group?
+
+    this._admins = admins;
+    // this.update();
+  }
+
+  set members(members: Array<PubKey>) {
+    // Validation?
+
+    this._members = members;
+    // this.update();
+  }
+
+  set expireTimer(duration: number) {
+    // Validation
+    if (duration < 0) {
+      throw new Error('Expire timer duration must be positive');
+    }
+
+    this._expireTimer = duration;
+  }
+
+  set conversation(value: ConversationModel | undefined) {
+    // Prevent setting the conversation
+    // tslint:disable-next-line: no-unused-expression
+    this.conversation;
   }
 
   public static async create(
@@ -135,6 +178,7 @@ export class ClosedGroup {
       });
     }
 
+    const expireTimer = 0;
     const groupDetails = {
       id,
       name,
@@ -142,7 +186,7 @@ export class ClosedGroup {
       recipients: allMembersKeys,
       active: true,
       avatar: undefined,
-      expireTimer: 0,
+      expireTimer,
       secretKey,
       senderKeys,
       isMediumGroup,
@@ -172,6 +216,7 @@ export class ClosedGroup {
       name,
       admins,
       members: allMembers,
+      expireTimer,
     });
   }
 
@@ -203,6 +248,7 @@ export class ClosedGroup {
       ? ClosedGroupType.MEDIUM
       : ClosedGroupType.SMALL;
 
+    const name = conversation.attributes.name;
     const admins = conversation.attributes.groupAdmins.map((a: string) => PubKey.cast(a));
     const members = conversation.attributes.members.map((m: string) => PubKey.cast(m));
     const expireTimer = conversation.attributes.expireTimer;
@@ -210,9 +256,125 @@ export class ClosedGroup {
     return new ClosedGroup({ id, type, name, admins, members, expireTimer });
   }
 
+  public async update(params: ClosedGroupUpdateParams) {
 
 
-  public update(params: ClosedGroupUpdateParams) {
+
+
+
+
+
+
+
+    const ourKey = await UserUtil.getCurrentDevicePubKey();
+    if (!ourKey) {
+      return;
+    }
+    const ourPrimaryPubKey = await MultiDeviceProtocol.getPrimaryDevice(ourKey);
+
+    const oldMembers = this.conversation?.get('members');
+    const oldName = this.name;
+
+    const isMediumGroup = this.type === ClosedGroupType.MEDIUM;
+    const membersKeys = params.members.map(m => m.key);
+
+    const groupDetails = {
+      id: this.id.key,
+      // Avatars are not curtrently supported for closed groups. t. 15 July 2020
+      avatar: undefined,
+      name: this.name,
+      members: membersKeys,
+      expireTimer: this.expireTimer,
+      active: true,
+      
+      isMediumGroup,
+    };
+
+    await onGroupReceived(groupDetails);
+
+    const options = {};
+    const recipients = [...this.members, ...params.members].filter(r => r.key);
+
+    const updatedName = this.name === params.name
+      ? this.name
+      : params.name;
+
+    const updatedMembers = 
+
+    const updateObj = {
+      id: this.id.key,
+      // Avatars are not curtrently supported for closed groups. t. 15 July 2020
+      avatar: undefined,
+      recipients,
+      members: membersKeys,
+      isMediumGroup,
+      options,
+    };
+
+    const addedMembers = _.difference(updateObj.members, this.members);
+    if (addedMembers.length > 0) {
+      updateObj.joined = addedMembers;
+    }
+    // Check if anyone got kicked:
+    const removedMembers = _.difference(oldMembers, updateObj.members);
+    if (removedMembers.length > 0) {
+      updateObj.kicked = removedMembers;
+    }
+    // Send own sender keys and group secret key
+    if (isMediumGroup) {
+      const { chainKey, keyIdx } = await window.MediumGroups.getSenderKeys(
+        groupId,
+        ourKey
+      );
+
+      updateObj.senderKey = {
+        chainKey: StringView.arrayBufferToHex(chainKey),
+        keyIdx,
+      };
+
+      const groupIdentity = await window.Signal.Data.getIdentityKeyById(
+        groupId
+      );
+
+      const secretKeyHex = StringView.hexToArrayBuffer(
+        groupIdentity.secretKey
+      );
+
+      updateObj.secretKey = secretKeyHex;
+    }
+
+    convo.updateGroup(updateObj);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   }
 
@@ -244,11 +406,6 @@ export class ClosedGroup {
   // public leave() {
   //   // Leave group
   // }
-
-  public getConversation(): ConversationModel | undefined {
-    const { ConversationController } = window;
-    return ConversationController.get(this.id.key);
-  }
 
   //   static from(groupId) {
   //       // Returns a new instance from a groupId if it's valid

@@ -2004,10 +2004,6 @@
     "message": "Edit group name",
     "description": "Button action that the user can click to edit a group name (closed)"
   },
-  "createGroupDialogTitle": {
-    "message": "Creating a Closed Group",
-    "description": "Title for the dialog box used to create a new private group"
-  },
   "updateGroupDialogTitle": {
     "message": "Updating a Closed Group",
     "description": "Title for the dialog box used to update an existing private group"

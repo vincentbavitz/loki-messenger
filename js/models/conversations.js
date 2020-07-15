@@ -250,7 +250,7 @@
         ? BlockedNumberController.block(this.id)
         : BlockedNumberController.blockGroup(this.id);
       await promise;
-      this.trigger('change');
+      this.trigger('change', this);
       this.messageCollection.forEach(m => m.trigger('change'));
       this.updateTextInputState();
     },
