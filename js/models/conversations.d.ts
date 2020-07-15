@@ -1,4 +1,6 @@
 interface ConversationAttributes {
+  avatar?: string;
+  avatarPointer?: string;
   members?: Array<string>;
   groupAdmins?: Array<string>;
   type: 'private' | 'group';
@@ -27,7 +29,10 @@ export interface ConversationModel
     options: object
   ) => void;
   isPrivate: () => boolean;
+  isPublic: () => boolean;
+  isRss: () => boolean;
   setProfileKey: (key: string) => void;
+  setLokiProfile: (data: {displayName: string; avatar: string}) => Promise<void>;
   isMe: () => boolean;
   getRecipients: () => Array<string>;
   onReadMessage: (message: MessageModel) => void;

@@ -651,11 +651,6 @@
       if (convo.isPublic()) {
         const API = await convo.getPublicSendData();
 
-
-
-
-
-        
         if (avatar) {
           // I hate duplicating this...
           const readFile = attachment =>
@@ -673,6 +668,7 @@
               fileReader.onabort = reject;
               fileReader.readAsArrayBuffer(attachment.file);
             });
+
           const attachment = await readFile({ file: avatar });
           // const tempUrl = window.URL.createObjectURL(avatar);
 
@@ -690,20 +686,6 @@
           // write it to the channel
           await API.setChannelAvatar(url.pathname);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         if (await API.setChannelName(groupName)) {
           // queue update from server
@@ -802,21 +784,35 @@
         'private'
       );
 
-      const readFile = attachment =>
-        new Promise((resolve, reject) => {
-          const fileReader = new FileReader();
-          fileReader.onload = e => {
-            const data = e.target.result;
-            resolve({
-              ...attachment,
-              data,
-              size: data.byteLength,
-            });
-          };
-          fileReader.onerror = reject;
-          fileReader.onabort = reject;
-          fileReader.readAsArrayBuffer(attachment.file);
-        });
+      // const readFile = attachment =>
+      //   new Promise((resolve, reject) => {
+      //     const fileReader = new FileReader();
+      //     fileReader.onload = e => {
+      //       const data = e.target.result;
+      //       resolve({
+      //         ...attachment,
+      //         data,
+      //         size: data.byteLength,
+      //       });
+
+      //       console.log('[vince] attachment:', attachment);
+          
+      //       console.log('[vince] attachment object:', {
+      //         ...attachment.file,
+      //         data,
+      //         size: data.byteLength,
+      //       });
+      //     };
+
+          
+
+
+
+
+      //     fileReader.onerror = reject;
+      //     fileReader.onabort = reject;
+      //     fileReader.readAsArrayBuffer(attachment.file);
+      //   });
 
       const avatarPath = conversation.getAvatarPath();
       const profile = conversation.getLokiProfile();
@@ -833,44 +829,11 @@
             let newAvatarPath = '';
             let url = null;
             let profileKey = null;
+            
             if (avatar) {
-              const data = await readFile({ file: avatar });
+              const ourGroup = window.libsession.objects.ClosedGroup();
 
-              // For simplicity we use the same attachment pointer that would send to
-              // others, which means we need to wait for the database response.
-              // To avoid the wait, we create a temporary url for the local image
-              // and use it until we the the response from the server
-              const tempUrl = window.URL.createObjectURL(avatar);
-              conversation.setLokiProfile({ displayName: newName });
-              conversation.set('avatar', tempUrl);
-
-              // Encrypt with a new key every time
-              profileKey = libsignal.crypto.getRandomBytes(32);
-              const encryptedData = await textsecure.crypto.encryptProfile(
-                data.data,
-                profileKey
-              );
-
-              const avatarPointer = await libsession.Utils.AttachmentUtils.uploadAvatar(
-                {
-                  ...data,
-                  data: encryptedData,
-                  size: encryptedData.byteLength,
-                }
-              );
-
-              ({ url } = avatarPointer);
-
-              storage.put('profileKey', profileKey);
-
-              conversation.set('avatarPointer', url);
-
-              const upgraded = await Signal.Migrations.processNewAttachment({
-                isRaw: true,
-                data: data.data,
-                url,
-              });
-              newAvatarPath = upgraded.path;
+              ourGroup.
             }
 
             // Replace our temporary image with the attachment pointer from the server:
@@ -879,12 +842,14 @@
               displayName: newName,
               avatar: newAvatarPath,
             });
+            
             // inform all your registered public servers
             // could put load on all the servers
             // if they just keep changing their names without sending messages
             // so we could disable this here
             // or least it enable for the quickest response
-            window.lokiPublicChatAPI.setProfileName(newName);
+            await window.lokiPublicChatAPI.setProfileName(newName);
+
             window
               .getConversations()
               .filter(convo => convo.isPublic() && !convo.isRss())

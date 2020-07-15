@@ -8,12 +8,16 @@ import * as Data from '../../../js/modules/data';
 
 import { createSenderKeysForMembers } from '../medium_group';
 import { StringUtils } from '../utils';
-import { Constants } from '..';
+import { Constants, Utils } from '..';
 import { ConversationModel } from '../../../js/models/conversations';
+import { AttachmentPointer } from '../messages/outgoing';
+import { Attachment } from '../../types/Attachment';
+import { GroupUtils } from '../utils';
 
 interface ClosedGroupParams {
   id: PubKey;
   type: ClosedGroupType;
+  name: string;
   admins: Array<PubKey>;
   members: Array<PubKey>;
 }
@@ -21,12 +25,14 @@ interface ClosedGroupParams {
 export class ClosedGroup {
   public readonly id: PubKey;
   public readonly type: ClosedGroupType;
+  public name: string;
   public admins: Array<PubKey>;
   public members: Array<PubKey>;
 
   constructor(params: ClosedGroupParams) {
     this.id = params.id;
     this.type = params.type;
+    this.name = params.name;
     this.admins = params.admins;
     this.members = params.members;
   }
@@ -134,6 +140,7 @@ export class ClosedGroup {
     return new ClosedGroup({
       id,
       type,
+      name,
       admins,
       members: allMembers,
     });
@@ -197,9 +204,97 @@ export class ClosedGroup {
 
   // public async updateAdmins
 
-  public async setAvatar(avatar: Blob): Promise<void> {
-    
-    
+
+  public async setAvatar(avatar: File): Promise<void> {
+    // FileList type is the output of <input type="file" />
+    // Thus, we use File type
+    const { libsignal, Signal, storage, textsecure } = window;
+
+    // If not Admin, do not allow setting avatar
+    const isAdmin = await this.areWeAdmin();
+    if (!isAdmin) {
+      throw new Error('Only group admins may update the group avatar');
+    }
+
+    const readFile = async (file: File): Promise<Attachment> =>
+    new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.onload = e => {
+        // tslint:disable-next-line: no-shadowed-variable
+        const data = e?.target?.result as ArrayBuffer;
+
+        // POSSIBLE POINT OF ISSUES -- DOES DATA NEED A FILENAME?
+        // ...file ???
+        resolve({
+          data,
+          size: data.byteLength,
+        });
+      };
+
+      fileReader.onerror = reject;
+      fileReader.onabort = reject;
+      fileReader.readAsArrayBuffer(file);
+    });
+
+    const avatarAttachmentData = await readFile(avatar);
+    const conversation = this.getConversation();
+
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
+
+    // For simplicity we use the same attachment pointer that would send to
+    // others, which means we need to wait for the database response.
+    // To avoid the wait, we create a temporary url for the local image
+    // and use it until we the the response from the server
+    const tempURL = window.URL.createObjectURL(avatar);
+    conversation.set('avatar', tempURL);
+
+    // Encrypt with a new key every time
+    const profileKey = libsignal.crypto.getRandomBytes(32);
+    const encryptedData = await textsecure.crypto.encryptProfile(
+      avatarAttachmentData.data,
+      profileKey
+    );
+
+    const avatarPointer = await Utils.AttachmentUtils.uploadAvatar(
+      {
+        ...avatarAttachmentData,
+        data: encryptedData,
+        size: encryptedData.byteLength,
+      }
+    );
+
+    const { url } = avatarPointer as AttachmentPointer;
+    conversation.set('avatarPointer', url);
+
+    storage.put('profileKey', profileKey);
+
+    // Grab avatar path
+    const upgraded = await Signal.Migrations.processNewAttachment({
+      isRaw: true,
+      data: avatarAttachmentData.data,
+      url,
+    });
+
+    const avatarPath: string = upgraded.path;
+
+    // Replace our temporary image with the attachment pointer from the server:
+    conversation.set('avatar', undefined);
+    await conversation.setLokiProfile({
+      displayName: this.name,
+      avatar: avatarPath,
+    });
+
+    // Inform all your registered public servers
+    // NOTE. This could put load on all the servers if users keep changing their profiles without sending any messages.
+    // So we could disable this here, or least it enable for the quickest response.
+
+    const publicServerConversations = await GroupUtils.getPublicServerConversations();
+    publicServerConversations.forEach(c =>
+      c.trigger('ourAvatarChanged', { url, profileKey })
+    );
+
     return;
   }
 
@@ -226,4 +321,15 @@ export class ClosedGroup {
   //       };
   //       return new SessionGroup(openGroupParams);
   //   }
+
+  private async areWeAdmin() {
+    // TODO: Add server-side validation to admin
+    const ourPubKeyString = await UserUtil.getCurrentDevicePubKey();
+    const ourPrimaryPubKey = ourPubKeyString
+      ? await MultiDeviceProtocol.getPrimaryDevice(
+      ourPubKeyString
+    ) as PubKey : undefined;
+
+    return ourPrimaryPubKey && this.admins.some(a => a.isEqual(ourPrimaryPubKey));
+  }
 }

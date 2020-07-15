@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { PrimaryPubKey, PubKey } from '../types';
 import { MultiDeviceProtocol } from '../protocols';
+import { ConversationModel } from '../../../js/models/conversations';
 
 export async function getGroupMembers(
   groupId: PubKey
@@ -30,4 +31,9 @@ export function isMediumGroup(groupId: PubKey): boolean {
   }
 
   return Boolean(conversation.isMediumGroup());
+}
+
+export async function getPublicServerConversations(): Promise<Array<ConversationModel>> {
+  const { getConversations } = window;
+  return getConversations().filter((convo: ConversationModel) => convo.isPublic() && !convo.isRss());
 }
