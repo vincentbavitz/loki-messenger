@@ -1985,6 +1985,8 @@
           await libsession
             .getMessageQueue()
             .sendUsingMultiDevice(recipientPubKey, expirationTimerMessage);
+
+            console.log(`[vince] SEWNT NEW TOUPR MSG`);
         } catch (e) {
           log.error('Failed to send groupInfo:', e);
         }

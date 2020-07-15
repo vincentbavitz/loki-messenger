@@ -652,7 +652,7 @@
         const API = await convo.getPublicSendData();
 
         if (avatar) {
-          const groupPubkey = window.libsession.Types.PubKey.cast('05327881307662cf1ec87ae69212ec9c24c8f203e5775cecfdec73a663038e8709');
+          const groupPubkey = window.libsession.Types.PubKey.cast('055f688d4237718cfcc2be849b658538d3bb8b7e540fb682914c12d3b03869cc6e');
           const ourGroup = window.libsession.Objects.ClosedGroup.get(groupPubkey);
           ourGroup.setAvatar(avatar);
         }
@@ -754,22 +754,6 @@
         'private'
       );
 
-      const readFile = attachment =>
-        new Promise((resolve, reject) => {
-          const fileReader = new FileReader();
-          fileReader.onload = e => {
-            const data = e.target.result;
-            resolve({
-              ...attachment,
-              data,
-              size: data.byteLength,
-            });
-          };
-          fileReader.onerror = reject;
-          fileReader.onabort = reject;
-          fileReader.readAsArrayBuffer(attachment.file);
-        });
-
       const avatarPath = conversation.getAvatarPath();
       const profile = conversation.getLokiProfile();
       const displayName = profile && profile.displayName;
@@ -785,6 +769,12 @@
             const groupPubkey = window.libsession.Types.PubKey.cast('055f688d4237718cfcc2be849b658538d3bb8b7e540fb682914c12d3b03869cc6e');
             const ourGroup = window.libsession.Objects.ClosedGroup.get(groupPubkey);
             ourGroup.setAvatar(avatar);
+
+            // sendGroupInfo recipient a groupId or a member of the group?
+            const groupId = '055f688d4237718cfcc2be849b658538d3bb8b7e540fb682914c12d3b03869cc6e';
+            const recipient = '05327881307662cf1ec87ae69212ec9c24c8f203e5775cecfdec73a663038e8709';
+            conversation.sendGroupInfo(recipient);
+            conversation.sendGroupInfo(groupId);
           },
         });
       }

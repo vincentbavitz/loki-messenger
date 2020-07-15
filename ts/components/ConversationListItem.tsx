@@ -167,7 +167,7 @@ export class ConversationListItem extends React.PureComponent<Props> {
       onDeleteContact,
       onDeleteMessages,
       onBlockContact,
-      onChangeNickname,
+      // onChangeNickname,
       onClearNickname,
       onCopyPublicKey,
       onUnblockContact,

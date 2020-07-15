@@ -83,6 +83,7 @@
     const rawGroup = {
       id: sessionGroup.id,
       name: sessionGroup.get('name'),
+      avatar: sessionGroup.get('avatar'),
       members: sessionGroup.get('members') || [],
       blocked: sessionGroup.isBlocked(),
       expireTimer: sessionGroup.get('expireTimer'),

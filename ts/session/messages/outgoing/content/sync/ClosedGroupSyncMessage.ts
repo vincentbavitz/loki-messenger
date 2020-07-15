@@ -6,6 +6,7 @@ import { StringUtils, SyncMessageUtils } from '../../../../utils';
 interface RawGroup {
   id: string;
   name: string;
+  avatar: string;
   members: Array<string>;
   blocked: boolean;
   expireTimer?: number;
@@ -19,6 +20,7 @@ interface ClosedGroupSyncMessageParams extends MessageParams {
 export abstract class ClosedGroupSyncMessage extends SyncMessage {
   public readonly id: Uint8Array;
   public readonly name: string;
+  public readonly avatar?: string;
   public readonly members: Array<string>;
   public readonly blocked: boolean;
   public readonly expireTimer: number | undefined;
@@ -28,6 +30,7 @@ export abstract class ClosedGroupSyncMessage extends SyncMessage {
     super({ timestamp: params.timestamp, identifier: params.identifier });
     this.id = new Uint8Array(StringUtils.encode(params.rawGroup.id, 'utf8'));
     this.name = params.rawGroup.name;
+    this.avatar = params.rawGroup.avatar;
     this.members = params.rawGroup.members;
     this.blocked = params.rawGroup.blocked;
     this.expireTimer = params.rawGroup.expireTimer;
@@ -39,6 +42,7 @@ export abstract class ClosedGroupSyncMessage extends SyncMessage {
     const groupDetails = new SignalService.GroupDetails({
       id: this.id,
       name: this.name,
+      avatar: this.avatar,
       members: this.members,
       blocked: this.blocked,
       expireTimer: this.expireTimer,

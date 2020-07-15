@@ -280,12 +280,16 @@ export class ClosedGroup {
 
     // Replace our temporary image with the attachment pointer from the server:
     conversation.set('avatar', undefined);
-    await conversation.setLokiProfile({
-      displayName: this.name,
-      avatar: avatarPath,
-    });
 
+    // Update conversation on our other device(s)
+    // await textsecure.messaging.sendGroupSyncMessage(conversation);
+
+    // [vince] FIX: AVATAR IS NOT BEING UPDATED TO OTHER MEMBERS IN GROUP
+    // ^ DO NOT USE sendGroupInfo to update other members
     console.log('[vince] url:', url);
+    console.log('[vince] avatarPath:', avatarPath);
+
+
 
     // Inform all your registered public servers
     // NOTE. This could put load on all the servers if users keep changing their profiles without sending any messages.
@@ -319,11 +323,6 @@ export class ClosedGroup {
     // Encrypt with a new key every time
     const profileKey = libsignal.crypto.getRandomBytes(32);
     storage.put('profileKey', profileKey);
-
-    await conversation.setLokiProfile({
-      displayName: this.name,
-      avatar: undefined,
-    });
 
     // Inform all your registered public servers of avatar update
     const publicServerConversations = await GroupUtils.getPublicServerConversations();
