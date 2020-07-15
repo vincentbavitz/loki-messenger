@@ -7,12 +7,11 @@ import { onGroupReceived } from '../../receiver/receiver';
 import * as Data from '../../../js/modules/data';
 
 import { createSenderKeysForMembers } from '../medium_group';
-import { StringUtils } from '../utils';
+import { GroupUtils, StringUtils } from '../utils';
 import { Constants, Utils } from '..';
 import { ConversationModel } from '../../../js/models/conversations';
 import { AttachmentPointer } from '../messages/outgoing';
 import { Attachment } from '../../types/Attachment';
-import { GroupUtils } from '../utils';
 
 interface ClosedGroupParams {
   id: PubKey;
@@ -174,10 +173,10 @@ export class ClosedGroup {
       ? ClosedGroupType.MEDIUM
       : ClosedGroupType.SMALL;
 
-    const admins = conversation.attributes.groupAdmins;
-    const members = conversation.attributes.members;
+    const admins = conversation.attributes.groupAdmins.map((a: string) => PubKey.cast(a));
+    const members = conversation.attributes.members.map((m: string) => PubKey.cast(m));
 
-    return new ClosedGroup({ id, type, admins, members });
+    return new ClosedGroup({ id, type, name, admins, members });
   }
 
   // Throw on fail
@@ -266,9 +265,9 @@ export class ClosedGroup {
     );
 
     const { url } = avatarPointer as AttachmentPointer;
-    conversation.set('avatarPointer', url);
 
     storage.put('profileKey', profileKey);
+    conversation.set('avatarPointer', url);
 
     // Grab avatar path
     const upgraded = await Signal.Migrations.processNewAttachment({
@@ -286,6 +285,8 @@ export class ClosedGroup {
       avatar: avatarPath,
     });
 
+    console.log('[vince] url:', url);
+
     // Inform all your registered public servers
     // NOTE. This could put load on all the servers if users keep changing their profiles without sending any messages.
     // So we could disable this here, or least it enable for the quickest response.
@@ -296,6 +297,39 @@ export class ClosedGroup {
     );
 
     return;
+  }
+
+  public async removeAvatar(): Promise<void> {
+    const { libsignal, Signal, storage, textsecure } = window;
+
+    // If not Admin, do not allow setting avatar
+    const isAdmin = await this.areWeAdmin();
+    if (!isAdmin) {
+      throw new Error('Only group admins may update the group avatar');
+    }
+
+    const conversation = this.getConversation();
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
+
+    conversation.set('avatar', undefined);
+    conversation.set('avatarPointer', undefined);
+
+    // Encrypt with a new key every time
+    const profileKey = libsignal.crypto.getRandomBytes(32);
+    storage.put('profileKey', profileKey);
+
+    await conversation.setLokiProfile({
+      displayName: this.name,
+      avatar: undefined,
+    });
+
+    // Inform all your registered public servers of avatar update
+    const publicServerConversations = await GroupUtils.getPublicServerConversations();
+    publicServerConversations.forEach(c =>
+      c.trigger('ourAvatarChanged', { url: undefined, profileKey })
+    );
   }
 
   public async setExpireTimer(): Promise<void> {

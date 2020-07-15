@@ -32,7 +32,7 @@ export interface ConversationModel
   isPublic: () => boolean;
   isRss: () => boolean;
   setProfileKey: (key: string) => void;
-  setLokiProfile: (data: {displayName: string; avatar: string}) => Promise<void>;
+  setLokiProfile: (data: {displayName: string; avatar?: string}) => Promise<void>;
   isMe: () => boolean;
   getRecipients: () => Array<string>;
   onReadMessage: (message: MessageModel) => void;
