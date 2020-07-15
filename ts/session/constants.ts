@@ -16,7 +16,7 @@ const CLOSED_GROUP_MAX_NAME_LENGTH = 32;
 export const CLOSED_GROUP = {
   // No trailing or leading (space, hyphen, underscore)
   NAME_REGEX: new RegExp(
-    `^(?![ -_])([\\w- ]{1,${CLOSED_GROUP_MAX_NAME_LENGTH}})(?<![ -_])$`
+    `^(?![ _-])([\\w- ]{1,${CLOSED_GROUP_MAX_NAME_LENGTH}})(?<![ _-])$`
   ),
   MAX_NAME_LENGTH: CLOSED_GROUP_MAX_NAME_LENGTH,
   // Capped due to proof of work limitations

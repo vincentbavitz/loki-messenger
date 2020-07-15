@@ -1,5 +1,7 @@
 interface ConversationAttributes {
-  members: Array<string>;
+  members?: Array<string>;
+  groupAdmins?: Array<string>;
+  type: 'private' | 'group';
   left: boolean;
   expireTimer: number;
   profileSharing: boolean;

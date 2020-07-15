@@ -521,12 +521,14 @@ export class LeftPaneMessageSection extends React.Component<Props, State> {
     groupName: string,
     groupMembers: Array<ContactType>
   ) {
-
     const name = groupName.trim();
     if (!Constants.CLOSED_GROUP.NAME_REGEX.test(name)) {
       window.pushToast({
         title: window.i18n('invalidGroupNameToastTitle'),
-        description: window.i18n('invalidGroupNameToastDescription', Constants.CLOSED_GROUP.MAX_NAME_LENGTH),
+        description: window.i18n(
+          'invalidGroupNameToastDescription',
+          Constants.CLOSED_GROUP.MAX_NAME_LENGTH
+        ),
         type: 'warning',
         id: 'invalidGroupName',
       });

@@ -9,9 +9,7 @@ import * as Data from '../../../js/modules/data';
 import { createSenderKeysForMembers } from '../medium_group';
 import { StringUtils } from '../utils';
 import { Constants } from '..';
-import { ConversationType } from '../../state/ducks/conversations';
 import { ConversationModel } from '../../../js/models/conversations';
-import { ZERO } from 'long';
 
 interface ClosedGroupParams {
   id: PubKey;
@@ -54,7 +52,8 @@ export class ClosedGroup {
       throw new Error('Invalid closed group name');
     }
 
-    // Handle invalid group size
+    // Handle invalid group size.
+    // Having zero other members is valid, as we are the only member
     if (
       type === ClosedGroupType.SMALL &&
       members.length > Constants.CLOSED_GROUP.MAX_SMALL_GROUP_MEMBERS - 1
@@ -117,7 +116,10 @@ export class ClosedGroup {
     await onGroupReceived(groupDetails);
 
     // Set conversation details
-    const conversation = await ConversationController.getOrCreateAndWait(id, 'group');
+    const conversation = await ConversationController.getOrCreateAndWait(
+      id,
+      'group'
+    );
     conversation.updateGroupAdmins(adminsKeys);
     conversation.updateGroup(groupDetails);
 
@@ -139,26 +141,40 @@ export class ClosedGroup {
 
   public static get(id: PubKey): ClosedGroup | undefined {
     // Gets a closed group from its group id
-
     const { ConversationController } = window;
 
-    const conversation = ConversationController.get(id.key) as ConversationModel;
+    const conversation = ConversationController.get(
+      id.key
+    ) as ConversationModel;
+
+    // Ensure that the conversation is a group
+    // We know it's a closed group because we used a PubKey
+    if (!conversation || conversation.attributes.type !== 'group') {
+      return;
+    }
+
+    // Ensure admins and members exist in the group
+    if (
+      !conversation.attributes.members ||
+      !conversation.attributes.members.length ||
+      !conversation.attributes.groupAdmins ||
+      !conversation.attributes.groupAdmins.length
+    ) {
+      return;
+    }
 
     const type = Boolean(conversation.attributes.isMediumGroup)
       ? ClosedGroupType.MEDIUM
       : ClosedGroupType.SMALL;
 
+    const admins = conversation.attributes.groupAdmins;
     const members = conversation.attributes.members;
 
-    // validation
-    // conversation.attributes.type === 'group'
-    // members.length > 0
-    // WHY DOES REGEX NOT ALLOW UPPERCASE NAMES?
-
-    return;
+    return new ClosedGroup({ id, type, admins, members });
   }
 
-  // public update(): Promise<Array<PubKey>> {
+  // Throw on fail
+  // public update(): Promise<void> {
   //   //
   // }
 
@@ -178,6 +194,14 @@ export class ClosedGroup {
   // public async setName(): Promise<void> {
   //   // Set or update the name of the group
   // }
+
+  // public async updateAdmins
+
+  public async setAvatar
+
+  public async setExpireTimer(): Promise<void> {
+    return;
+  }
 
   // public leave() {
   //   // Leave group
