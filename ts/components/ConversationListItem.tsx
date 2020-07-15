@@ -181,11 +181,12 @@ export class ConversationListItem extends React.PureComponent<Props> {
         {!isPublic && !isRss && !isMe ? (
           <MenuItem onClick={blockHandler}>{blockTitle}</MenuItem>
         ) : null}
-        {!isPublic && !isRss && !isMe ? (
+        {/* Changing nicknames not currently supported. .t 14 July 2020 */}
+        {/* {!isPublic && !isRss && !isMe ? (
           <MenuItem onClick={onChangeNickname}>
             {i18n('changeNickname')}
           </MenuItem>
-        ) : null}
+        ) : null} */}
         {!isPublic && !isRss && !isMe && hasNickname ? (
           <MenuItem onClick={onClearNickname}>{i18n('clearNickname')}</MenuItem>
         ) : null}

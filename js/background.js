@@ -651,6 +651,11 @@
       if (convo.isPublic()) {
         const API = await convo.getPublicSendData();
 
+
+
+
+
+        
         if (avatar) {
           // I hate duplicating this...
           const readFile = attachment =>
@@ -685,6 +690,20 @@
           // write it to the channel
           await API.setChannelAvatar(url.pathname);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (await API.setChannelName(groupName)) {
           // queue update from server

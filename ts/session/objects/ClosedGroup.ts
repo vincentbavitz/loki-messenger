@@ -197,7 +197,11 @@ export class ClosedGroup {
 
   // public async updateAdmins
 
-  public async setAvatar
+  public async setAvatar(avatar: Blob): Promise<void> {
+    
+    
+    return;
+  }
 
   public async setExpireTimer(): Promise<void> {
     return;
