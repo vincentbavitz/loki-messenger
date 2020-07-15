@@ -11,7 +11,6 @@ import { ContactName } from './conversation/ContactName';
 import { TypingAnimation } from './conversation/TypingAnimation';
 
 import { Colors, LocalizerType } from '../types/Util';
-import { SessionButton, SessionButtonColor } from './session/SessionButton';
 
 export type PropsData = {
   id: string;
@@ -181,7 +180,6 @@ export class ConversationListItem extends React.PureComponent<Props> {
         {!isPublic && !isRss && !isMe ? (
           <MenuItem onClick={blockHandler}>{blockTitle}</MenuItem>
         ) : null}
-        {/* Changing nicknames not currently supported. .t 14 July 2020 */}
         {/* {!isPublic && !isRss && !isMe ? (
           <MenuItem onClick={onChangeNickname}>
             {i18n('changeNickname')}
