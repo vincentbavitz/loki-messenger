@@ -19,21 +19,51 @@ interface ClosedGroupParams {
   name: string;
   admins: Array<PubKey>;
   members: Array<PubKey>;
+  expireTimer: number;
+}
+
+interface ClosedGroupUpdateParams {
+  // Closed groups do not currently support avatars
+  avatar?: string;
+  recipients: Array<PubKey>;
+  members: Array<PubKey>;
+  isMediumGroup: boolean;
+  options: any;
 }
 
 export class ClosedGroup {
   public readonly id: PubKey;
   public readonly type: ClosedGroupType;
-  public name: string;
-  public admins: Array<PubKey>;
-  public members: Array<PubKey>;
+  private _name: string;
+  private _admins: Array<PubKey>;
+  private _members: Array<PubKey>;
+  private _expireTimer: number;
 
   constructor(params: ClosedGroupParams) {
+    // Setters and getters are used to prevent altering the values of name, admins, etc without a group update.
+    // To update the members of a group, for example, simply run myClosedGroup.members = [..., ..., ...];
+
     this.id = params.id;
     this.type = params.type;
-    this.name = params.name;
-    this.admins = params.admins;
-    this.members = params.members;
+    this._name = params.name;
+    this._admins = params.admins;
+    this._members = params.members;
+    this._expireTimer = params.expireTimer;
+  }
+
+  get name() {
+    console.log(`[vince] HERE IS MY NAME!! _name: `, name);
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = 'dfg';
+
+    // this.update();
+  }
+
+  get admins() {
+    return this._admins;
   }
 
   public static async create(
@@ -175,18 +205,22 @@ export class ClosedGroup {
 
     const admins = conversation.attributes.groupAdmins.map((a: string) => PubKey.cast(a));
     const members = conversation.attributes.members.map((m: string) => PubKey.cast(m));
+    const expireTimer = conversation.attributes.expireTimer;
 
-    return new ClosedGroup({ id, type, name, admins, members });
+    return new ClosedGroup({ id, type, name, admins, members, expireTimer });
   }
 
-  // Throw on fail
-  // public update(): Promise<void> {
-  //   //
-  // }
 
-  // public updateMembers(): Promise<Array<PubKey>> {
+
+  public update(params: ClosedGroupUpdateParams) {
+
+  }
+
+  // public updateMembers(members: Array<PubKey>): Promise<Array<PubKey>> {
   //   // Abstraction on update
   //   // Update the conversation and this object
+
+  //   this.update()
   // }
 
   // public async removeMembers(): Promise<Array<PubKey>> {
@@ -202,134 +236,6 @@ export class ClosedGroup {
   // }
 
   // public async updateAdmins
-
-
-  public async setAvatar(avatar: File): Promise<void> {
-    // FileList type is the output of <input type="file" />
-    // Thus, we use File type
-    const { libsignal, Signal, storage, textsecure } = window;
-
-    // If not Admin, do not allow setting avatar
-    const isAdmin = await this.areWeAdmin();
-    if (!isAdmin) {
-      throw new Error('Only group admins may update the group avatar');
-    }
-
-    const readFile = async (file: File): Promise<Attachment> =>
-    new Promise((resolve, reject) => {
-      const fileReader = new FileReader();
-      fileReader.onload = e => {
-        // tslint:disable-next-line: no-shadowed-variable
-        const data = e?.target?.result as ArrayBuffer;
-
-        // POSSIBLE POINT OF ISSUES -- DOES DATA NEED A FILENAME?
-        // ...file ???
-        resolve({
-          data,
-          size: data.byteLength,
-        });
-      };
-
-      fileReader.onerror = reject;
-      fileReader.onabort = reject;
-      fileReader.readAsArrayBuffer(file);
-    });
-
-    const avatarAttachmentData = await readFile(avatar);
-    const conversation = this.getConversation();
-
-    if (!conversation) {
-      throw new Error('Conversation not found');
-    }
-
-    // For simplicity we use the same attachment pointer that would send to
-    // others, which means we need to wait for the database response.
-    // To avoid the wait, we create a temporary url for the local image
-    // and use it until we the the response from the server
-    const tempURL = window.URL.createObjectURL(avatar);
-    conversation.set('avatar', tempURL);
-
-    // Encrypt with a new key every time
-    const profileKey = libsignal.crypto.getRandomBytes(32);
-    const encryptedData = await textsecure.crypto.encryptProfile(
-      avatarAttachmentData.data,
-      profileKey
-    );
-
-    const avatarPointer = await Utils.AttachmentUtils.uploadAvatar(
-      {
-        ...avatarAttachmentData,
-        data: encryptedData,
-        size: encryptedData.byteLength,
-      }
-    );
-
-    const { url } = avatarPointer as AttachmentPointer;
-
-    storage.put('profileKey', profileKey);
-    conversation.set('avatarPointer', url);
-
-    // Grab avatar path
-    const upgraded = await Signal.Migrations.processNewAttachment({
-      isRaw: true,
-      data: avatarAttachmentData.data,
-      url,
-    });
-
-    const avatarPath: string = upgraded.path;
-
-    // Replace our temporary image with the attachment pointer from the server:
-    conversation.set('avatar', undefined);
-
-    // Update conversation on our other device(s)
-    // await textsecure.messaging.sendGroupSyncMessage(conversation);
-
-    // [vince] FIX: AVATAR IS NOT BEING UPDATED TO OTHER MEMBERS IN GROUP
-    // ^ DO NOT USE sendGroupInfo to update other members
-    console.log('[vince] url:', url);
-    console.log('[vince] avatarPath:', avatarPath);
-
-
-
-    // Inform all your registered public servers
-    // NOTE. This could put load on all the servers if users keep changing their profiles without sending any messages.
-    // So we could disable this here, or least it enable for the quickest response.
-
-    const publicServerConversations = await GroupUtils.getPublicServerConversations();
-    publicServerConversations.forEach(c =>
-      c.trigger('ourAvatarChanged', { url, profileKey })
-    );
-
-    return;
-  }
-
-  public async removeAvatar(): Promise<void> {
-    const { libsignal, Signal, storage, textsecure } = window;
-
-    // If not Admin, do not allow setting avatar
-    const isAdmin = await this.areWeAdmin();
-    if (!isAdmin) {
-      throw new Error('Only group admins may update the group avatar');
-    }
-
-    const conversation = this.getConversation();
-    if (!conversation) {
-      throw new Error('Conversation not found');
-    }
-
-    conversation.set('avatar', undefined);
-    conversation.set('avatarPointer', undefined);
-
-    // Encrypt with a new key every time
-    const profileKey = libsignal.crypto.getRandomBytes(32);
-    storage.put('profileKey', profileKey);
-
-    // Inform all your registered public servers of avatar update
-    const publicServerConversations = await GroupUtils.getPublicServerConversations();
-    publicServerConversations.forEach(c =>
-      c.trigger('ourAvatarChanged', { url: undefined, profileKey })
-    );
-  }
 
   public async setExpireTimer(): Promise<void> {
     return;

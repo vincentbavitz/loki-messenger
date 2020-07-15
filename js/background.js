@@ -623,6 +623,18 @@
       }
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
     // TODO: make sure updating still works
     window.doUpdateGroup = async (groupId, groupName, members, avatar) => {
       const ourKey = textsecure.storage.user.getNumber();
@@ -652,9 +664,38 @@
         const API = await convo.getPublicSendData();
 
         if (avatar) {
-          const groupPubkey = window.libsession.Types.PubKey.cast('055f688d4237718cfcc2be849b658538d3bb8b7e540fb682914c12d3b03869cc6e');
-          const ourGroup = window.libsession.Objects.ClosedGroup.get(groupPubkey);
-          ourGroup.setAvatar(avatar);
+          // I hate duplicating this...
+          const readFile = attachment =>
+            new Promise((resolve, reject) => {
+              const fileReader = new FileReader();
+              fileReader.onload = e => {
+                const data = e.target.result;
+                resolve({
+                  ...attachment,
+                  data,
+                  size: data.byteLength,
+                });
+              };
+              fileReader.onerror = reject;
+              fileReader.onabort = reject;
+              fileReader.readAsArrayBuffer(attachment.file);
+            });
+          const attachment = await readFile({ file: avatar });
+          // const tempUrl = window.URL.createObjectURL(avatar);
+
+          // Get file onto public chat server
+          const fileObj = await API.serverAPI.putAttachment(attachment.data);
+          if (fileObj === null) {
+            // problem
+            window.warn('File upload failed');
+            return;
+          }
+
+          // lets not allow ANY URLs, lets force it to be local to public chat server
+          const url = new URL(fileObj.url);
+
+          // write it to the channel
+          await API.setChannelAvatar(url.pathname);
         }
 
         if (await API.setChannelName(groupName)) {
@@ -726,6 +767,29 @@
       convo.updateGroup(updateObj);
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     window.confirmationDialog = params => {
       const confirmDialog = new Whisper.SessionConfirmView({
         el: $('body'),
@@ -754,6 +818,22 @@
         'private'
       );
 
+      const readFile = attachment =>
+        new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
+          fileReader.onload = e => {
+            const data = e.target.result;
+            resolve({
+              ...attachment,
+              data,
+              size: data.byteLength,
+            });
+          };
+          fileReader.onerror = reject;
+          fileReader.onabort = reject;
+          fileReader.readAsArrayBuffer(attachment.file);
+        });
+
       const avatarPath = conversation.getAvatarPath();
       const profile = conversation.getLokiProfile();
       const displayName = profile && profile.displayName;
@@ -766,15 +846,67 @@
           avatarPath,
           avatarColor: conversation.getColor(),
           onOk: async (newName, avatar) => {
-            const groupPubkey = window.libsession.Types.PubKey.cast('055f688d4237718cfcc2be849b658538d3bb8b7e540fb682914c12d3b03869cc6e');
-            const ourGroup = window.libsession.Objects.ClosedGroup.get(groupPubkey);
-            ourGroup.setAvatar(avatar);
+            let newAvatarPath = '';
+            let url = null;
+            let profileKey = null;
+            if (avatar) {
+              const data = await readFile({ file: avatar });
 
-            // sendGroupInfo recipient a groupId or a member of the group?
-            const groupId = '055f688d4237718cfcc2be849b658538d3bb8b7e540fb682914c12d3b03869cc6e';
-            const recipient = '05327881307662cf1ec87ae69212ec9c24c8f203e5775cecfdec73a663038e8709';
-            conversation.sendGroupInfo(recipient);
-            conversation.sendGroupInfo(groupId);
+              // For simplicity we use the same attachment pointer that would send to
+              // others, which means we need to wait for the database response.
+              // To avoid the wait, we create a temporary url for the local image
+              // and use it until we the the response from the server
+              const tempUrl = window.URL.createObjectURL(avatar);
+              conversation.setLokiProfile({ displayName: newName });
+              conversation.set('avatar', tempUrl);
+
+              // Encrypt with a new key every time
+              profileKey = libsignal.crypto.getRandomBytes(32);
+              const encryptedData = await textsecure.crypto.encryptProfile(
+                data.data,
+                profileKey
+              );
+
+              const avatarPointer = await libsession.Utils.AttachmentUtils.uploadAvatar(
+                {
+                  ...data,
+                  data: encryptedData,
+                  size: encryptedData.byteLength,
+                }
+              );
+
+              ({ url } = avatarPointer);
+
+              storage.put('profileKey', profileKey);
+
+              conversation.set('avatarPointer', url);
+
+              const upgraded = await Signal.Migrations.processNewAttachment({
+                isRaw: true,
+                data: data.data,
+                url,
+              });
+              newAvatarPath = upgraded.path;
+            }
+
+            // Replace our temporary image with the attachment pointer from the server:
+            conversation.set('avatar', null);
+            conversation.setLokiProfile({
+              displayName: newName,
+              avatar: newAvatarPath,
+            });
+            // inform all your registered public servers
+            // could put load on all the servers
+            // if they just keep changing their names without sending messages
+            // so we could disable this here
+            // or least it enable for the quickest response
+            window.lokiPublicChatAPI.setProfileName(newName);
+            window
+              .getConversations()
+              .filter(convo => convo.isPublic() && !convo.isRss())
+              .forEach(convo =>
+                convo.trigger('ourAvatarChanged', { url, profileKey })
+              );
           },
         });
       }

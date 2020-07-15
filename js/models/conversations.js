@@ -250,14 +250,9 @@
         ? BlockedNumberController.block(this.id)
         : BlockedNumberController.blockGroup(this.id);
       await promise;
-      this.trigger('change', this);
+      this.trigger('change');
       this.messageCollection.forEach(m => m.trigger('change'));
       this.updateTextInputState();
-      if (this.isPrivate()) {
-        await textsecure.messaging.sendContactSyncMessage([this]);
-      } else {
-        await textsecure.messaging.sendGroupSyncMessage([this]);
-      }
     },
     async unblock() {
       if (!this.id || this.isPublic() || this.isRss()) {
@@ -267,14 +262,9 @@
         ? BlockedNumberController.unblock(this.id)
         : BlockedNumberController.unblockGroup(this.id);
       await promise;
-      this.trigger('change', this);
+      this.trigger('change');
       this.messageCollection.forEach(m => m.trigger('change'));
       this.updateTextInputState();
-      if (this.isPrivate()) {
-        await textsecure.messaging.sendContactSyncMessage([this]);
-      } else {
-        await textsecure.messaging.sendGroupSyncMessage([this]);
-      }
     },
     setMessageSelectionBackdrop() {
       const messageSelected = this.selectedMessages.size > 0;
@@ -1995,8 +1985,6 @@
           await libsession
             .getMessageQueue()
             .sendUsingMultiDevice(recipientPubKey, expirationTimerMessage);
-
-            console.log(`[vince] SEWNT NEW TOUPR MSG`);
         } catch (e) {
           log.error('Failed to send groupInfo:', e);
         }
